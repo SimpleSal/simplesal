@@ -1,0 +1,86 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [FSMs- Resource Ownership.note]      search in ssTEA source files for a reference to this file.
+//
+   ------------------------------------------------------------------------------------------------
+   In order for a SimpleSal App to co-exist with ssTEA and ssUI, mesa resources must be shared.
+   The simples configuration is to assert that all resources belong to the App in all states; this
+   does not require Apps know how to co-exist and share resources, only how to say politely "mine".
+   ------------------------------------------------------------------------------------------------
+
+   ------------------------------------------------------------------------------------------------
+   Resource Ownership implies participants who follow a set of access rules; this is called a MAC.
+   If the software accessing the Resource using rules is a MAC, the signal carrier is the variable
+   used by the software to track ownership under the rules, the message is the value of each control
+   memory used to track ownership. The values and the message of each value are defined by the mesa.
+   -------------------------------------------------------------------------------------------------
+   It is important to recognize that the RO mechanism for software MACs and signal carriers are used
+   to communicate ownership, i.e., access, to the MACs providing access to Serial, LED, and Matrix.
+   -------------------------------------------------------------------------------------------------
+   The root definition of Arduino co-existence is "sharing the processor to execute all software".
+   App events and the App co-exist, which means that given a turn to execute, they do so and return.
+   The process of deciding which software (of all the software ready to act when given a turn) is a
+   key differentiation between Arduino, ssTEA, an RTOS, or an Operating System such as Linux.  The
+   Arduino model supports interrupts but has no mechanism for noninterrupt-based processor sharing.
+   ------------------------------------------------------------------------------------------------
+   This is a build control for the mesa FSM based on "the shared resource ownership state".
+   ssTEA does not have a dependency on the Ascii resource, changes to ssTEA have been made only to
+   show that changes to the ssTEA source base is possible, just don't break SimpleSal when you do).
+   -------------------------------------------------------------------------------------------------
+   The "ownership FSM" allows N owners of the resources LED_BUILTIN, the Ascii input/streams, and
+   the Matrix. "allows N owners" means "use an FSM to prevent simultaneous access to a resource".
+   In the fsmDemo sketch, ownership is held by: 1) the App and friends, or, 2) fsmDemo and friends.
+   This is the simplest form, using 2 states: what the scientists call a "binary semaphore".
+   -------------------------------------------------------------------------------------------------
+   From reset, "the Default owner" has ownership of the resource, until ownership is changed.  When
+   the default configuration is put into place, fsmDemo/ssUI/ssTEA adopt the opposite configuration.
+   The default configuration is instantiated by loadtime values in the build image, or code running.
+   -------------------------------------------------------------------------------------------------
+   One way to build a version of fsmDemo that is silent is to default Ascii ownership to the App.
+   UnoR4 fsmDemo builds in the LED matrix but it is not required for any ssTEA or ssUI functionality.
+   One way to build a version of fsmDemo that is dark is to default Matrix ownership to the App.
+   -------------------------------------------------------------------------------------------------
+   typedef enum RO_state_e
+
+   -------------------------------------------------------------------------------------------------
+   A binary, or 2-state, FSM can be managed using any two values.  The states are mutually exclusive.
+   An N-state FSM can have individual states that are mutually exclusive, and similar to binary FSMs.
+   In this example, when the binary FSM is in the fsmDemo state, any of the substates may be active
+   at the same time, or not.  This requires a bit map to manage which of the substates is active,
+   which in turns requires bit map operations to OR bits into and (AND NOT) bits out of the bit map.
+   The standard IDE compile settings complain about doing bit-wise operations with enumerated bits.
+   The type (int) is the natural language/vocabulary of both the ssHL-language and the processor.
+   -------------------------------------------------------------------------------------------------
+   #define mesa_RO_substate_delay       ((int) Bit0)
+
+   This implementation of the RO FSM uses an enumerated set of states and a bit mapping of states.
+   For comparison purposes only.  Each is an alternative state-tracking method using data types
+   inherent in the processor: integer numbers and bits.  Bits are by definition mutually exclusive
+   just as enumerated types are integer numbers that are mutually exclusive.  Testing for a value
+   in a set of numbers requires loading a number into a register and comparing other numbers to it.
+   Multiple bit-wise comparisons may be made after loading a single bitfield value into a register.
+   Enumerated and named values for states helps the human language process understand the meaning.
+   The complexity and abstraction of bitfield values can be masked behind parameterized macros.
+
+   -------------------------------------------------------------------------------------------------
+   A compile-time initialization of the variable that will always exist at runtime.  The runtime use
+   caused by the first call to "flipstate" makes the FSM believe that the last time through was OFF.
+   Another solution is to use uninitialized data, and the random value will be OFF or not OFF: GO!
+   Another solution is to push the responsibility to the FSM user and require an initializing OFF.
+   All of the solutions depend on a permanent (not on the stack) variable for tracking the state.
+   -------------------------------------------------------------------------------------------------
+   #ifdef SSUI_ONEOF_CONTROL_INIT_RUNTIME
+
+   -------------------------------------------------------------------------------------------------
+   A flash is defined as "a request, some time OFF, some time ON, then OFF, until requested again".
+   This is similar to an electrical digital signal being at the voltage 0, then voltage 1, then 0.
+   Transitions in state from 0 to 1 and 1 to 0 are the central signaling mechanism in electronics.
+   -------------------------------------------------------------------------------------------------
+   Any chunk of Time is called a "Time period" or just "period".  "60 miles per hour" is a measure
+   of the number of miles moved during a one hour period; or one mile per a one minute period; or
+   1/60th mile during a one second period.  Those all describe the same movement; different periods.
+   -------------------------------------------------------------------------------------------------
+   void mesa_FSM_LEDflash_Req (void)
+
+// S~S  SimpleSal signal ends  S~S

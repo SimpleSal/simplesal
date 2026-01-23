@@ -1,0 +1,15 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Portability considerations.note]    search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Multiple applications based on the same mesa may have the same mesa_*.h files with each sketch.
+   A single application based on multiple mesas may need a distinct set per mesa, or may use common
+   terminology and build-time switches to select what the term actually means on the mesa in use.
+   -------------------------------------------------------------------------------------------------
+   "portability" in an application may be based on mesa(s) supported by a common file, all sketches,
+   in that case the INO sketch file itself becomes specific to the Mesa instance the App runs on.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

@@ -1,0 +1,62 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Event Databases.note]               search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Central concept for ssTEA: where are the allocations made of the data structures used with ssTEA?
+   There is within ssE event data management a basic "event database" where events are described;
+   allocation of the Event Agency data is controlled by independent factors: location and access.
+   The Event data structure is the primary requirement per active event, as accessible memory.
+   -------------------------------------------------------------------------------------------------
+   The solution should be the same for a User with one, 5 and 50 events.  The location only matters
+   when the User wants to replace the simple mechanism built into SSE for DB data structure allocs.
+   The location choice is based on memory constraints or attributes of memory holding critical info.
+   -------------------------------------------------------------------------------------------------
+   Choose one location for Event data structures to be allocated, according to "oneof_allocates".
+   -------------------------------------------------------------------------------------------------
+   The "trusted" choice is based on whether ssE can let the App have access to ssE data in ssE_AboutEv.
+   Opt In to limit the allocation of ssE_AboutEv to a single copy, accessible by the App and by ssE.
+   Opt Out to create a duplicate App ssE_AboutEv copy for each ssE_AboutEv in ssE; kept up to date by ssE.
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   EvInfo data is the ssTEA knowledge about all events.  ssE_AboutEv is the API Agency data (type
+   and variable) describing one instance of an event, as specified by the User of the Agency Api.
+   There is one EvInfo for each Event actively managed by ssTEA; data is privately kept by ssTEA.
+   In each EvInfo is a pointer to the About Event (ssE_pAboutEv) used by ssTEA to manage the Event.
+   About Event data pointed to is either a copy of ssTEA's (App not trusted) or ssTEA's (trusted).
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   the declaration of the AboutEv Database interface is made by ssTEA; it may be implemented by App.
+   Of App or ssE, implementation includes the database allocation and a set of Get/Put operations.
+   -------------------------------------------------------------------------------------------------
+   NOT declared by the App, use ssE's               void    AboutEvDB_dbOp_Init_DB (void);
+   IMPLEMENTED by the App only if configured        void    AboutEvDB_dbOp_Init_DB (void) { ..... }
+
+    #ifdef SSE_ONEOF_ABOUTEVDB_ALLOC_BY_APP            in App source file
+    #ifdef SSE_ONEOF_ABOUTEVDB_ALLOC_BY_SSE            in ssTEA source file
+//
+    ----------------------------------------------------------------------------------------------
+    Software that manages conditions over time and takes action based on conditions needs data.
+    Software that instantiates and operates an FSM needs to maintain data about the FSM itself.
+
+    The "About Event" structure describes an Event with just enough information to grant Agency.
+    Depending on the degree of trust in the skills of the App software developer, two choices are
+    available for the data structures central to ssTEA algorithms: trust, or don't trust, the App.
+    An App that is not trusted has the same information about Events, but only a copy of ssTEA's.
+    ----------------------------------------------------------------------------------------------
+    The App, in the form of ssUI, instantiates API data structures for each Event: an "Event API".
+    Each of the App's Event API structures points to About Event information for that Event.
+    -------------------------------------------------------------------------------------------------
+    The ssE Event Info database is used by ssA algorithms implementing the Agency Root FSM of ssTEA.
+    This explains the allocation count, based on the number of events, and not the idea of trust.
+
+    The database is only referenced by ssA for Active Events, where the Api FSM state is not Off.
+    The transition to Api FSM state On consumes an EvInfo and an About Event for the Event Info.
+    -------------------------------------------------------------------------------------------------
+    ssE_EvInfo_t  ssE_EvInfos[SSE_EVINFO_ALLOC_CT];
+//
+
+// S~S  SimpleSal signal ends  S~S

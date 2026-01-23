@@ -1,0 +1,28 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Time And Agency FSMs.note]          search in ssTEA source files for a reference to this file.
+//
+    Time really does function as an FSM.  The FSM generates a signal: a moment of Time happened.
+    Every thing that exists, alive or not, perceives a signal from the Time FSM. Tick. Tick. Tick.
+
+    A signal from Time is instantiated by perceiving very small time periods and counting them.
+
+    ssTEA, which co-exists with the App, perceives the signal from Time.  This is the Time FSM.
+
+    The App software is a signal algorithm interacting with FSMs on a periodic basis.  The period
+    of the interactions is a function of the FSMs, which are physical devices or software APIs.
+
+    The Time FSM signal is emitted to the Agency FSM based on the runtime configuration of ssTEA.
+    When the Agency FSM perceives a Time FSM signal, a database is searched for Ready Events.
+
+    The "Events are ready" condition is true when:
+
+      1) the Time at which they are to occur has arrived;
+
+      2) software has signaled that the Event should resume (the MAC is activated to process data);
+
+      3) the interrupt controller has filtered through the interrupt tree and found a hot one.
+//
+
+// S~S  SimpleSal signal ends  S~S

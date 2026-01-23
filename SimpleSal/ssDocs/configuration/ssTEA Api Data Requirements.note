@@ -1,0 +1,20 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ssTEA Api Data Reqirements.note]    search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Each Event managed through the Api must have a signal mechanism to communicate with the API.
+   That mechanism is ssA_ApiSig: the data signal carrier for commands and their parameters.
+   Within the ssApi signal data is the Event Agency descriptor structure allocation for the event.
+   Therefore, a single data structure that must be allocated for each Event:  ssA_ApiSig_t.
+   If you want to minimize data storage requirements it is feasible to use a single data structure
+   and multiplex (share) between all Events, but code will have to do that and code can't store data.
+   -------------------------------------------------------------------------------------------------
+   An Event runs asynchronously to the application, how is data communicated between the two?
+   Variables that always exist (whether the event is running or not) must be allocated and referenced.
+   The EventVars data structure allows for a Per-Event data allocation, instantiates the variables
+   in static memory for use at any Time, and gets the "volatile" attribute assigned at the roots.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

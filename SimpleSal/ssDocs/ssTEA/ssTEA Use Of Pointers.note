@@ -1,0 +1,128 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ssTEA Use Of Function Pointers.note]search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Tbis note tries to explain the complex software concept at the heart of mesa Software: pointers.
+
+   In a software programming language, the compiler knows a lot of information about any variable.
+
+     Each variable declared has:    a name, a data type or size, a lifetime, an address
+
+   When the software refers to the name, the compiler knows the other information based on the name.
+   A variable that can contain the address, and be used in accessing memory, is called a pointer.
+   The pointer variable has a name, a value, a lifetime and an address.  The value is an address.
+
+   Devices within the view of the processor are accessed using pointers assigned published values.
+   Data allocation is typically managed by the Host and so every reference is through a pointer.
+   Host data allocation and transfer requires pointers to data with appropriate permission, access.
+
+   The definition of the memory pointed at is distinct from the value in the pointer over Time:
+     software can't return a pointer to a variable on the stack because the allocation goes away.
+     all memory, and any device which appear to be memory, has attributes distinct from the value.
+     a variable with an incorrect or illegal value has no effect until the value is used to access.
+
+   The end result of separating the address from the attributes creates a danger for software: the
+   value in a pointer can be anything, the reference is independent of any named variable known.
+   The code can be generated and running in the App on the mesa, referencing memory using the value
+   of the pointer given, then: an illegal value is placed into the variable, then the ATTEMPT to use
+   the pointer is detected BEFORE the code executes, a hard fault occurs, the processor is halted.
+   -------------------------------------------------------------------------------------------------
+
+   -------------------------------------------------------------------------------------------------
+   .\SimpleSal\ssTEA\ssTEA_data_dcl.h                                    "pointer to void" data type
+   -------------------------------------------------------------------------------------------------
+   The Host Language promises that a "pointer to void" is as large as any other pointer, so using
+   a variable of type "pointer to void" will ensure that a "pointer to X" will fit in the variable.
+   This usually signals shenanigans are afoot: why hide the pointer's type from the Host Language?
+   -------------------------------------------------------------------------------------------------
+
+   -------------------------------------------------------------------------------------------------
+   .\SimpleSal\ssTEA\ssTEA_data_dcl.h                              "pointer to a function" data type
+   -------------------------------------------------------------------------------------------------
+   Functions.  A function's address may be used just like any location value for any type, the type
+   of the variable holding the address of a function is "function pointer", similar to "int pointer".
+   -------------------------------------------------------------------------------------------------
+   ssTEA does not require a user to understand function pointers; only assigning a value, an address
+   of a User function, to a variable in an ssTEA data structure is required when Events are defined.
+   -------------------------------------------------------------------------------------------------
+   At the end of this note is a long description of how a compiler knows about things and learns
+   about the dependency between things in the process of creating the software the processor runs.
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   This declaration is required for a declaration of the Event function and the types of parameters.
+   -------------------------------------------------------------------------------------------------
+   typedef pVoid_t                 ssE_pVoidAgencyParams_t;
+   #define pVoidAgencyParamsNull   ((ssE_pVoidAgencyParams_t) NULL)
+//
+   -------------------------------------------------------------------------------------------------
+   The key to granting agency to an event is the use of the function pointer to cause the processor
+   to "call" this software.  In its purest sense, this is Granting Agency to an FSM Signal handler.
+
+   Management of events occurs at the API level, and when the Event function is actually executed.
+   Using words: "EvAg_pEvFunc_t is a pointer to a function with 2 parameters, returning a result.".
+   The 1st parameter is what ssE knows about an event; includes a pointer to Agency and App data.
+   the 2nd parameter is a pointer to a COPY of the current Time (you cannot change Time arbitrarily).
+   -------------------------------------------------------------------------------------------------
+   "EvAg_pEvFunc_t" is described as "pointer to function returning result".  An Event is a function,
+   with this specific definition. A function has an address and can be referred to with a pointer.
+   -------------------------------------------------------------------------------------------------
+   The bridge between "an event" and "a ssHL-language function" is here: users of ssTEA are given descriptions
+   of Events, user functions are called Events; technically, the Event pointer is to a ssHL-language function.
+   An Event is pointed to by the function's address, and the function pointer points to an Event.
+   -------------------------------------------------------------------------------------------------
+   typedef ssE_EvResult_t(* EvAg_pEvFunc_t) (ssE_pVoidAgencyParams_t, ssT_pTime_t);
+
+   -------------------------------------------------------------------------------------------------
+   as with other pointer types, the value of a variable is NULL when it does not point to an object.
+   -------------------------------------------------------------------------------------------------
+   #define pEvFuncNull         ((EvAg_pEvFunc_t) NULL)
+//
+//
+//
+//
+//
+   -------------------------------------------------------------------------------------------------
+   A key ssHL-language compiler issue analysis and explanation, if you can consider you are the compiler:
+
+   The order of declaration of types and variables is as required by ssHL-language, as revealed by the coder.
+   You are in the Event declaration file, which the Agency declarations will need to define Agency.
+   You have not read the Agency file, so you cannot refer to the type of the value given to the
+   event at the Time it occurs, unless that type is declared at the ssE level.  If the coder solves
+   by changing the order of declaration, they will find that the OTHER type has not been declared.
+   -------------------------------------------------------------------------------------------------
+   problem: the type of the parameter to an event function is not defined yet
+      compiler writer's solution:
+        Emit obscure message about "decl", means coder used an undefined type in a typedef, see www.
+      coder's solution to what is essentially a compile-time problem:
+        in event function declarations and definitions, use pVoid_t as a parameter placeholder.
+        the first event action is to translate the parameter (pVoid_t) to an appropriate pointer.
+        this does not emit any code, it changes the compiler's view of the type of the pointer.
+   -------------------------------------------------------------------------------------------------
+   problem: if the information provided to the Event is a copy of ssTEA's copy of the User's
+   Event Agency Descriptor, there is no the information available to the event about its own Agency.
+      compiler's solution:
+        I told you that you can't refer to types you have not defined yet.
+      coder's solution within the context of always using the most basic ssHL-language features:
+        option 1: pass the Agency Desc as parameter, put pointer to Agency Secrets in the Agency Desc.
+        option 2: pass Agency Secrets as parameter, have every Event pick up Agency Desc from that.
+//
+   -------------------------------------------------------------------------------------------------
+   In the context of ssTEA, option 1: it is best to simplify for the minimal user, support tricks.
+   -------------------------------------------------------------------------------------------------
+   problem: option 1 (Event Desc pointer) needs Event Desc defined at the time pEvFunc is typedefed,
+      which is exactly the same problem as with using an Agency-level parameter type.  So pVoid_t.
+   coder's solution:
+      create a nomenclature that refers to voidX at Event level and Agency will use non-voidX.
+      Do the same method for parameters, as well as for the pointer to Agency secrets from ssTEA.
+   -------------------------------------------------------------------------------------------------
+   problem: option 1 ssE's view of outside entities is minimal, but events run by ssE are omniscient.
+   coder's solution:
+      User event software should be the last code compiled, with full knowledge of every layer.
+      The RunApi will assign a value in the ssE_AboutEv Descriptor that links to any Secret context data,
+        for example, the value might be a pointer to an ssTEA statistical database about the Event.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

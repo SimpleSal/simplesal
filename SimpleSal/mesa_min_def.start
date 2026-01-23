@@ -1,0 +1,407 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+   This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+   This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   ---------------------------------------------------------------------------------------------------
+ *
+ * mesa_min_def.start   data and software definitions: mesa-specific dependencies of SimpleSal
+ *
+ **************************************************************************************************/
+#ifndef __MESA_MIN_DEF_H
+#define __MESA_MIN_DEF_H
+// =================================================================================================
+// SimpleSal's suggestion: name EVERY mesa declare/define pair with specific reference to the mesa.
+// Otherwise, the "mesa_*.h" you have may or may not match the mesa you are targeting in the build.
+// The "mesa_min_*.start" pair resides in the SimpleSal directory; copy and rename to your choice.
+// =================================================================================================
+
+// =================================================================================================
+#define     THIS_BUILDS_BAUD_RATE  (9600)
+
+// =================================================================================================
+// #define MESA_ONEOF_CONTROL_INIT_BUILDTIME
+#define MESA_ONEOF_CONTROL_INIT_RUNTIME
+
+#ifdef MESA_ONEOF_CONTROL_INIT_RUNTIME
+RO_state_t      mesa_LED_RO_state;
+RO_substate_t   mesa_LED_RO_substate;
+RO_state_t      mesa_Ascii_RO_state;
+RO_substate_t   mesa_Ascii_RO_substate;
+RO_state_t      mesa_Matrix_RO_state;
+RO_substate_t   mesa_Matrix_RO_substate;
+#endif  // MESA_ONEOF_CONTROL_INIT_RUNTIME
+
+#ifdef MESA_ONEOF_CONTROL_INIT_BUILDTIME
+RO_state_t      mesa_LED_RO_state       = mesa_RO_state_App;
+RO_substate_t   mesa_LED_RO_substate    = mesa_RO_substate_none;
+RO_state_t      mesa_Ascii_RO_state     = mesa_RO_state_App;
+RO_substate_t   mesa_Ascii_RO_substate  = mesa_RO_substate_none;
+RO_state_t      mesa_Matrix_RO_state    = mesa_RO_state_App;
+RO_substate_t   mesa_Matrix_RO_substate = mesa_RO_substate_none;
+#endif  // MESA_ONEOF_CONTROL_INIT_BUILDTIME
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// Every byte sent to the user over the Serial Port is an Ascii value sent by this function.
+// -------------------------------------------------------------------------------------------------
+void  mesa_uiOp_emit_1 (Bits8_t thisByte)
+{
+    Serial.write (thisByte);
+}   // mesa_uiOp_emit_1
+// -------------------------------------------------------------------------------------------------
+boolean mesa_uiOp_deviceInitialize (void)
+{
+    int try_ct = 0;
+
+    mesa_Ascii_Init (THIS_BUILDS_BAUD_RATE);
+
+    // ssTEA portability per Ascii depends on the mesa providing True/False solution to this macro
+    while (mesa_Ascii_Init_NotComplete)
+    {
+        delay (100);
+        if (++try_ct > 10)
+        {
+            return (false);
+        }
+    }   // while
+
+    return (true);
+}   // mesa_uiOp_deviceInitialize
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_emit_pAsciiA (pAsciiA_t pAsciiA)
+{
+    if (pAsciiA != pAsciiNull)              // is the value of the pointer null?
+    {
+        while (*pAsciiA != Ascii_NUL)  // is the value the pointer points to NOT an Ascii NUL value?
+        {
+            mesa_uiOp_emit_1 (*pAsciiA);    // both are true. transfer from memory to device.
+            pAsciiA++;                      // move the pointer along to the next value in memory
+        }   // while non-nul characters
+    }   // if pointer
+}   // mesa_uiOp_emit_pAsciiA
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// The LED here is the Arduino LED_BUILTIN, which may be a standard device across all Arduino Mesas.
+// -------------------------------------------------------------------------------------------------
+// digitalWrite, LED_BUILTIN, LOW and HIGH are defined by the Host OS built in by the application.
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_LEDon (void)
+{
+    digitalWrite (LED_BUILTIN, mesaPin_VALUE_HIGH);
+}   // mesa_uiOp_LEDon
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_LEDoff (void)
+{
+    digitalWrite (LED_BUILTIN, mesaPin_VALUE_LOW);
+}   // mesa_uiOp_LEDoff
+// =================================================================================================
+// ------------------------------------------------------------------------------------------------
+// SimpleSal uses psuedo-random numbers for simple purposes; the implementation is based on arrays.
+// The range of "From100" includes random values from 0-99; the array happens to have 100 values.
+// The range of "from1000" includes random values from 0-999; the array happens to have 100 values.
+// The size of the pool of random numbers may vary without changing the "give me a value in range X".
+// ------------------------------------------------------------------------------------------------
+// One method for creating repeatable sequences of random numbers is creating local data.  One good
+// reason to have a repeatable sequence is when a sequence of random numbers is crashing your code.
+// ------------------------------------------------------------------------------------------------
+#ifdef MESA_OPTIN_RandomNumbers
+// -------------------------------------------------------------------------------------------------
+// The tables both have 100 numbers in them.  One algorithm might go through the table containing
+// numbers from 0-99 (using "for (i=0;i<99;++)"), using each entry in the table as a random number;
+// and then similarly go through the table of numbers from 0-999 (using "for (i=0;i<99;++)"). "Seq".
+// Another algorithm might use the value from the 0-99 table as an index into the table of numbers
+// from 0-999: "random = from_1000[from_100[i]]";.  Two examples of generating deterministic random
+// number sequences; deterministic meaning the algorithm will produce the same sequence each time.
+// -------------------------------------------------------------------------------------------------
+#define RANDOM_100_TABLE_CT     (100)
+#define RANDOM_100_TABLE_MAX_I  (RANDOM_100_TABLE_CT-1)
+
+#define RANDOM_1000_TABLE_CT    (100)
+#define RANDOM_1000_TABLE_MAX_I (RANDOM_1000_TABLE_CT-1)
+
+mesa_Random_i_t     gNextRandom_100_i = 0;
+mesa_Random_i_t     gNextRandom_1000_i = 0;
+
+// there are 100 8-bit random numbers here in the range 0-99 made up by a human
+static mesa_Random_t    random_numbers_0to99[RANDOM_100_TABLE_CT] =
+{               //  #5                 #10                 #15                 #20
+    70, 62, 36, 66, 44, 41, 67, 39, 30, 46, 58, 27,  2, 63, 31, 71, 59, 32, 52, 28, //  0-19 // index
+    68, 34, 75, 69, 50, 61, 64, 65, 35, 25, 74, 54, 72, 48, 60, 37, 33, 38, 73, 29, // 20-39
+    58, 39, 28, 74, 36, 60, 45, 67, 32, 27, 56, 64, 75, 61,  3, 69, 37, 30, 73, 44, // 40-59
+    38,  0, 57, 50, 35, 26, 34, 51, 53, 70, 42, 59, 55, 63, 48, 40, 49, 31, 71, 68, // 60-79
+    65, 50, 31, 44, 41, 75, 40, 48, 62, 45, 71, 37, 25, 55, 36, 64, 47, 63, 57, 58  // 80-99
+};
+
+// there are 100 16-bit random numbers here in the range 0-999 made up a human
+static mesa_Random_t    random_numbers_0to999[RANDOM_1000_TABLE_CT] =
+{                   //  #5                      #10                      #15                      #20  // index
+   720, 162, 196, 664, 946, 418, 672, 839,   6,  46, 589, 227, 142,  43, 141,  71, 590,   2,  52, 278, //  0-19
+   638, 134, 755, 696, 505, 614, 642, 965, 154, 725, 745, 524,  72, 158, 620, 537, 135, 158, 173, 249, // 20-39
+   538,  39, 278, 746,  67, 606, 955, 467, 226, 227, 567, 654, 175, 231, 153, 269,  72, 320, 273, 944, // 40-59
+    18, 646, 517, 502, 150, 262, 145, 851, 136, 570, 421, 559, 555,  33, 498, 140, 993, 331,   0, 698, // 60-79
+   675, 550, 181, 947, 415, 751, 405, 848, 425, 145, 718,  57, 625, 445, 196, 264, 472, 623, 457, 578  // 80-99
+};
+/* -----------------------------------------------------------------------------
+   ----------------------------------------------------------------------------- */
+mesa_Random_t    mesa_Random_From100_Pick (mesa_Random_i_t which_i)
+{
+    return ((which_i <= RANDOM_100_TABLE_CT) ? random_numbers_0to99[which_i] : 0);
+}   // mesa_Random_From100_Pick
+/* -----------------------------------------------------------------------------
+   ----------------------------------------------------------------------------- */
+mesa_Random_t    mesa_Random_From1000_Pick (mesa_Random_i_t which_i)
+{
+    return ((which_i <= RANDOM_1000_TABLE_CT) ? random_numbers_0to999[which_i] : 0);
+}   // mesa_Random_From1000_Pick
+/* -----------------------------------------------------------------------------
+   ----------------------------------------------------------------------------- */
+mesa_Random_t   mesa_Random_From100_Seq (void)
+{
+    // learn current random_i  to return value, then increment global before returning
+    mesa_Random_i_t  ThisRandom_i = gNextRandom_100_i;
+
+    gNextRandom_100_i = (gNextRandom_100_i >= RANDOM_100_TABLE_MAX_I) ? 0 : gNextRandom_100_i+1;
+    return (mesa_Random_From100_Pick (ThisRandom_i));
+}   // mesa_Random_From100_Seq
+/* -----------------------------------------------------------------------------
+   ----------------------------------------------------------------------------- */
+mesa_Random_t   mesa_Random_From1000_Seq (void)
+{
+    // learn current random_i to return value, then increment global before returning
+    mesa_Random_i_t  ThisRandom_i = gNextRandom_1000_i;
+
+    gNextRandom_1000_i = (gNextRandom_1000_i >= RANDOM_1000_TABLE_MAX_I) ? 0 : gNextRandom_1000_i+1;
+    return (mesa_Random_From1000_Pick (ThisRandom_i));
+}   // mesa_Random_From1000_Seq
+/* -----------------------------------------------------------------------------
+   ----------------------------------------------------------------------------- */
+mesa_Random_t   mesa_Random_From256_Seq (void)
+{
+    mesa_Random_t   BuildResult;
+
+    // turn 4 bits of a 7-bit number (0-99 (0x0-0x63)) into a 4-bit number for the lower nibble.
+    //    bit 7 of the 8-bit number (of 8 bits 7:0) has by definition a value 0, not random, exclude.
+    // turn 4 bits of a 7-bit number (0-99 (0x0-0x63)) into a 4-bit number for the upper nibble,
+    //    the lower 4 bits of a 7-bit number (bits 3:0) have by a definition a 4-bit number.
+    // combine the upper and lower nibble values into a value in the range 0-255 (0x0-0xFF).
+    BuildResult = (mesa_Random_From100_Seq () >> 3) +       // lower nibble
+                  (mesa_Random_From100_Seq () << 4);        // upper nibble
+    return (BuildResult & 0xFF);                            // necessary?
+}   // mesa_Random_From256_Seq
+/* -----------------------------------------------------------------------------
+   ----------------------------------------------------------------------------- */
+void    mesa_Random_Init (void)
+{
+    gNextRandom_100_i = 0;
+    gNextRandom_1000_i = 0;
+}   // mesa_Random_Init
+#endif  // MESA_OPTIN_RandomNumbers
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_emit_newline (void)
+{
+#ifdef MESA_ONEOF_NEWLINE_SEND_CRLF
+    mesa_uiOp_emit_1 (Ascii_CR);
+    mesa_uiOp_emit_1 (Ascii_LF);
+#endif  // MESA_ONEOF_NEWLINE_SEND_CRLF
+#ifdef MESA_ONEOF_NEWLINE_SEND_LFCR
+    mesa_uiOp_emit_1 (Ascii_LF);
+    mesa_uiOp_emit_1 (Ascii_CR);
+#endif  // MESA_ONEOF_NEWLINE_SEND_LFCR
+#ifdef MESA_ONEOF_NEWLINE_SEND_CR
+    mesa_uiOp_emit_1 (Ascii_CR);
+#endif  // MESA_ONEOF_NEWLINE_SEND_CR
+#ifdef MESA_ONEOF_NEWLINE_SEND_LF
+    mesa_uiOp_emit_1 (Ascii_LF);
+#endif  // MESA_ONEOF_NEWLINE_SEND_LF
+}   // mesa_uiOp_emit_newline
+// -------------------------------------------------------------------------------------------------
+// The challenge with displaying a multi-hex-digit number is going from MSB to LSB, not LSB to MSB.
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_emit_Hex_32bits (unsigned long bits32)
+{
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >> 28) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >> 24) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >> 20) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >> 16) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >> 12) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >>  8) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32 >>  4) & 0xF));
+    mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex ((bits32      ) & 0xF));
+}   // mesa_uiOp_emit_Hex_32bits
+// -------------------------------------------------------------------------------------------------
+// a question mark emitted means: "thisByte" > than 9
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_emit_Int_9 (Bits8_t thisByte)
+{
+    if (thisByte <= 9)
+    {   // borrow the hex output function since we know it has a 0-9 range
+        mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex (thisByte));
+    }
+    else
+    {
+        mesa_uiOp_emit_1 (Ascii_Qmark);
+    }
+}   // mesa_uiOp_emit_Int_9
+// -------------------------------------------------------------------------------------------------
+// two question marks emitted means: "thisByte" > than 99
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_emit_Int_99 (Bits8_t thisByte)
+{
+    if (thisByte <= 99)
+    {   // borrow the hex output function since we know it has a 0-9 range
+        mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex (thisByte / 10));
+        mesa_uiOp_emit_1 (mesa_uiOp_give_4bitsAsHex (thisByte % 10));
+    }
+    else
+    {
+        mesa_uiOp_emit_1 (Ascii_Qmark);
+        mesa_uiOp_emit_1 (Ascii_Qmark);
+    }
+}   // mesa_uiOp_emit_Int_99
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+#define ZEROES_3     (1000)
+#define ZEROES_6     (1000000)
+#define ZEROES_9     (1000000000)
+
+#define A_THOUSAND   (ZEROES_3)
+#define A_MILLION    (ZEROES_6)
+#define A_BILLION    (ZEROES_9)
+
+// -------------------------------------------------------------------------------------------------
+// different method: calculate the ones, the tens, the hundreds; show hundreds/tens/ones.
+// -------------------------------------------------------------------------------------------------
+void mesa_uiOp_emit_Int_999 (int thisInt)
+{
+    int             ones, tens, hundreds;       // the processor will use registers for all of these
+    int             mathInt;
+
+    // this is the terminating condition of a recursive solution to displaying integer numbers.
+    // rather than a while/for loop to display digits from most- to least-significant, use functions.
+    // encoding  N: valid digit;  X: processed, digit displayed; x: future digit
+    mathInt = ssUI_IntsAbsValue (thisInt);
+    if (mathInt >= A_THOUSAND)
+    {   // if number is equal to or bigger than 1000, recursively handle each chunk of 3 digits
+        if (mathInt >= A_BILLION)
+        {   // N,xxx,xxx,xxx
+            mesa_uiOp_emit_Int_999 (mathInt / A_BILLION);
+            mathInt %= A_BILLION;
+        }
+        if (mathInt >= A_MILLION)
+        {   // X,NNN,xxx,xxx
+            mesa_uiOp_emit_Int_999 (mathInt / A_MILLION);
+            mathInt %= A_MILLION;
+        }
+        if (mathInt >= A_THOUSAND)
+        {   // X,XXX,NNN,xxx
+            mesa_uiOp_emit_Int_999 (mathInt / A_THOUSAND);
+            mathInt %= A_THOUSAND;
+        }
+        // X,XXX,XXX,NNN
+        // use mathInt to create a terminating condition, that is, when to not call myself again.
+    }   // number is now less than 1000, handle the last chunk of 3 digits
+
+    // The fundamental math here is different than manipulating hex numbers; hex allows a shift of
+    // the number left and right to multiply and divide by 2 respectively.  This is the same math
+    // operation, and the time to execute the math in the processor is probably not significant.
+    ones = mathInt % 10;                // the least-significant digit of mathInt right now
+    mathInt /= 10;                      // shift all digits right, zero-fill left, drop off right
+    tens = mathInt % 10;                // the least-significant digit of mathInt right now
+    mathInt /= 10;                      // shift all digits right, zero-fill left, drop off right
+    hundreds = mathInt;                 // the least-significant digit of mathInt right now
+
+    mesa_uiOp_emit_Int_9 (hundreds);
+    mesa_uiOp_emit_Int_9 (tens);
+    mesa_uiOp_emit_Int_9 (ones);
+}   // mesa_uiOp_emit_Int_999
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\swDev\Software Developer Tricks.note]    help a function display its own name
+// -------------------------------------------------------------------------------------------------
+void CTRICK_Show_FunctionsName (unsigned char * pName)
+{
+    mesa_uiOp_emit_1 (Ascii_squiggleLBracket);
+    mesa_uiOp_emit_pAsciiA ((pAsciiA_t) pName);
+    mesa_uiOp_emit_1 (Ascii_squiggleRBracket);
+// optional  mesa_uiOp_emit_newline ();
+}   // CTRICK_Show_FunctionsName
+// -------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\swDev\Software Developer Tricks.note]        attempt memory read/write access
+// -------------------------------------------------------------------------------------------------
+#ifdef MESA_OPTIN_DEBUG_MEMORYACCESS
+void CTRICK_Prove_MemoryIsWritable (unsigned long *p32bits, unsigned char * pFuncName)
+{
+    unsigned long temp;
+    volatile unsigned long *vp32bits;           // <volatile> <type> <variable>
+
+    temp = (unsigned long) p32bits;             // value used in 32-bit math
+    temp &= ~0x03;                  // clear the two lowest address bits to make it 32-bit aligned
+    if (temp == 0)                  // is the pointer value in the memory location zero?
+    {
+        mesa_uiOp_emit_1 (Ascii_squareLBracket);
+        mesa_uiOp_emit_pAsciiA (pFuncName);
+        mesa_uiOp_emit_1 (Ascii_squareRBracket);
+        mesa_uiOp_emit_newline ();
+        ss_uiOp_emit_lbld_hex ("pointer to Null not allowed", (unsigned long) vp32bits);
+        mesa_uiOp_emit_newline ();
+        return;
+    }
+    vp32bits = (unsigned long *) temp;      // value used as a 32-bit aligned pointer; modified?
+    temp = *vp32bits;                       // reference the memory location pointed to
+    *vp32bits = ~temp;                      // write to that location: but first flip all the bits
+    if (*vp32bits != ~temp)                 // did that memory location change to the value written?
+    {
+        mesa_uiOp_emit_1 (Ascii_squareLBracket);
+        mesa_uiOp_emit_pAsciiA (pFuncName);
+        mesa_uiOp_emit_1 (Ascii_squareRBracket);
+        mesa_uiOp_emit_newline ();
+        ss_uiOp_emit_lbld_hex ("  Accessing memory @", (unsigned long) vp32bits);
+        ss_uiOp_emit_lbld_hex ("read original 32 bits", temp);
+        ss_uiOp_emit_lbld_hex ("wrote ~original 32 bits", ~temp);
+        ss_uiOp_emit_lbld_hex ("read after wrote ~original 32 bits", (unsigned long) *vp32bits);
+        ss_uiOp_emit_newline ();
+    }
+    else    // memory location changed to bit-flipped 32-bit value
+    {
+        *p32bits = temp;    // put back the original value
+    }
+}   // CTRICK_Prove_MemoryIsWritable
+#endif  // MESA_OPTIN_DEBUG_MEMORYACCESS
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+#define HEXDIGIT_CHARS_ALLOC  (16)
+#define HEXDIGIT_CHARS_MAX_I  (HEXDIGIT_CHARS_ALLOC-1)
+
+Ascii_t  hexDigitChars[HEXDIGIT_CHARS_ALLOC] =
+    { Ascii_0, Ascii_1, Ascii_2, Ascii_3, Ascii_4, Ascii_5, Ascii_6, Ascii_7,
+      Ascii_8, Ascii_9, Ascii_a, Ascii_b, Ascii_c, Ascii_d, Ascii_e, Ascii_f };
+
+Ascii_t  mesa_uiOp_give_4bitsAsHex  (Bits8_t       this_4bit_Digit)
+{
+    return (hexDigitChars[this_4bit_Digit]);
+}   // mesa_uiOp_give_4bitsAsHex
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+Bits8_t Bits8Op_RotateLeft (Bits8_t TheseBits)
+{
+    Bits8_t  NewBits8;
+    Bits8_t  KeepThisBit = TheseBits & Bit7;
+    NewBits8 = ((TheseBits << 1) & 0xFF);
+    NewBits8 |= ((KeepThisBit) ? Bit0 : 0);
+    return (NewBits8);
+}   // Bits8Op_RotateLeft
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+Bits8_t Bits8Op_RotateRight (Bits8_t TheseBits)
+{
+    Bits8_t  NewBits8;
+    Bits8_t  KeepThisBit = TheseBits & Bit0;
+    NewBits8 = ((TheseBits >> 1) & 0xFF);
+    NewBits8 |= ((KeepThisBit) ? Bit7 : 0);
+    return (NewBits8);
+}   // Bits8Op_RotateRight
+
+#endif  // __MESA_MIN_DEF_H

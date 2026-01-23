@@ -1,0 +1,20 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Event Agency.note]                  search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   The ssTEA Event Declarations note explains the compiler language terms used to implement ssTEA.
+   The ssTEA Event Agency note explains Event activities as they are implemented usin the terms.
+   -------------------------------------------------------------------------------------------------
+   -------------------------------------------------------------------------------------------------
+   EvInfo data is the ssTEA knowledge about all events.  ssE_pAboutEv is the API Agency data (type
+   and variable) describing one instance an event, as specified by the User of the Agency Api.
+   There is one EvInfo for each Event actively managed by ssTEA, and privately kept by ssTEA.
+   In each EvInfo is a pointer to the Event Description which is used by ssTEA to manage the Event.
+   Event Descriptions pointed to are a copy of ssTEA's (App not trusted) or are ssTEA's (trusted).
+   -------------------------------------------------------------------------------------------------
+//
+
+// S~S  SimpleSal signal ends  S~S
+

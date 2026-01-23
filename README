@@ -1,0 +1,307 @@
+------------------------------------------
+
+   This file believes that this file is:    README  in the simplesal repository.
+
+   This file is expected to be unique to the repository as it is metadata about the managed object.
+
+------------------------------------------
+
+=====================
+
+TruSoft Computing LLC
+
+ S~S The SimpleSal software is educational software.
+
+=====================
+
+  S~S About this README file
+
+  There are two major parts to this README, each section relates to one part or the other:
+
+    1) the traditional background information about the repo blob using traditional terminology;
+
+    2) the nontraditional philosophy that leads to a path: developers may request their personal
+       SimpleSal App be added to the public SimpleSal ecosystem as a GitHub repository.
+
+=====================
+
+  S~S The Elevator Pitch
+
+------------------------------------------
+
+ SimpleSal is software that supports simple experimental development of signal/sensor algorithms.
+
+ SimpleSal software co-exists with an Arduino application's software.  it provides a sense of Time,
+ and, it enables Event-based software algorithms that implement the interactions devices require.
+
+ This basis in software removes the hardware from consideration by the developer: there is no
+ interrupt circuitry between the device and the processor, no interrupt controller to satisfy.
+
+ There is a virtual interrupt controller (VIC), within the SimpleSal software, constructed from
+ self-contained software.  The VIC ACTS LiKE an interrupt controller (e.g., dispatch handlers
+ based on masks and enables); when it is, at a Time chosen by the developer, granted Agency.
+
+------------------------------------------
+
+  S~S The 5-minute Trade Show Presentation
+
+------------------------------------------
+
+ SimpleSal is also a laboratory for developing skills commonly expected of a software developer.
+
+ The moderate complexity of the entire SimpleSal ecosystem enables a developer to take a step
+ towards operating system software development task requirements, outside the software itself.
+
+ For example, the transition to a "SimpleSal App" from a standard Arduino App requires:
+
+    you read the complete, specific, step-by-step, and proven directions, if you can find them.
+
+ Just kidding, the transition requires a few steps described by documents within the source tree.
+
+    1) this repo's managed object be placed in the App directory as the directory SimpleSal;
+    2) 3 text files be copied and then renamed, from SimpleSal up into the App directory;
+    3) copy-and-paste changes be made around, not to, the setup and loop functions in the App;
+
+ This will create a buildable SimpleSal App that co-exists with ssTEA and keeps track of Time.
+
+------------------------------------------
+
+  S~S The last-chance pitch at the table in the back of Trade Show ballroom
+
+------------------------------------------
+
+ Now you've heard of all the concepts that SimpleSal is intended to introduce to a user.
+
+ Now you've heard of all the knowledge that the user must have to use SimpleSal.
+
+ The rest of this README introduces the basic concepts common to a repository of software.
+
+ Any repo's structure and content is a software engineering decision and a software decision.
+
+------------------------------------------
+
+=====================
+
+ S~S The SimpleSal Ecosystem
+
+------------------------------------------
+
+ S~S The Story of the 3-legged stool used while milking cows
+
+    In ancient history, people learned that a tripod form, a thing with three legs, is stable.
+    Work tasks around the farm were easier with a small simple base to sit on while working.
+
+    The SimpleSal three-legged stool is built from these three legs:
+
+    1) the published software in the repo:
+
+        from simplesal GitHub user, simplesal repository, main-simplesal branch
+
+        instantiated with the App in the file system as the directory .\SimpleSal
+
+    2) the information within the repo about how to make use of the SimpleSal software:
+        .\SimpleSal\ssDocs\Find and Open Documents.html          <web browser viewable>
+
+    3) the information about how to write signal algorithms using software
+        simplesal's substack.com website, described below
+
+------------------------------------------
+
+ S~S Published information outside the repo's human metadata AND repo metadata.
+
+    This text is not-clickable information about the free SimpleSal ecosystem of code and documents.
+
+    The site includes multi-colored circles and squares with lines with arrows between them.
+
+    Also, videos showing the effect of the annotated software being shown alongside the software.
+
+         simplesal.substack.com          simplesal username on substack.com public web site
+
+------------------------------------------
+
+=====================
+
+ S~S TruSoft Computing LLC (TSC LLC) Repository Philosophy
+
+------------------------------------------
+
+ S~S   SimpleSal explains the managed object concept used a basis for this repository
+
+    This is the README about the managed objects in this repo.
+
+    TSC LLC's idea of a managed object excludes anything present in the repo that is metadata.
+
+    The repo database contains what TSC LLC calls the "repo object": that thing the repo controls.
+        The repo database MANAGER applications maintain metadata about and outside the repo object.
+
+    A "managed object" is what TSC LLC calls everything in the repo, EXCEPT files ABOUT the repo.
+        The repo database OWNER maintains metadata about the managed object.
+        The repo database OWNER invents conventions to help separate managed object from METADATA.
+
+    TSC LLC's chosen publishing style:
+        1) the repo contains human metadata text files and the managed object as defined here;
+        2) naming conventions followed for separating metadata are adopted (GiTHUB and LiNUX);
+        2) the managed object is a single subdirectory, self-contained within the repository root.
+
+    Note: this is not conventional; it may result in metadata files in the App directory.
+        The convention for many projects is that metadata files co-exist with the software files.
+
+------------------------------------------
+
+=====================
+
+ S~S  SimpleSal Ecosystem metadata general content guide
+
+------------------------------------------
+
+    When a repository user is looking at a repository for the first time, they see the root of
+    the repository.  In the root are files describing the managed object within the repository,
+    each of those files is an information signal from the publisher of the managed object ABOUT
+    the managed object.  The software publishing culture uses common signals to communicate.
+
+    The signals are "about" the managed object's data so they are called "metadata":
+        1) version control (RELEASE, CHANGELOG);
+        2) licensing (LiCENSE, COPYiNG);
+        3) README.
+
+    README is the window or lens through which the other files make sense.  At some point back
+    in computer history, someone made some notes about "it" for themselves, and then for others.
+    Before that time, humans only communicated through their voice, so they included a HEARME.
+
+    The consumer of the notes will be new to the content, having forgotten, or been given, a copy.
+
+    When the software you publish changes, or is adopted for use by others, other files follow.
+    Because SimpleSal is an introduction to the moderately complex, sophistication has to wait.
+
+------------------------------------------
+
+ S~S  Publishing a SimpleSal App
+
+  TSC LLC is aware of the wise saying "be careful what you wish for, you just might get it".
+
+  The intention of the design of SimpleSal is to enable developers to write simple solutions
+  to common problems, based on the passage of Time and the exchange of signals through a medium.
+
+  The intention of the repository collection under the username simplesal on GitHub is
+  to provide a medium through which information about software development can be exchanged.
+
+  A proper (e.g., copyleft-licensed) SimpleSim App from any developer is proof it is working.
+
+  There will be a mechanism through which developers submit SimpleSal Apps for posting here.
+
+  It could turn out to be 5 SimpleSal Apps, it could be 500; the repository is ready for it.
+
+------------------------------------------
+
+ S~S  Making modifications to SimpleSal
+
+  A design goal: no modifications to SimpleSal files are needed to modify the behavior or content.
+
+  Modifying an App and SimpleSal at the same time is complex AND ALSO what SimpleSal is made for.
+
+    Modifying the configuration of ssTEA is expected; this is about modifying SimpleSal software.
+
+  Nothing in the repository organization blocks having modified versions of both at the same time.
+
+------------------------------------------
+
+=====================
+
+ S~S This Repository
+
+------------------------------------------
+
+ S~S  What is the purpose of the software in this repository?
+
+    * instantiate a complete system of Time Keeping and Event Management within an Arduino App.
+    * Deliver the SimpleSal software as a self-contained directory appropriate to all use cases.
+    * Support SimpleSal ecosystem educational goals by providing free software source code.
+    * Provide software of moderate complexity that can be broken, fixed, improved, abandoned.
+
+------------------------------------------
+
+ S~S  What happens in my workspace as a result of interacting with this repository?
+
+  * for the SimpleSal source:
+
+      the managed object, a directory, goes into the App directory as .\SimpleSal.
+
+      A repository-to-instance transfer may include the SimpleSal repo metadata files in the
+      App directory, depending upon the method of distribution of the SimpleSal repo contents.
+
+  The SimpleSal App references the version of SimpleSal indicated by the software build.
+
+      This means the include path used by the software build determines where .\SimpleSal lives.
+      The SimpleSal model using the Arduino out-of-the-box build environment is .\App\SimpleSal.
+
+      A more sophisticated user, with for example multiple SimpleSal Apps, could use one copy.
+
+    The contents of the App's directory and the contents of .\SimpleSal are mutually exclusive.
+
+------------------------------------------
+
+=====================
+
+ S~S   directory tree structure:
+
+------------------------------------------
+
+  Model: user space is a directory "App" containing the simplesal directory and "App.ino".
+
+  The Arduino IDE build environment expects a SimpleSal directory to be in each App's directory.
+
+  the simplesal directory contains all of the software source code needed to use SimpleSal.
+
+  the "ssTEA" subdirectory contains the software implementing Time and Event Agency (TEA).
+
+  the "ssUI" subdirectory contains the menu system that displays Time and Event information.
+
+  the "ssDocs" subdirectory contains documentation, each file is pointed to by source code files.
+
+  the "ssIO" subdirectory is independent of ssTEA and implements the virtualization of hardware.
+
+------------------------------------------
+
+=====================
+
+ S~S  TruSoft Computing defends the use of the C language one time, here at the front door.
+
+------------------------------------------
+
+  C language software at a "fundamental Kernighan and Ritchie C level" is also called "K and R C".
+    The primary higher-level concept used from K&R C by SimpleSal is pointers to software.
+    The actual use of a code-space pointer is not as important as the concept of a pointer to code.
+
+    Any software known to the compiler by name can be referenced by name, to get the pointer value.
+    Operating systems are not interested in the name of an interrupt handler, just a pointer to it.
+
+  C software survives because it is compilable into processor-level instructions and capabilities;
+    material within the documentation maps C algorithms to the resulting ARM assembly language.
+    What some viewers may find particularly interesting is how code pointers work in ARM processors.
+
+  SimpleSal is also going to be integrated into other languages and Hosts; we must begin at simple
+    if we want to extend support to higher-level languages (HLLs); they each have methods to access
+    C-based software from the HLL; within constraints imposed by their own architecture.
+
+    Because TSC LLC knows that higher-level languages eventually execute the same 50 instructions in
+    the processor, the task of extending support to a higher-level language is a function of demand.
+
+------------------------------------------
+
+=====================
+
+ S~S   Documentation is distributed across the ecosystem relative to the topic
+
+------------------------------------------
+
+  There is ssDocs documentation specific to the architecture and implementation of ssTEA and ssUI,
+  as a software component co-existing with the App.  For example, allocation of the database used
+  for Event descriptors may be performed by the App or ssTEA; the App is free to take control and
+  replace ssTEA's static allocation algorithm with a dynamic allocation using malloc.  Try it.
+
+------------------------------------------
+
+=====================
+
+ Copyright (c) 2026  TruSoft Computing LLC.  All Rights Reserved.
+

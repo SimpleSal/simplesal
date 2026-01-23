@@ -1,0 +1,75 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Agency Next Algorithm.note]         search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Events are treated from the outside without any knowledge of the organization of the data inside.
+   The caller to AgencyNext requests an event that needs to occur, and does nothing when given null.
+
+   Inside the database: all events may be searched for an instance that is of the type requested, or
+      a basic/complex sorting mechanism can be employed to reduce "time to occur" logic as desired.
+   The important point here is the caller doesn't need to know the database organization/methods,
+   this allows someone disgusted by the crude memory management here to write a better version.  Go!
+   -------------------------------------------------------------------------------------------------
+   input:    a pointer to ssE_pAboutEvVoid (Null) or
+                    a pointer to the ssE_pAboutEv that was returned the last call
+             a type that the caller is interested in right now
+
+    the actions of the two input variables are independent:  must restart with Null if change type
+   ----------
+   pointer:  given null, start search with "first" instance of EvInfos data structures.
+                (the database does not need to be sorted by Time-to-Occur for there to be a "first").
+             given !null, start search at instance after the EvInfo pEvency pointed to by caller.
+                (this should be the pointer that was returned by the last call to AgencyNext).
+   type:     of Ireq, data, or Time
+   ----------
+    result:  given null or !null, finding no Active Events of matching Type, return null.
+             on match: return ssE_pAboutEv from the Active EvInfo array element for Agency to consider.
+   -------------------------------------------------------------------------------------------------
+   -------------------------------------------------------------------------------------------------
+   ssE_pEvInfo_t ssA_EvAg_AgencyNext (ssE_pEvInfo_t pEvInfo, ssE_EvType_t  eventType)
+//
+    ---------------------------------------------------------------------------------------------
+    The caller doesn't know about data structures and algorithms used, only the pointer returned
+    by a call to this function.  That pointer is provided to signal "next after this one, please".
+    This algorithm doesn't really use the current pEvInfo; a linked-list-based algorithm would
+    certainly have pointers to "next after this one" because that is what a linked list is.
+    ---------------------------------------------------------------------------------------------
+    To signal that the resolution should start clean at the top is a NULL pointer or, the local
+    variable (retained over a series of calls, or, cross-Agency) incremented out of range, which
+    it does at the end of every series of calls to return a Next, when there is no Next Event.
+    ---------------------------------------------------------------------------------------------
+    if ((pEvInfo == ssE_pEvInfoNull) || (working_lcl_i > SSE_EVINFO_MAX_I))
+//
+    -------------------------------------------------------------------------------------
+    An FSM must use memory retained across Time, sending messages to a future Self really.
+      Current value of lcl_i is important to generate a pointer to an event to the caller.
+      ++lcl_i before return is important to start next call's search at the next element.
+    written explicitly here with pre-increment and extra pointer variable: be obvious.
+    -------------------------------------------------------------------------------------
+    pEvInfo = &ssE_EvInfos[working_lcl_i];
+//
+    -----------------------------------------------------------------------------------------
+    This is the rule that the Agency pointer returned points to an Agency Api active Event.
+    -----------------------------------------------------------------------------------------
+    An Event's Agency Api FSM must be in the "On and Running" state to be returned by Next.
+    An "On and Running" Event's Agency Run FSM must be in the "Agencying" state to continue.
+    -----------------------------------------------------------------------------------------
+    Software Engineering: for the sake of completion without concern for optimization, check
+    as many values as possible before performing an indirect call to a function out in space.
+    A developer who was extremely careful could make sure that every EvInfo considered has
+    all of the checked values (active:on_running:event:agencying) when AgencyNext searches,
+    which would eliminate the time and space spent every time an Event is ready for Agency.
+    -----------------------------------------------------------------------------------------
+    if (pEvInfo->Alloc.active)
+//
+    -----------------------------------------------------------------------------------------
+    The Agency Api FSM does not know Agency Run FSM states, even in "On and Running" state.
+    The Agency Run FSM does not know Agency Api FSM states, asssumes "On and Running" state.
+    This is where the two FSMs must be in a coordinated set of states to be granted Agency.
+    -----------------------------------------------------------------------------------------
+    if (pEvInfo->ssE_pAboutEv->Runfsm_EvType == eventType)
+//
+
+// S~S  SimpleSal signal ends  S~S

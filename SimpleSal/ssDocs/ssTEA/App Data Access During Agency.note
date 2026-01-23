@@ -1,0 +1,16 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [App Data Access During Agency.note] search in ssTEA source files for a reference to this file.
+//
+   =================================================================================================
+   Execution considerations for Events: parameters provided to the Event function when it is called.
+   =================================================================================================
+   Discussing Events: there is an API configuration, and there is the moment when Agency is granted.
+   This is the Agency side: when an event function is called, parameters provided are about Agency
+   known by the ssTEA event data, and a pointer to data that was established during the init state.
+//
+   The DB_TRUSTED_APP choice affects only the App's access to a copy of the actual ssTEA event data.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

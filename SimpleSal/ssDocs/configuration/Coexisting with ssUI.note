@@ -1,0 +1,72 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Coexisting with ssUI.note]          search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   This is one solution for a need to communicate data to events that act based on the data.  It is
+   also possible to use a set of global variables per event; the named data is specific to each.
+   -------------------------------------------------------------------------------------------------
+   These field names remap the generic AppEventVar fields into variable names used by the Application.
+   The event code may refer to this "variable" and the ssHL-language compiler will remap it to the field name.
+   The variable DriveValue will signal the actual value that should be written to the Mesa pin,
+   values defined here for a digital pin are a function of what the receiver of the signal thinks.
+   -------------------------------------------------------------------------------------------------
+   This typedef extends to each event structure used by ssTEA/ssUI to signal and manage an event.
+   When an Event is granted agency, the Event descriptor includes a field of values set by the App.
+   Because ssTEA includes this data structure declaration in the ssE event data structure,
+   there must be a declaration of some form here to satisfy the compiler.  A single 1-byte variable
+   will consume 1 byte for every event; should this be a problem, you could just #ifdef everywhere.
+   -------------------------------------------------------------------------------------------------
+   The benefit of alternative 2 is that the Application can continue as it was written before ssTEA.
+   The benefit of alternative 1 is that each Event can refer to the fields as that Event needs to,
+   so there doesn't need to be a super-declaration with all the fields used by any Event in the App.
+   There are two sources to declare variables: borrow ssTEA's examples, or create your own examples.
+   -------------------------------------------------------------------------------------------------
+//
+   Alternative 1 (borrow fields in the ssTEA declaration):
+//
+   The variables are generic, meaningless, can be used with the form "#define Useful Meaningless".
+       #define DrivePinNow  a_boolean
+       #define DriveCt      an_int
+       #define DriveValue   Bits8_A
+//
+   Software that references the App use of the fields refers to the "Useful", in context of the App.
+       if (pEventData->app_EventData.DrivePinNow)
+       {
+           Digitally_DrivePin (pEventData->app_EventData.DriveValue);
+           pEventData->app_EventData.DriveCt++;
+       }
+   Users are of course free to insert a meaningless field here, and then use the useful name in code.
+//
+   Alternative 2 (create App-Event data in the Event-specific data):
+//
+   The App may declare the contents of the data structure using any types declared within the App
+   by this point in the build process.  For example, below, "Sneak_pApiData" was added by the App;
+   it tells an Event exactly which ssTEA API the Event is using, without a run-time search/lookup.
+//
+   Software referencing per-event data first retrieves the pointer to this App data for this Event.
+        typedef struct ThisEvents_AppVars_s
+        {
+            boolean     AppVarDrivePinNow;
+            int         AppDriveCt;
+            Bits_8      AppVarDriveValue;
+        }   ThisEvents_AppVars_t, *ThisEvents_pAppVars_t;
+//
+       Initialization of the pointer to App data within the Event "app_EventData" data structure.
+            EventData.app_EventData.Sneak_pApiData = Create_Sneak_pApiData (ThisEvent);
+//
+        ThisEvents_pApiData = pEventData->app_Event_data.Sneak_pApiData;
+        if (ThisEvents_pApiData->AppVarDrivePinNow)
+        {
+            Digitally_DrivePin (ThisEvents_pApiData->AppVarDriveValue);
+            ThisEvents_pApiData->AppVarDriveCt++;
+        }
+   -------------------------------------------------------------------------------------------------
+   ssTEA data types are declared here, so they exist and may be referenced in the App's Event Data
+   built deep into the Event Descriptor provided to the Event when Agency is Granted by ssTEA.
+   If the App Event Data does not include any ssTEA types, the include can be removed;
+   the necessary inclusion of ssTEA data types will be covered by "ss_include_dcl.h".
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

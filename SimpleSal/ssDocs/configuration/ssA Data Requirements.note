@@ -1,0 +1,15 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ssA Agency Data Requirements.note]  search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Each Event managed through the Api needs a Per-Event allocation of variables in memory always
+   available for access by the App, ssTEA event management, and the App's Event software itself.
+   -------------------------------------------------------------------------------------------------
+   This "Agency Data" note focuses on the memory locations needed to participate in ssA Agency FSMs.
+   The "Volatile Memory" note describes how to make the compiler generate memory accesses required.
+   [.\SimpleSal\ssDocs\swDev\Volatile Memory.note]         sophisticated embedded software knowledge
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

@@ -1,0 +1,29 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+/// [persistence of FSM variables.note]  search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Finite State Machine (FSM) architectures work well for devices taking action based on Time.
+   Any computation answering "how long has it been?" compares the time now to some historical value;
+   "time-since-X" is the number of times a unit occured since Time started to run, or was checked.
+   -------------------------------------------------------------------------------------------------
+   Traditional, legacy, standard, algorithm midterm, homebrew/DIY, 20th-century FSM solutions are:
+        baremetal software in a loop, keeping track of "time-until" and "time-since".  In human
+        terms: sample a clock for "how many minutes have occured today?" and then subtract the "how
+        many minutes was it when I last sampled?" to find the number of minutes between the samples.
+        When the math result of the time-since exceeds the value of time-until, the Event software
+        of the App is run, or in ssTEA terms, given Agency by the Agency manager. Software solutions
+        Arduino tend to use this method: "please run this software N milliseconds from right now".
+   -------------------------------------------------------------------------------------------------
+   One view of the limitations of this model is all of the actions are taken based on deltas between
+   counters, the concept of "what is the Time Now?".  This Demo App shows the difference between them
+   with the BUILTIN LED being managed by a classic Arduino FSM, or, a Time Event running in ssTEA.
+   -------------------------------------------------------------------------------------------------
+   -------------------------------------------------------------------------------------------------
+   For any FSM to be able to maintain knowledge across time (across function calls, to be specific),
+   variables are allocated statically, which really means not on the stack. This may also make data
+   globally visible; the key atribute is access at any time (as opposed to only when in a function).
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

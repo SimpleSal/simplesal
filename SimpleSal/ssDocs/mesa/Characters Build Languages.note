@@ -1,0 +1,59 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Characters Build Languages.note]    search in ssTEA source files for a reference to this file.
+//
+   ------------------------------------------------------------------------------------------------
+   This is not an attempt to internationalize the text input and output beyond the Ascii standards.
+   The Ascii standards and World Wide Web Internet eliminated my first real job out of college.
+   ------------------------------------------------------------------------------------------------
+   I was assigned to be part of a team reconciling the character size (N # of 0/1 bits) for values
+   traveling through a private network between mainframe computers.  The computers varied in their
+   design and architecture differences at a very deep level for both processors and networks.  The
+   networks were integrated from the card punch machine (80 characters per card) all the way to the
+   machine code software loading program writing the machine code into memory on the mainframe
+   that caused the computer to signal the printer (on paper 80 characters wide) through wires that
+   a page feed should occur now.  The wire from the mainframe to the printer powered something on,
+   such as a motor connected to the gears holding the paper, long enough to move the paper.
+   ------------------------------------------------------------------------------------------------
+   Processors and mainframes were developed by IBM, DEC, XEROX; this was pre-x86, 68K, ARM micros.
+   This was at a company selling access to a variety of large computers with networks between them;
+   all similar computers sharing a network design. The service of moving data between dissimilar
+   computers came from customers integrating applications more geographically, because they could.
+   -------------------------------------------------------------+-----------------------------------
+   How did a mature 1979 computer industry compete with their technological solutions? Lower costs.
+   A 7-bit number system sufficient for an application removed the cost for 1 wire everywhere in a
+   large computer built from tubes and wires; at the time the integrated circuit was just emerging.
+   Operations were implemented by electronic circuits designed to be as fast and small as possible.
+   Moving from 7-bit to 9-bit made the math range bigger throughout the system, which people wanted.
+   The introduction of the IC made it easy to create multiples; the choice was multiples of 8 bits.
+   ------------------------------------------------------------------------------------------------
+   The networking byte-size issue and the meaning of each value were defined by Ascii standards.
+   The order of bytes within a multi-byte value, e.g., a 16-bit integer, exposed each host's choice
+   about byte-order-for-an-N-bit-number.  The transition to an 8-bit common view was probably done
+   as soon as companies like mine addressed the problem.  The transition to a byte-order for a
+   32-bit number remains a function of basic processor design, and must be considered by devices
+   autonomously accessing memory that is within the memory map of a processor and processor bus.
+   ------------------------------------------------------------------------------------------------
+   The primary signal carrier was a large magnetic tape or a very small magnetic disk drive.  Even
+   on a magnetic tape with zeros and ones written in a pattern, the order of the bits was a choice.
+   -------------------------------------------------------------------------------------------------
+   Definition of any the characters used for input matching or output descriptions are named here
+   in the interest of platform/mesa independence and portability to other languages than American.
+   -------------------------------------------------------------------------------------------------
+   typedef     Bits8_t         Ascii_t;           a value container whose size is sizeof (Bits8_t)
+
+   -------------------------------------------------------------------------------------------------
+   Elevating the Ascii character abstraction now to include "a collection of Ascii characters".
+   for normal code to emit a quoted (e.g, "text") series of Ascii characters without upsetting HAL.
+   Null is used by pointer code to refer to "not a valid pointer to an array of Ascii values", with
+   pointer shorthand for tables: e.g., pAsciiANull, pAsciiANull, pAsciiANull can be pAAN, pAAN, pAAN.
+   -------------------------------------------------------------------------------------------------
+   #define     S(inquotesAsciiArray)   ((pAsciiA_t) inquotesAsciiArray)
+
+   ------------------------------------------------------------------------------------------------
+   Ascii characters can be emitted using a pointer (_pAa) or ssHL-language-language quoted "string" (_qAa).
+   ------------------------------------------------------------------------------------------------
+   void        mesa_uiOp_emit_pAsciiA              (pAsciiA_t pAsciiA);
+
+// S~S  SimpleSal signal ends  S~S

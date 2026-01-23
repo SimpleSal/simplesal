@@ -1,0 +1,47 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [a Welcome to SimpleSal.note]        a search in source files will find a reference to this file.
+//
+   =================================================================================================
+   This note describes "what's in that note?" and "where is that note?" for notes in the ssDocs tree.
+   =================================================================================================
+   -------------------------------------------------------------------------------------------------
+   SimpleSal is implemented using a simplistic building-block programming language: what it calls ssHL-language.
+       The name that trips off the end of the tongue is shorthand for "SimpleSal Host Language".
+       ssHL-language is simplistic because it only uses integers, characters, and pointers as building blocks.
+//
+   Build-time considerations:
+       ssHL-language is defined as the subset of the C language (look it up) that is recognized and usable
+       COMPILED within a Host Language such as Arduino's C++, microPython, an RTOS task using K&R C.
+       Host languages usually have facilities for including software written in other languages,
+       or in the case of C++, including software written exclusively in the legacy form of K&R C,
+       or linking executable components together using common forms and organizational methods.
+//
+   Target Run-time considerations:
+       Once executable content is generated: C, C++, microPython, ssHL-language....all are machine language.
+       Because SimpleSal is focused on the mesa, which is focused on a processor executing only
+       machine language, there are no references in SimpleSal to the Host environment at Run time.
+//
+   SimpleSal's fundamental philosophy:
+        better to create a thousand poems from seven words,
+        than to create seven poems from a thousand words.
+//
+   ssHL-language has a useful feature that allows the software to refer to invented ideas and abstractions.
+   All software is expressing something in a language impacted by the Application, Host, or devices.
+   This is useful for abstracting device or host technical terminology into application terminology,
+   and, for abstracting application teminology into device or host technical terminology.
+//
+   The narrative flow uses objects like "gate sensor back yard" and "gate is open" or "lock gate".
+   A device data sheet will say very complex things expressed from within the language of the device.
+   A mapping such as "when I want to say this or must say this, I'm going to say it this way"
+   allows the software's narrative flow to refer to objects defined by the Application.
+   -------------------------------------------------------------------------------------------------
+   As an example, the use of the exact type name "bool" has never made sense to SimpleSal.  In order
+   to make decisions while software is executing, boolean logic is supported by the Host Language.
+   The distance away from the complete, and just as immediately readable, "boolean" requires that
+   the reader make a translation, at least a lookup, to load the "boolean" meaning in the mind.
+   The beauty of this idea is that any user of SimpleSal is free to rename anything in the same way.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends

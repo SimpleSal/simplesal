@@ -1,0 +1,245 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+   [Time Math.note]                     search in ssTEA source files for a reference to this file.
+//
+   Limits on information in this note:
+
+      The core concepts of ssTEA are complex and so cannot be described well by an Ascii text file.
+
+   The "Time Math" note and the "Time As An ..." notes are focused on extended comments about the
+   software implementation of the complex ideas; references include the file and a search phrase.
+
+   -------------------------------------------------------------------------------------------------
+   .\SimpleSal\ssTEA\ssTEA_data_dcl.h                   A Time Variable Contains Time Unit Variables
+   -------------------------------------------------------------------------------------------------
+
+   Seconds, hours, minutes, and days are used by humans; those measurements can be made by a human.
+   Concepts like months and years and seasons are culture-based measurements; ssTEA ignores them.
+
+   Starting from the shortest measurement of Time possible, the planck, and then moving to the
+   measurements of nanoseconds, microseconds, and milliseconds takes the reader to a strange world.
+   The first task is to learn "ns" and "nanos", "us" and "micros", and "ms" and "millis".  Required.
+
+   The plancks value is not included in ssTEA's awareness of Time.  ssTEA uses the plancks field.
+
+   A planck count this minute is "perceived" just as a count of the number of seconds this minute is
+   perceived; ssTEA perceives a planck count as a psuedo-random number.  The number's value is
+   created when a math operation creates a Time result.  For example, a Time value is set to zero.
+   This aids in debugging and/or understanding; you can see visually, no ssTEA operation changed it.
+
+   The nanosecond count (within one microsecond) may be OPT_IN selected to be included in Time Math.
+   This variable creates a method of prioritizing multiple events that occur at the same microsecond.
+
+   The microsecond count (within one millisecond) is the smallest Time Unit where the measurement
+   of the count (of microseconds) is trustworthy and represents reality because it is based on a
+   hardware counter accessible by the processor.  ssTEA reads this counter and does simple math.
+
+   Scheduling 3 events at the same microsecond with incrementing nanosecond values will cause them
+   to be granted agency in incrementing Time order, which is a simple form of relative priorities.
+   The higher the number in the nanos, the lower priority is, because it will occur later in Time.
+
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   .\SimpleSal\ssTEA\ssT_time_def.h             continuous calculations of Time as knowledge changes
+   -------------------------------------------------------------------------------------------------
+   counters: 32- bit values expressing a number of milliseconds or a number of microseconds.
+   32-bits microseconds allows for a 4,294-second wrap, which is around 71 mins (if incremented once
+   each microsecond). TimeCurr advances each time ssTEA_Agency_Root is called, by Micros since Last.
+   -------------------------------------------------------------------------------------------------
+   (CurrFinish - CurrStart) is Time spent in Loop doing Agencying and App software.
+   (CurrStart - LastFinish) is Time spent in the Host OS.
+   -------------------------------------------------------------------------------------------------
+//
+   .\SimpleSal\ssTEA\ssT_time_def.h                               The source of knowledge about Time
+   -------------------------------------------------------------------------------------------------
+   "loop" is called continuously as the idle task under Arduino "RTOS"; that is the design.
+   SimpleSal is implemented through counter-based and time-based FSMs.  The counter-based
+   Time FSM is within the loop function, the time-based Time FSMs occur within the ssTEA context.
+   -------------------------------------------------------------------------------------------------
+   On most mesas, knowledge of elapsed time comes directly from mesa and processor hardware,
+   so our notion of "right now" throughout the application is a function of chip counter values.
+   Everything that happens in this iteration of loop is considered to happen "in this moment of Time".
+   ------------------------------------------------------------------------------------------------
+   in electronics, increased heat slows the flow of electrons needed to deliver clocks as signals.
+   As the flow goes down, Time slows in the hardware itself; then, software compares the calculated
+   speed of power-subtree-with-no-load-ever to the calculated speed of the loaded and heated subtree.
+   The heat level is implied when a set of instructions requiring N clocks in heated electronics
+   at the currently configured frequency take much longer than expected by the unload subtree code.
+   ------------------------------------------------------------------------------------------------
+   Time of execution in a processor is "(clock frequency) * (clocks)".  The clock tree drives the
+   processor at a frequency, creating a clock the processor uses to perform a sequence of logic.
+   This nested clock within a clock propagates at all levels within the clock frequency subtree.
+   Interaction between clock trees and frequencies is a fundamental computer design concept.
+   "move reg to reg" is 1 clock, while an instruction requring many clocks is doing a complex
+   mesa service (floating math) or is managing the interface to another clock domain.
+   at the end of the N clocks, the result promised by the processor data sheet while be true.
+   ------------------------------------------------------------------------------------------------
+//
+   =================================================================================================
+   feature: An Event's first occurence will be when TimeCurr is less than OccursAt (variance will
+   feature: exist due to Agency Pace Period, App consumption of Time); some known relationship must
+   feature: exist within the App to create usefully aligned Pace Period and OccursAt values.  ssTEA
+   feature: should have an option to be aligned with the pace period requested or what is possible.
+   =================================================================================================
+
+   =================================================================================================
+   -------------------------------------------------------------------------------------------------
+   Consider how to accumulate a measure of Time or compute a difference between two Times,
+   in order to allocate the consumption of Time to the right participants.
+
+   In this description, each vertical bar ('|')
+    represents a moment in Time; each word represents a period of Time between moments in Time.
+   The period length can be computed using the difference between moments.  The '|' moment-in-Time
+   indicator does not consume any Time, it is a marker or label that humans can learn/use.
+
+    Host|loopEntry1|ssEntry|ssExit|App|loopExit1|HostN|loopEntryN|ssEntryN|ssExitN|AppN|loopExitN|HostN+1|
+
+   Because the number of plancks that comprise a nanosecond is not perceivable, and because the type
+//
+
+
+
+   -------------------------------------------------------------------------------------------------
+   Nomenclature:
+
+   -------------------------------------------------------------------------------------------------
+   ssTEA defines a way to describe a moment in Time, a Time variable.  Comparing two Time variables,
+   software can decide "did this moment in Time occur before or after another moment in Time?", or,
+   "did two Time Events occur at the same moment in Time?".  This is the same operation as comparing
+   two integer variables in software: "if (i < 10)".  The comparison is made in the processor; while
+   using invisible register operations, the complete logic to compare the two values is on the page.
+   -------------------------------------------------------------------------------------------------
+   Time variables simply extend the set of values that participate in the comparison, in an order.
+   The complete process to compare two Time values considers the values and the order: an algorithm.
+   Comparing two Time variables is implemented using logic or math: "if (LessThan(TimeA, TimeB))".
+   -------------------------------------------------------------------------------------------------
+   Using logic or math, as described for integer comparisons above, the comparison is extended by a
+   structure with multiple values in a hierarchy and an algorithm that understands the structure.
+
+   Time Math using Logic Makes Time Into An Arrow
+
+   If the number of days in TimeA is more than in TimeB, TimeA is after TimeB, algorithm completed.
+
+   "Time is an Arrow" in this usage model because the only math supported is adding positive Times.
+   This is because the software for "carry the 1" AND the data structure logic is easy to implement.
+   -------------------------------------------------------------------------------------------------
+   Time Math using Logic Makes Time Into An FSM
+
+   The number of days in TimeA is subtracted from the number of days in TimeB:
+    if the result is a positive integer, TimeA is after TimeB, algorithm completed
+    if the result is a negative integer, TimeA is before TimeB, algorithm completed
+    if the result is zero, TimeA and TimeB are the same value so far, continue to other Time units
+
+   "Time is an FSM" becomes possible when the Time Math is based on math; the FSM can compute the
+   result of the addition or subtraction of positive or negative integers; see ssTEA v2.0 for this.
+   -------------------------------------------------------------------------------------------------
+   The value to the ability to subtract Times might be in support of a product feature: if the host
+   instructed me to respond 10 seconds from now, and it takes me 2 seconds to prepare the response,
+   at what Time should I start working on the response to have it freshly ready, just in time?.
+   Work out the math for the response Time assuming it is currently hour 1, minute 0, second 55.
+   Work out the math for the response Time assuming it is currently hour 1, minute 59, second 1.
+   -------------------------------------------------------------------------------------------------
+
+
+//
+   A Time value is an ordered sequence of related Time Unit (TU) values.  Each Time Unit is also a
+   member of a pairing with the Time Unit it subdivides, e.g., minutes subdivide hours.  Visually,
+   which means "under the automagic processes the mind uses to derive a meaning of a word based on
+   the context it was used in", some TU expressions are: "days" or "milliseconds" or "+2" or "-1".
+   Two related TU expressions separated by a period describe a Time Unit Pair (TUpair).
+   The relationship is defined by human usage, such as days.minutes or seconds.milliseconds.
+   This is unrelated to the memory format of the numbers, which could be anything (array, vars).
+   The pairing exists in the human expressions, then the human mind, and then code the mind writes.
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   Each TU of a Time is in a value state:
+      The state of the value, e.g., for value N: positive ("+N"), negative ("-N"), or zero ("~0").
+      Using this definition "positive" means "a signed integer greater than 0".  0 is not positive.
+      Similarly, 0 is not negative, which means "a signed integer value less than 0".
+//
+   The Time itself is in a value state:  positive, negative, or zero.
+      Th Time value state depends on the TU value states: either positive (all TUs positive or zero),
+      negative (all TUs are negative or zero), or zero (all TUs are zero).  Time values summarize
+      these distinctions only in software as booleans (e.g., Time fields IsPositive and IsZero).
+//
+   Each pair is a Whole TU value and a Fraction TU value, expressed as "Whole.Fraction" and "W.F".
+      The TUpair state only exists within the algorithm that transitions between states in an FSM;
+        these states are necessary to properly execute the Whole.Fraction Time math FSM: WF_FSM.
+      Each W.F has a Whole value sign state and a fraction value sign state, based on their values.
+   -------------------------------------------------------------------------------------------------
+//
+//
+   Time math IS LIKE dollar math used every day to decide if we can afford 4 dollars and 85 cents.
+   Add a tax of 0 dollars and 30 cents (or 0.30 dollars) to that and you need a total of $5.15.
+   The Fraction portion of a dollars.cents number is the cents, and ranges from 0 to 99.
+      The reason the Fraction ranges from 0 to 99 is that cents subdivide dollars completely.
+   The Whole portion of a dollars.cents number is dollars, and ranges from 0 to some finite maximum.
+//
+   -------------------------------------------------------------------------------------------------
+//
+   Time math IS LIKE dollar math: a Time variable has TUpairs: days.hours, hours.minutes, etc.,
+    such as "+1.+3" (e.g., right now, it is 1 minute and 3 seconds "past zero", or, "after zero").
+   A Whole.Fraction value can be added to or subtracted from a Whole.Fraction value.  Using "+1.+3",
+   and "~0.+4" (e.g., 4 seconds from now), we can express "it will happen in +1.+7 minutes.seconds".
+//
+   Time math IS NOT LIKE dollar math: the Dollars Number does not subdivide a higher level Number,
+   positive or negative.  In Dollar math, a usual question is whether the Whole is negative or zero.
+//
+   -------------------------------------------------------------------------------------------------
+//
+   The value zero is given a sign of '~' for several reasons, primarily to do with number notation.
+   The human understanding of the state machine is aided by the use of zero state with a sign.
+   The ssT math operations use the state to take the appropriate variety of actions with the TUs.
+   The reasons, in order of VERY important to important, include:
+     1) the math FSM requires knowledge of the value of a TU as well as the sign of the TU
+     1) it is harder to read things like +0 or -0 and not get overloaded, '~' is weird but new.
+     2) a TU with the value 0 adopts or learns its own sign from a value related to it, WHEN USED.
+        a) a whole portion of TUpair with a negative fraction and a zero whole is used as "-0.-X".
+        b) a TUpair "~0.+3" is used as "+0.+3"
+        c) a TUpair "+3.~0" is used as "+3.+0"
+        d) a special case TUpair "~0.~0" derives the proper sign from the Time when used
+                an example Z=true:  +1 day, +2 hours, +0 minutes, +0 seconds, +1 ms, +2 us, +3ns
+                an example Z=false: -1 day, -2 hours, -0 minutes, -0 seconds, -1 ms, -2 us, -3ns
+//
+   Time Math operations span all of the TUs in a Time variable, one TUpair of related TUs at a time.
+   This is a set of data variables needed for an algorithm about days, hours, minutes, seconds, etc.
+   -------------------------------------------------------------------------------------------------
+   The collection of TUs from the Whole up to the EON is described by the Prefix; the Prefix includes
+   the Whole when deciding if a TU needs math, it does not include the Whole during the TUpair math.
+   The TUpair FSM algorithm differentiates between "a TUpair Prefix is NonZero" or "not NonZero".
+   The NonzeroTUmap is a state indicator of the zero/nonzero state of each TU in the Time value. If
+   the state of every TU is zero in the Prefix portion, the computation is complete for this Lvalue.
+   -------------------------------------------------------------------------------------------------
+//
+   Unlike Dollar number expressions, Time units (e.g., hours or milliseconds) do not all have the
+   same number of subunits (e.g., there are 0-59 hours possible in an hour, but there are 0-999
+   milliseconds possible in a second).  Each Time unit has to be considered independently, while
+   at the same time is must be considered within the hierarchy of Time units and their relationship.
+//
+     In the number 123, there is: 1 hundred; 2 tens; 3 ones;    Each field ranges from 0-9.
+      If we add the number 95 to 123, the result is: 218.       The tens carried into the hundreds.
+//
+   Time specification include the Time unit of the FIRST value in the expression (not the last).
+     In the Time   6.1.23hr   : 6 hours, 1 minute, 23 seconds.   range for these fields: 0-59
+     In the Time   2.55.583mn : 2 minutes, 55 seconds, 583 millisconds.  range of millis is 0-999.
+//
+   The EON unit bounds the math operations; other subunits are coherent with human Time.
+   An EON is the largest unit of Time, so if your math operation changes the EON, that is an error.
+   ssTEA's principle is to be explicit, so all the values and relationships are stated here.
+//
+   -------------------------------------------------------------------------------------------------
+//
+   Any finite Time representation has an upper limit, because it is finite.  Working on infinite.
+   The number range for any TU has no effect on the memory and computational requirements, the
+   range is completely based on Time as defined by humans.  The number range of days is arbitrary.
+   In geology, the largest unit of time measurement (farthest from the planck) is an "eon".  Humans
+   think of it as "the number of days we have been able to count days"; ssTEA uses a 1,000 day max.
+   This provides a range of valid math operations (not overflowing or underflowing) of 2.7 years.
+   Part of the reason for choosing 1,000 is to prove that the choice is completely arbitrary.
+//
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

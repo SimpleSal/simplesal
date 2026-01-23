@@ -1,0 +1,30 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Use the easy name everywhere.note]  search in ssTEA source files for a reference to this file.
+//
+   ------------------------------------------------------------------------------------------------
+   The idea is to ease the "live" mental effort by reducing conversions and translations between
+   the source text and the idea.  When the bit is a 1, what is the device trying to communicate?
+   Effectively, the hardware value of LOW and HIGH as defined by the Mesa is reduced to a logical
+   abstraction, which the compiler and the software will consider only as either zero or not zero.
+   With this, software can refer to the OFF/ON abstraction while writing the narrative, using the
+   MEANING of the complex value reported by the hardware, moving beyond the VALUE used by hardware.
+   ------------------------------------------------------------------------------------------------
+   With devices, the definition of the MEANING is often within the context of the internals of the
+   device, for descriptions like this: "the output PIN is 3.3V while a report is being prepared".
+   It is much easier to read "if (DataReadyPin == DATA_READY)" than "if (PINvalue == LOW)".  Using
+   LOW makes the reader go through the sequence: pin is LOW, report being prepared, not ready.
+   ------------------------------------------------------------------------------------------------
+   example???  #define OFF  ((bool) LOW)
+   example???  #define ON   ((bool) HIGH)
+   example???
+   example???  #define DEVICE_ACTIVE (deviceState == OFF)     joker designer made "active" the value 0, not 1
+   example???  #define DEVICE_QUIET  (deviceState == ON)
+   example???
+   example???  #define DATA_READY    (dataState == OFF)
+   example???  #define DATA_NOTREADY (dataState == ON)        joker designer made "not ready" the value 1, not 0
+   example???
+
+// S~S  SimpleSal signal ends  S~S
+

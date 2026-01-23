@@ -1,0 +1,81 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ARM memory considerations.note]     search in ssTEA source files for a reference to this file.
+//
+   In all processors, instructions for methods of accessing an "input" or "output" such as a GPIO
+   pin are fundamental to the processor.  This is a mechanism in the mesa electronics that moves a
+   bit value from a processor register to a power signal emitted or perceived on external pin of
+   the chip the processor lives in.  The actual electrical interaction is outside this discussion,
+   the configuration of the GPIO pin within the context of the connections it has is complex.
+   The focus here is
+            "what is the processor instruction that causes the bit to be moved within the mesa?"
+   AND
+            "what is happening in the processor while the bit is being moved within the mesa?"
+
+   This topic is a key influence on architecture, design, and implementation of embedded software.
+   It is one of the central components of the "mesa view" required for embedded implementations.
+
+   -------------------------------------------------------------------------------------------------
+
+   Devices respond to a memory operation; the device appears to the processor to be proper memory.
+   Memory-access instructions are used to read and write the device's registers, at the speed at
+   which the device operates, not the speed at which memory normally responds.  You may have to wait
+   when the device and the processor are not operating in the same clock domain or memory priority.
+
+   -------------------------------------------------------------------------------------------------
+
+   A compiled and linked executable is loaded and run.  It may contain initialized data
+   variables within the image, and initialization automatically occurs when the loader writes the
+   image of the executable into RAM memory.   Explicit code that initializes variables to a known
+   condition may become necessary if a "restart" feature exists. Does every product needs a restart?
+
+//
+
+    the memory will only ever be used as
+   this variable and therefore the variable is addressable by a fixed and known address.
+
+   "not static" variables exist only while software runs; the scope of their use is limited by ssHL-language.
+
+   The Arduino model for a build is to compile all files together, all software can see all globals.
+
+      int   myGlobal;                  visible to all, permanent
+      static int myPrivate;            visible to all, permanent
+
+      void function(void)              visible to all
+      {
+         int  myPrivate;               not static, visible and exists only while function runs
+         static int myPrivateLocal;    visible only while function runs, permanent
+      }
+//
+   "static" data variables within a function or not, with a nonzero-initializer, will be instantiated
+   from the image.   This works well for data structure pointers; does pointer math at compile time.
+   Variables outside the scope of a function, with a nonzero-initializer, will be
+   instantiated from the image.   Those with no initializer will not have an effect on RAM.
+   Static or not, variables with a zero-initializer, may be set to zero by code that zeroes all
+   zero-initializer variables.  Stack-based structures initialized to 0 may get free code to do that.
+
+
+   ------------------------------------------------------------------------------------------------
+   A helpful debug trick when the algorithm looks good but acts bad: verify the memory is writable.
+   Certain Host OS variables exist in memory and have a valid value, in memory that is not writable.
+   The pointer to memory may be at any alignment (bytes 0,1,2,3 of 32-bit value in memory), but in
+   order to not cause a access alignment hard fault, the pointer is always forced to 32-bit aligned.
+   The address is forced to the next lowest address on a 32-bit boundary:  the least significant
+   two bits of the 32-bit address (0x3).  The address given exists at least partially in 32-bit area.
+   ------------------------------------------------------------------------------------------------
+   The result when pointed at memory with permission to write and ability to write: quiet.
+        this is the case for a valid pointer to memory with permission and ability to access
+   the result when pointed at memory with permission to write but no ability: error reported.
+        This is the case where the compiler has placed a data structure in "constant" memory because
+        the compiler does not believe any software ever writes to that space.  The compiler does not
+        know about the accesses through pointer values that ssTEA makes to that space in memory.
+   the result when pointed at memory with no permission to write: hard fault.
+   the result when pointed at memory with no permission to read: hard fault
+        these are errors by the developer
+   ------------------------------------------------------------------------------------------------
+   #ifdef MESA_OPTIN_DEBUG_MEMORYACCESS
+   CTRICK_Prove_MemoryIsWritable ((unsigned long *) pEvApi, (unsigned char *) __func__);
+   void CTRICK_Prove_MemoryIsWritable (unsigned long *p32bits, unsigned char * pFuncName)
+
+// S~S  SimpleSal signal ends  S~S

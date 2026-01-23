@@ -1,0 +1,93 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ssTEA Configuration Basics.note]    search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   The default configuration of simpleSAL/ssTEA "out of the box" is that nothing is enabled.
+
+     The configuration file contains the specification of all configurable options of simpleSAL,
+     with every one of them commented out and each one of them paired with an explanatory comment.
+     This allows for several alternatives in specifying the configuration of a project or projects.
+
+     Major choice: do not include "ss_configuration.h"
+       As described below, the IDE's inclusion policies block a user from this configuration style.
+       The configuration file establishes this mesa/App's solution to ssTEA's mesa dependencies.
+
+     Major choice: include "ss_configuration.h"
+     Minor choice:
+     1) leave ssTEA not configured and not enabled, "unedited" content
+     2) configure ssTEA
+        a) use the simplest configuration, as enabled and defined in the unedited configuration file
+        b) use a complex configuration, defined in the edited configuration file for this project
+        c) use a complex configuration, defined in the User source file; unedited configuration file
+        d) use a complex configuration, defined by run-time build parameters specific to a project;
+                    source files and configuration files do not need editing to build a version.
+
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   At some level, an Arduino build in the IDE makes restrictions or assumptions to support "easy".
+   At its most basic: included file contents require a local subdirectory prefix, unfortunately
+   Arduino IDE 2.4.1.1 will find every file in the directory tree and include it, whether named in
+   a source file or not.  This is very helpful but a professional programmer would not depend on it.
+   In addition, sophisticated source code analysis tools are very helpful and would not allow it.
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   for _ONEOF_ options: one must be uncommented, defined; all others must be commented, not defined.
+     All _ONEOF_ options are prefixed, all options with the same prefix are mutually exclusive.
+   for _OPTIN_ options: uncommenting the #define will choose to build in a functionality or feature.
+   -------------------------------------------------------------------------------------------------
+   Most #defines control individual subcomponents, after a component was included at the top level.
+   The toppiest of the top levels is ssTEA itself; this is why inclusion of ssTEA is a User choice.
+   -------------------------------------------------------------------------------------------------
+   #ifdef SS_OPTIN_INCLUDE_SSTEA
+//
+   -------------------------------------------------------------------------------------------------
+   All data allocations concerning events depend on or are based on the number of events requested:
+   The underlying AboutEv database, the ssUI API event database, and the ssTEA Event Info database.
+   An App may override the simplest or complex configurations by defining a count before including.
+   -------------------------------------------------------------------------------------------------
+   Launching an Event requires an AboutEv for the Launcher. Pending: a stack-based AboutEv Launcher.
+   This is not a design issue, this is getting an implementation completed with ssTEA_App examples...
+   -------------------------------------------------------------------------------------------------
+   #ifndef SSE_ACTIVE_EVENTS_CT_REQUESTED
+//
+   -------------------------------------------------------------------------------------------------
+   The complexity? 1) a change to any #define here will be invisible without rejecting simplest,
+   2) rejecting the simplest configuration results in the activation of, and effect of, the
+   set of options that are complex and powerful, but more important, coherent with each other.
+   -------------------------------------------------------------------------------------------------
+   #ifndef SS_ACCEPT_SIMPLEST_CONFIG
+//
+// -------------------------------------------------------------------------------------------------
+// A "UI" is a presentation layer for the user of an App.  The data types provided by the ssHL
+// compiler are supported only by the processor's data type building block: integers.  Values that
+// exist in memory must be brought into processor reqisters to be compared, changed, or moved.
+// Collections of processor data types are supported by processor addressing mechanisms: array[i].
+// An "Ascii character" is simply the assignment of a UI value ('A') to a binary value with 8 bits.
+// The uiOps are not concerned with the value of characters in an array except for the value zero.
+// -------------------------------------------------------------------------------------------------
+// ssTEA has an optional OPTIN User Interface, where the User is the software developer using ssTEA
+// to implement an App.  The UI is output-only, emitting Ascii characters representing states within
+// ssTEA or integer values in decimal or hexadecimal form.  ssUI displays information for the public
+// ssTEA environment at all levels; ssUI is as ignorant of the inner workings of ssTEA as the App.
+// -------------------------------------------------------------------------------------------------
+   configurable ssTEA UI requirements
+
+// -------------------------------------------------------------------------------------------------
+// The definition of the way in which Time Works is either "in a line from A to B" or "as an FSM".
+//   "in a line" means: only addition, no subtraction, no support for negative Time values.
+//   "FSM" means: the same ability to do math operations as with integers: addition and subtraction.
+// -------------------------------------------------------------------------------------------------
+// One reason to have a variety is they support ssTEA experiments with computational load tradeoffs.
+// There are multiple ways of deciding if TimeA is before TimeB.  If option A has a useful feature
+// but it takes more time and energy to compare Time values, how valuable is that useful feature?
+// If option B is much faster and uses less energy, what features does option B give up for that?
+// If option B brings extra software (in memory) that your code actually never calls, is that OK?
+// -------------------------------------------------------------------------------------------------
+   #define      SST_ONEOF_TIME_IS_AN_ARROW
+   #define      SST_ONEOF_TIME_IS_AN_FSM
+
+// S~S  SimpleSal signal ends  S~S

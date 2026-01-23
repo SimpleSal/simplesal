@@ -1,0 +1,46 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ssTEA API As Signal Carrier.note]   search in ssTEA source files for a reference to this file.
+//
+
+API as flipped model of communication: data stays in place, agency changes from requester to responder
+  -------------------------------------------------------------------------------------------------
+
+   An API is a signal carrier between software FSMs.  The medium carrying the signal consists of
+   processor accesses of values in memory; memory that is visible to this processor on this mesa.
+
+   Memory as a signal carrier or medium is not really different from Ethernet: a MAC is asked to
+   transer a value; a value is physically emitted; the value has to travel from the processor
+   to the memory; the memory has to completely capture and retain the value for the receiver.
+
+   -------------------------------------------------------------------------------------------------
+
+   External to a signal, but within the context a signal exists in, data is used to manage signals.
+   A Media Access Controller (MAC) layer process for each channel controls access to any shared
+   resource across any set of channel resources.  Resources: memory, bandwidth, priority queues.
+   This ranges from framing bits (start/stop RS232), the preamble before an Ethernet Frame starts,
+   or the I2C bit-level signal transitions that indicate clocking periods and data flow direction.
+
+   -------------------------------------------------------------------------------------------------
+
+   The ssTEA API maintains knowledge of active/!active using a "Magic Number" within the data.
+   When an Event API is opened, the magic number is created based on a pointer to ssTEA data space.
+   - the value of the pointer is one of: pChannelNull, or the address of a data structure in ssTEA.
+   - if a pointer is not pChannelNull, the Magic Number maintained by ssA is the bit-flipped value.
+
+   A pointer value that matches an address of an ssA Event Info Descriptor may be a valid channel.
+   A Event Descriptor with a MagicNumber equal to the bit-flipped channel value is valid and open.
+   The channel serves to direct the activity to the proper MAC and signal carrier for that channel.
+
+   -------------------------------------------------------------------------------------------------
+
+   the ssTEA API bases its knowledge of the activation state on the "channel" pointer value.
+   the ssTEA API bases its trust of the user's channel data on the magic number being valid.
+   When a signal is received, it is valid if it has a valid channel value (EvInfo address),
+   AND the channel's magic number value (e.g., binary bit-flip of all bits in EvInfo's address).
+
+   pApiSig->channel = (ss_EvInfoChannel_t) pEvInfo;
+   pEvInfo->MagicNumber = MakeMagicNumber (pEvInfo);
+
+// S~S  SimpleSal signal ends  S~S

@@ -1,0 +1,46 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Statistics Issues.note]             search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   The data type for the compiler is defined here; each ssA Event Info instantiates the statistics.
+   Said another way: the ssA Event Info data structure for each Event POINTS TO an About Event data
+   structure from the database AND IN ADDITION allocates the data variables for all FSM statistics.
+   -------------------------------------------------------------------------------------------------
+   #ifdef SSA_OPTIN_STATS_FSM
+//
+   -------------------------------------------------------------------------------------------------
+   The problem with statistics is the proliferation throughout the state machines as actions occur.
+   Reducing the reference down to the specific statistic without the full path helps readability.
+   -------------------------------------------------------------------------------------------------
+   #ifdef SSA_OPTIN_STATS_APIFSM
+//
+   -------------------------------------------------------------------------------------------------
+   Apifsm statistics:
+      are maintained at the Event Info data structure level, at a cost per Event Info, when built in.
+      are based on Event Agency Api FSM state changes, at a cost per Event Info, when built in.
+   -------------------------------------------------------------------------------------------------
+    typedef struct ssE_AppAction_Runfsm_StatsDesc_s
+//
+   -------------------------------------------------------------------------------------------------
+   Runfsm statistics:
+      are maintained at the Event Info data structure level, at a cost per Event Info, when built in.
+      are based on Event Agency Run FSM state changes, at a cost per Event Info, when built in.
+   HOWEVER, placing the cost in Event Info avoids placing the cost in every Event data structure,
+   -------------------------------------------------------------------------------------------------
+
+   -------------------------------------------------------------------------------------------------
+   There are two views of the Event Run FSM activities that are counted as a statistic:
+      actions the App takes, and actions that ssE takes.
+   -------------------------------------------------------------------------------------------------
+   typedef struct ssA_Runfsm_StatsDesc_s
+//
+   -------------------------------------------------------------------------------------------------
+   These counters are used to track state changes in FSMs: Agency Api or Agency Run FSMs.  A choice
+   was made: small 8-bit integers because each Event managed by ssTEA includes the counters.
+   -------------------------------------------------------------------------------------------------
+   typedef struct ssA_Apifsm_StatsDesc_s
+//
+
+// S~S  SimpleSal signal ends  S~S

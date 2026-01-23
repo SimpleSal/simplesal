@@ -1,0 +1,30 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ARM Function Pointers.note]         search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Function validation looks closely at the function pointer to make sure it is reasonable:
+   from the same area of memory as this code, for example.  Otherwise the value can't be validated
+   because the only knowledge of a valid address is in the compiler and linker, not the source code.
+   ThumbBit is only checked to show that the 32-bit address has 2 Least Significant Bits "borrowed".
+   -------------------------------------------------------------------------------------------------
+//
+   #define ThumbBit (Bit0)
+//
+   -----------------------------------------------------------------------------------------
+   ssTEA does not in normal processing actually care about the value of the pointer to code,
+   but ssTEA will not run code at location of true Null (believed to be 0x0).  Often, the
+   interrupt vector table is at location 0x0, and/or, the "data" there is processor code.
+   -----------------------------------------------------------------------------------------
+   ssTEA will happily run any other code that is pointed at, any memory location.  This
+   may result in HARD FAULTs in ARM processors if the software gives ssTEA a bad pointer.
+   It is also true that for a pointer to ARM Thumb code (indicated by bit 0 and 1 being used
+   by ARM in a 32-bit code address), this code will happily call Thumb code at location 0x3,
+   and the odds are pretty good the processor instruction there is NOT a thumb instruction.
+   Going deeper in the validation of a function pointer requires build-specific knowledge.
+   -----------------------------------------------------------------------------------------
+   if (ssE_pAboutEv->pEvFunc == pEvFuncNull)
+//
+
+// S~S  SimpleSal signal ends  S~S

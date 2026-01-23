@@ -1,0 +1,75 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [big attempt to explain ssTEA.note]  search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   bugbugbug  this needs to be rewritten   layers of signal control: led/UI ownership, context
+//
+   ssTEA: is meant to be co-compiled and co-exist alongside an Application making use of the mesa.
+        : service provided can be thought of as a database, the User defines the Event data and goes.
+        : can be configured to generate explanatory signals; it is silent and programmatic otherwise.
+        : does not sense any signals other the API definition used programmatically to manage Events.
+        : "alongside" means ssTEA never executes software unless the Application grants Agency to it.
+        : only sends Human signals formatted as bytes in the range of Ascii values to the Ascii device.
+//
+   SimpleSal: is an Application co-compiled and co-existing with the User's Application and ssTEA.
+            : provides an environment that a User may use to interact with ssTEA's Event database.
+            : only sends and receives Human signals formatted as bytes in the range of Ascii values.
+            : is only as functional and complete as the build configuration designates it to be.
+//
+   The integrated result: User signals/sensors operating as before, when it is their turn to operate.
+   The contention is between the SimpleSal menu system and any user signal/sensor, Ascii or binary.
+   -------------------------------------------------------------------------------------------------
+   The main point of contention is the Ascii device, which is used to emit a signal to a sensor which
+   is ultimately a human, often with some translation or computation applied to it before viewing.
+   -------------------------------------------------------------------------------------------------
+   There are two ways the point of contention may occur: when multiple menu trees exist, or, when
+   Events are granted agency within ssTEA during the Time period the Application "owns" the Ascii device.
+//
+   The second way is easiest to solve: ssTEA signals to the Ascii device can be turned off at runtime,
+   so the Application may use SimpleSal to tell ssTEA to not generate signals when active.
+   ssTEA error/success informational signals may be useful; e.g., while running the Application menus
+   that are implementing programmatic signaling with ssTEA to describe and start Application Events.
+//
+   The first way, Multiple Menu Trees, requires use of a convention to allow coexistence to succeed.
+      the menu system architecture is a tree of menus.  There is always one of the tree branches active.
+      The active branch in the original application is the contents of the Application "loop" function.
+         (The Application "loop" function must be renamed and then replaced by ssTEA's "loop" function.)
+      The renamed function is called by ssTEA's "loop" function; the Application operates as before.
+      So the question is, when does the ssTEA "loop" function call the Application "loop" function?
+//
+      Method 1: call from ssTEA's "loop" function
+          The Application executes completely outside the context of ssTEA (the normal condition).
+          After ssTEA AgencyRoot executes (and all Events due to be granted Agency are granted Agency),
+          the Application "loop" is called just as it was originally by Arduino (now calling ssTEA).
+          The Application is unaware of the ssUI/ssTEA subtrees so any choices made about
+              which subtree is active. or, "the UI", are implemented in ssTEA's "loop" function.
+          "the UI" is considered a resource; all must only touch the Ascii device while an owner.
+//
+      Method 2: call from an Event running within ssTEA
+          The Application is completely within the context of ssTEA.
+          An Event can be "the UI" and it will be run every Planck, each time AgencyRoot runs.
+            After ssTEA AgencyRoot executes all Events due to be granted Agency, an "automagic"
+            Event is granted agency before AgencyRoot returns to the ssTEA "loop" function.  The part
+            that is "automagic" is that the Event will contain the Application "loop" function,
+            or, it will contain the SimpleSal menu system, possibly interacting with the human.
+bugbugbug
+          The function implementing the Application's cmdZone Event is the Application "loop" function.
+          When any UI Event has the designation "the UI", a resume signal is sent to the RunFSM that
+            uses the Ascii device: to look for, input, and process bytes; or create and output bytes.
+            The Event must complete and return after all input or output processing has been
+            completed so AgencyRoot can continue on to grant Agency to other Events.
+//
+   Method 2 Event organization:
+      this recreates the "tree" abstraction.  At the root level, the Arduino "loop" function (the App),
+      or the ssTEA AgencyRoot, will call ssUI_main, which will handle the UI Cmd tree.
+
+      feature "ssMain" represents the SimpleSal UI menus running, in parallel alongside all the user UIs.
+      feature All entries from the user while in any Main will be captured and processed ("input/parse/handle")
+      feature by the same function (see code), within the context of the current UI menu subtree functionality.
+      feature seperating "input/parse" from "handle" the tokens that were parsed from the input.
+   -------------------------------------------------------------------------------------------------
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

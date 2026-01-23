@@ -1,0 +1,24 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Software Developer Tricks.note]     search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+
+   This model of defining abstractions into and out of the knowledge of the ssHL compiler allows all
+   references to remain untouched in the source code, without being forced to ifdef the reference.
+
+   A simpler explanation: what appears to be a function call in the source disappears if not debug.
+
+   -------------------------------------------------------------------------------------------------
+   #ifdef DEBUG_PROCESS
+   #define  debug_output(x,p) { fancyFunction (x, p); Ascii_newline (); }
+   #else    // not DEBUG_PROCESS
+   #define  debug_output(x,p)
+   #endif
+
+   Usage:
+
+      debug_output (local_x_value, local_p_value);
+
+// S~S  SimpleSal signal ends  S~S

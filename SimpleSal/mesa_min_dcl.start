@@ -1,0 +1,320 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+   This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+   This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   ---------------------------------------------------------------------------------------------------
+ *
+ * mesa_min_dcl.h       data type, prototype declarations: mesa-specific features.
+ *
+ **************************************************************************************************/
+#ifndef __MESA_MIN_DCL_H
+#define __MESA_MIN_DCL_H
+// =================================================================================================
+// SimpleSal's suggestion: name EVERY mesa declare/define file pair with a specific mesa reference.
+// otherwise, the "mesa_*.h" you have may or may not match the mesa you are targeting in the build.
+// The "mesa_*.start" pair resides in the SimpleSal directory; copy up and rename to "mesa_xxx_*.h".
+// =================================================================================================
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the meaning of the term "mesa"
+// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the configuration of 1-N mesas
+// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the idea of byte and bit order
+// -------------------------------------------------------------------------------------------------
+// When software wants to access a resource, the question to answer first: "is the resource in a
+// sharing state in which I am allowed to access it?".  The resource's state controls who can access.
+// The definition of the resource states are defined by SimpleSal; the terms of co-existence are set.
+// The definition of substates within each state are defined by the resource's substate abilities.
+// -------------------------------------------------------------------------------------------------
+// A resource may only be in one of these states, but nothing prevents the App from changing the
+// state of the resource.  Example: the App owns all resources, but when asking ssTEA to emit all
+// statistics to Ascii, the owner SIMPLY gives ownership of the resource, temporarily, to SimpleSal.
+// -------------------------------------------------------------------------------------------------
+typedef enum RO_state_e
+{
+    mesa_RO_state_Anyone,           // needed to express "App and Simplesal and others"
+    mesa_RO_state_App,              // only the App has permission to access this resource
+    mesa_RO_state_SimpleSal,        // only SimpleSal has permission to access this resource
+    mesa_RO_state_Nobody            // needed to express "not App and not SimpleSal and not others"
+}   RO_state_t;
+
+typedef RO_state_t      *pRO_state_t;
+#define pRO_stateNull   ((pRO_state_t) NULL)
+
+// -------------------------------------------------------------------------------------------------
+// Because the App defines the substates, and ssUI has menu options to change substates, the App
+// developer may need to change the ssUI menu software for substates, modified to substates changed.
+// -------------------------------------------------------------------------------------------------
+#define mesa_RO_substate_delay       ((int) Bit0)    // measure and signal Time: waiting while it occurs
+#define mesa_RO_substate_classic     ((int) Bit1)    // measure and signal Time: counting milliseconds
+
+#define mesa_RO_substate_pace        ((int) Bit2)    // indicate ssTEA's Agency pace period has occured
+#define mesa_RO_substate_agency      ((int) Bit3)    // indicate an Event is being granted agency
+#define mesa_RO_substate_ssTEA       ((int) (Bit2 | Bit3))
+
+#define mesa_RO_substate_group0      ((int) Bit4)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_group1      ((int) Bit5)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_shape0      ((int) Bit6)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_shape1      ((int) Bit7)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_none        ((int) 0)
+#define mesa_RO_substate_all         ((int) (Bit0|Bit1|Bit2|Bit3|Bit4|Bit5|Bit6|Bit7))
+
+typedef int             RO_substate_t;
+typedef RO_substate_t  *pRO_substate_t;
+#define pRO_substateNull ((pRO_substate_t) NULL)
+
+// =================================================================================================
+// ------------------------------------------------------------------------------------------------
+// SimpleSal uses psuedo-random numbers for simple purposes; the implementation is based on arrays.
+// ------------------------------------------------------------------------------------------------
+#ifdef MESA_OPTIN_RandomNumbers
+typedef     unsigned long  int  mesa_Random_t;
+typedef     int                 mesa_Random_i_t;
+
+mesa_Random_t    mesa_Random_Pick (mesa_Random_i_t which_i);
+mesa_Random_t    mesa_Random_NextFrom100 (void);
+mesa_Random_t    mesa_Random_NextFrom256 (void);
+mesa_Random_t    mesa_Random_NextFrom1000 (void);
+#endif  // MESA_OPTIN_RandomNumbers
+
+typedef     unsigned char       Bits8_t;
+typedef     Bits8_t            *pBits8_t;
+typedef     unsigned short int  Bits16_t;
+typedef     Bits16_t           *pBits16_t;
+typedef     unsigned long       Bits32_t;
+typedef     Bits32_t           *pBits32_t;
+
+// ------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the Ascii UI device this mesa
+// ------------------------------------------------------------------------------------------------
+#ifdef HOST_ONEOF_hostOS_Is_Arduino
+#define     mesa_Ascii_Init             Serial.begin
+#define     mesa_Ascii_Init_NotComplete (!Serial)
+
+#define     mesa_uiOp_recv_avail_ct     Serial.available
+#define     mesa_uiOp_recv_1            Serial.read
+
+void        mesa_uiOp_emit_Int_9        (Bits8_t  thisByte);
+void        mesa_uiOp_emit_Int_99       (Bits8_t  thisByte);
+void        mesa_uiOp_emit_Int_999      (int      thisInt);
+void        mesa_uiOp_emit_Hex_32bits   (unsigned long bits32);
+void        mesa_uiOp_emit_1            (Bits8_t  thisByte);
+
+// ------------------------------------------------------------------------------------------------
+// Pick characters YOUR terminal program needs to cause a cursor to move to "start of next line".
+// The problem is the variation is in the terminal program; trying to control here in the build.
+// ------------------------------------------------------------------------------------------------
+#define MESA_ONEOF_NEWLINE_SEND_CRLF
+// #define MESA_ONEOF_NEWLINE_SEND_LFCR
+// #define MESA_ONEOF_NEWLINE_SEND_CR
+// #define MESA_ONEOF_NEWLINE_SEND_LF
+#endif // HOST_ONEOF_hostOS_Is_Arduino
+
+// ------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\mesa\Mesa Pin Basics.note] any mesa has external pins for device connections
+// ------------------------------------------------------------------------------------------------
+typedef int PinNumber_t;
+typedef int LogicalPinValue_t;
+typedef int LogicalLEDValue_t;
+
+#define     mesaPin_VALUE_HIGH      ((LogicalPinValue_t) HIGH)
+#define     mesaPin_VALUE_LOW       ((LogicalPinValue_t) LOW)
+
+#define     mesaLED_VALUE_ON        ((LogicalPinValue_t) HIGH)
+#define     mesaLED_VALUE_OFF       ((LogicalPinValue_t) LOW)
+
+void        mesa_uiOp_LEDon (void);
+void        mesa_uiOp_LEDoff (void);
+
+typedef     Bits8_t         Ascii_t;            // contains a value whose size is <sizeof (Bits8_t)>
+typedef     Ascii_t        *pAscii_t;           // pointing to a value of that size in memory
+#define     pAsciiNull      ((pAscii_t) NULL)   // NOT pointing to a value of that size in memory
+
+typedef     Ascii_t         AsciiA_t;           // the first of N Ascii_t values, N is > 0
+typedef     AsciiA_t       *pAsciiA_t;          // pointing to the first of N Ascii_t values
+
+#define     Ascii_NUL       ((Ascii_t) ('\0'))
+#define     Ascii_BS        ((Ascii_t) ('\b'))
+#define     Ascii_LF        ((Ascii_t) ('\n'))
+#define     Ascii_CR        ((Ascii_t) ('\r'))
+#define     Ascii_ESC       ((Ascii_t) (27))
+#define     Ascii_Tilde     ((Ascii_t) ('~'))
+#define     Ascii_Dash      ((Ascii_t) ('-'))
+#define     Ascii_Minus     (Ascii_Dash)
+#define     Ascii_Plus      ((Ascii_t) '+')
+#define     Ascii_EQ        ((Ascii_t) ('='))
+#define     Ascii_Assign    (Ascii_EQ)
+#define     Ascii_Hash      ((Ascii_t) ('#'))
+#define     Ascii_AtSign    ((Ascii_t) ('@'))
+#define     Ascii_Colon     ((Ascii_t) (':'))
+#define     Ascii_sColon    ((Ascii_t) (';'))
+#define     Ascii_Qmark     ((Ascii_t) ('?'))
+#define     Ascii_Epoint    ((Ascii_t) ('!'))
+#define     Ascii_Period    ((Ascii_t) ('.'))
+#define     Ascii_Lparen    ((Ascii_t) ('('))
+#define     Ascii_Rparen    ((Ascii_t) (')'))
+#define     Ascii_Larrow    ((Ascii_t) ('<'))
+#define     Ascii_Rarrow    ((Ascii_t) ('>'))
+#define     Ascii_LT        (Ascii_Larrow)
+#define     Ascii_GT        (Ascii_Rarrow)
+#define     Ascii_Space     ((Ascii_t) (' '))
+#define     Ascii_DEL       ((Ascii_t) (0x7F))
+
+#define     Ascii_0         ((Ascii_t) ('0'))
+#define     Ascii_1         ((Ascii_t) ('1'))
+#define     Ascii_2         ((Ascii_t) ('2'))
+#define     Ascii_3         ((Ascii_t) ('3'))
+#define     Ascii_4         ((Ascii_t) ('4'))
+#define     Ascii_5         ((Ascii_t) ('5'))
+#define     Ascii_6         ((Ascii_t) ('6'))
+#define     Ascii_7         ((Ascii_t) ('7'))
+#define     Ascii_8         ((Ascii_t) ('8'))
+#define     Ascii_9         ((Ascii_t) ('9'))
+
+#define     Ascii_A         ((Ascii_t) ('A'))
+#define     Ascii_a         ((Ascii_t) ('a'))
+#define     Ascii_Z         ((Ascii_t) ('Z'))
+#define     Ascii_z         ((Ascii_t) ('z'))
+
+#define     Ascii_b         ((Ascii_t) ('b'))
+#define     Ascii_c         ((Ascii_t) ('c'))
+#define     Ascii_d         ((Ascii_t) ('d'))
+#define     Ascii_e         ((Ascii_t) ('e'))
+#define     Ascii_f         ((Ascii_t) ('f'))
+#define     Ascii_h         ((Ascii_t) ('h'))
+#define     Ascii_i         ((Ascii_t) ('i'))
+#define     Ascii_k         ((Ascii_t) ('k'))
+
+#define     Ascii_m         ((Ascii_t) ('m'))
+#define     Ascii_n         ((Ascii_t) ('n'))
+#define     Ascii_o         ((Ascii_t) ('o'))
+#define     Ascii_p         ((Ascii_t) ('p'))
+
+#define     Ascii_r         ((Ascii_t) ('r'))
+#define     Ascii_s         ((Ascii_t) ('s'))
+#define     Ascii__t        ((Ascii_t) ('t'))          // special case due to type name convention used
+#define     Ascii_u         ((Ascii_t) ('u'))
+#define     Ascii_v         ((Ascii_t) ('v'))
+#define     Ascii_y         ((Ascii_t) ('y'))
+
+#define     Ascii_C         ((Ascii_t) ('C'))
+#define     Ascii_V         ((Ascii_t) ('V'))
+
+#define     Ascii_squareLBracket    ((Ascii_t) '[')
+#define     Ascii_squareRBracket    ((Ascii_t) ']')
+#define     Ascii_squiggleLBracket  ((Ascii_t) '{')
+#define     Ascii_squiggleRBracket  ((Ascii_t) '}')
+
+#define     Ascii_verticalBar       ((Ascii_t) '|')
+
+#define     Ascii_EncapL            (Ascii_Larrow)
+#define     Ascii_EncapR            (Ascii_Rarrow)
+
+// -------------------------------------------------------------------------------------------------
+// these macros are used with the entry of and validation of a time by a user, as a string
+// -------------------------------------------------------------------------------------------------
+#define     Ascii_isUpper(c)        ((c >= Ascii_A) && (c <= Ascii_Z))
+#define     Ascii_isLower(c)        ((c >= Ascii_a) && (c <= Ascii_z))
+#define     Ascii_delta_UpperLower  (Ascii_a-Ascii_A)
+#define     Ascii_isAlpha(c)        (Ascii_isUpper(c) || Ascii_isLower(c))
+#define     Ascii_toUpper(c)        (Ascii_isLower(c) ? (c-Ascii_delta_UpperLower) : c)
+#define     Ascii_toLower(c)        (Ascii_isUpper(c) ? (c+Ascii_delta_UpperLower) : c)
+#define     Ascii_isDigit(c)        ((c >= Ascii_0) && (c <= Ascii_9))
+
+#define     Ascii_isHexDigit_LC(c)  (Ascii_isDigit(c) || ((c >= Ascii_a) && (c <= Ascii_f)))
+#define     Ascii_isHexDigit_UC(c)  (Ascii_isDigit(c) || ((c >= Ascii_A) && (c <= Ascii_F)))
+
+#define     Ascii_digit_toInt(c)    (Ascii_isDigit(c) ? (c - Ascii_0) : (0))
+
+#define     S(inquotesAsciiArray)   ((pAsciiA_t) inquotesAsciiArray)
+#define     pAsciiANull             ((pAsciiA_t) NULL)
+#define     pAAN                    (pAsciiANull)
+
+void        mesa_uiOp_emit_pAsciiA              (pAsciiA_t pAsciiA);
+#define     mesa_uiOp_emit_qAsciiA(InQuotes)    mesa_uiOp_emit_pAsciiA ((pAsciiA_t) (InQuotes))
+void        mesa_uiOp_emit_newline              (void);
+Ascii_t     mesa_uiOp_give_4bitsAsHex           (Bits8_t thisDigit);
+
+// =================================================================================================
+// ------------------------------------------------------------------------------------------------
+// SimpleSal has a goal to be completely self-defined, so some common software concepts are defined
+// here that could easily have been adopted from the standard header files from a specific context.
+// ------------------------------------------------------------------------------------------------
+// This abstraction defines a data type which is a field of bits within an 8, 16, or 32-bit value.
+// Compilers generate code for ssHL-defined bit-sized fields using a lot of shifting, ANDing, ORing.
+// Software development organizations adopt programming practices to reduce error and increase code
+// quality which result in coding standards being enforced.  Those standards never consider an ARM
+// and the sophisticated bit manipulation abilities built into the instruction set.  On the other
+// hand, try convincing teams committed to reducing reducing the skills needed to write software:
+// runtime cycles matter more than human brain cycles while participating in a code walkthrough.
+// ------------------------------------------------------------------------------------------------
+// To make use of the data type, create a definition for each of the "BitN" definitions.
+// Then use the macros to set/clear/test the value of the bit named (a boolean meaning for example).
+// the final result is an expression that can be used as a boolean but one that is checking bits.
+// The best use of this was to replace 8 booleans (ints) with one byte in a TinyAT 256-byte CPU.
+// Because all of the booleans had been used as booleans and replaced by a true/false macro,
+// none of the software referring to the booleans was modified as a result of this data type change.
+// ------------------------------------------------------------------------------------------------
+// a processor-level benefit: the computation result (a byte with a bit) occurs at compile time.
+//    the run time processor operations change from math to retrieve/or/test memory/register ops
+// the human-level benefit: each bit can be abstractly used to mean anything a receiver can parse.
+// ------------------------------------------------------------------------------------------------
+#define     Map_BitNumber_To_BitMask(x)     (1 << x)
+Bits8_t     Bits8Op_RotateLeft    (Bits8_t TheseBits);
+Bits8_t     Bits8Op_RotateRight   (Bits8_t TheseBits);
+#define     Bit0                ((Bits8_t) Map_BitNumber_To_BitMask(0))
+#define     Bit1                ((Bits8_t) Map_BitNumber_To_BitMask(1))
+#define     Bit2                ((Bits8_t) Map_BitNumber_To_BitMask(2))
+#define     Bit3                ((Bits8_t) Map_BitNumber_To_BitMask(3))
+#define     Bit4                ((Bits8_t) Map_BitNumber_To_BitMask(4))
+#define     Bit5                ((Bits8_t) Map_BitNumber_To_BitMask(5))
+#define     Bit6                ((Bits8_t) Map_BitNumber_To_BitMask(6))
+#define     Bit7                ((Bits8_t) Map_BitNumber_To_BitMask(7))
+#define     Bit8                ((Bits16_t) Map_BitNumber_To_BitMask(8))
+#define     Bit9                ((Bits16_t) Map_BitNumber_To_BitMask(9))
+#define     Bit10               ((Bits16_t) Map_BitNumber_To_BitMask(10))
+#define     Bit11               ((Bits16_t) Map_BitNumber_To_BitMask(11))
+#define     Bit12               ((Bits16_t) Map_BitNumber_To_BitMask(12))
+#define     Bit13               ((Bits16_t) Map_BitNumber_To_BitMask(13))
+#define     Bit14               ((Bits16_t) Map_BitNumber_To_BitMask(14))
+#define     Bit15               ((Bits16_t) Map_BitNumber_To_BitMask(15))
+#define     Bit16               ((Bits32_t) Map_BitNumber_To_BitMask(16))
+#define     Bit20               ((Bits32_t) Map_BitNumber_To_BitMask(20))
+#define     Bit24               ((Bits32_t) Map_BitNumber_To_BitMask(24))
+#define     Bit28               ((Bits32_t) Map_BitNumber_To_BitMask(28))
+#define     Bit31               ((Bits32_t) Map_BitNumber_To_BitMask(31))
+
+#define     MIN_Bits8           ((Bits8_t) Bit0)
+#define     MIN_Bits16          ((Bits16_t) Bit0)
+#define     MIN_Bits32          ((Bits32_t) Bit0)
+
+#define     MAX_Bits8           ((Bits8_t) Bit7)
+#define     MAX_Bits16          ((Bits16_t) Bit15)
+#define     MAX_Bits32          ((Bits32_t) Bit31)
+
+// =================================================================================================
+// ------------------------------------------------------------------------------------------------
+// These functions are exposed here at the end of this file in hopes the right people find them.
+// One is a specific compiler trick that is used to help navigate source files while running code.
+// The other is a specific memory location access trick to judge it, assuming a right to access it.
+// ------------------------------------------------------------------------------------------------
+// A helpful trick (used extensively by ssTEA and ssUI) is for a function to announce its own name.
+// Note this is declared and defined using only inherent C language types and compiler features.
+// ------------------------------------------------------------------------------------------------
+void CTRICK_Show_FunctionsName      (unsigned char *pName);
+
+// ------------------------------------------------------------------------------------------------
+// A helpful debug trick when the algorithm looks good but acts bad: verify the memory is writable.
+// ------------------------------------------------------------------------------------------------
+// #define      MESA_OPTIN_DEBUG_MEMORYACCESS
+
+#ifdef MESA_OPTIN_DEBUG_MEMORYACCESS
+// Note this is declared and defined using only inherent C language types and compiler features.
+void CTRICK_Prove_MemoryIsWritable  (unsigned long *p32bits, unsigned char * pFuncName);
+#endif  // MESA_OPTIN_DEBUG_MEMORYACCESS
+
+// -------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\swDev\SW Developer Tricks.note]    helpful display of any 32-bit value in hex
+// -------------------------------------------------------------------------------------------------
+void        CTRICK_Show_Hex_32bits (unsigned long this32bits);
+
+#endif  // __MESA_MIN_DCL_H_

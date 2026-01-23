@@ -1,0 +1,71 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Command Arrays and Zones.note]      search in ssUI source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   ssUI supports a set of stored UI CMDs with parameters for ssUI and App testing/demo purposes.
+   These configuration options control the integration of App and/or ssUI CMDs (in ssUI form) into
+   ssUI. "in ssUI form" means "exact format for direct inclusion into the source file for ssUI".
+   -------------------------------------------------------------------------------------------------
+   #define  SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP
+//
+   -------------------------------------------------------------------------------------------------
+   The purpose of defining a specific type for "command arrays" (arrays of pointers to characters;
+   the characters, when considered by the ssUI, turn out to be an ssUI command with parameters) is:
+   the "Cmd_t" typedef creates a data type definition different from what looks like an AsciiA type.
+   This is an attempt to place large arrays of strings and pointers to strings outside RAM memory.
+   -------------------------------------------------------------------------------------------------
+   Commands in a single array are a CmdArray, pointed to by a CmdArrayLink (name pointer and max_i).
+   max_i for a CmdArray is the number of elements, where each element in the array is a pointer.
+   The pointer to the start of the CmdArray
+   Each CmdArray and its associated CmdArrayLink are includable/excludable from the build and help.
+   -------------------------------------------------------------------------------------------------
+   typedef     const char    *pCmd_t;               pointer to an instance in an array of characters
+//
+   -------------------------------------------------------------------------------------------------
+   The user may define a series of ssUI "CMD" arrays and have that available, independent of ssUI.
+   SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP asks ssUI to include part of the App in a ssUI data structure;
+   not what is included but whether or not any CMDs have been defined to be included from the App.
+   -------------------------------------------------------------------------------------------------
+   The ssUI CMDs facility doesn't know or care about options at the App level; it just includes.
+   SSUI_PLEASE_INCLUDE_THESE_APP_CMDS is the reference by SSUI whether any App cmds are defined or
+   not; this occurs here when ssUI build an array of pointers to the cmds arrays that are defined.
+   -------------------------------------------------------------------------------------------------
+   Because this the rare instance where the App becomes part of ssUI, some restrictions are applied.
+   When no App cmds are defined and included, SSUI_PLEASE_INCLUDE_THESE_APP_CMDS resolves to nothing.
+   The concept now has a defined value to the compiler, and that value is "there is nothing here".
+   -------------------------------------------------------------------------------------------------
+   #ifndef SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP
+//
+   -------------------------------------------------------------------------------------------------
+   This is the name of an array of pointers to Ascii character arrays which contain ssUI "CMDs",
+   most ssUI CMD sequences can be defined and built in ahead of time or typed into ssUI live.
+   A "CMD" is recognized by ssUI when the input parser finds a match in a table of CMDs, AND
+   THEN the input FSM runs the command handler for that input, as provided by ssUI or the App.
+   -------------------------------------------------------------------------------------------------
+   This is an array of pointers to Ascii arrays, each Ascii Array is Ascii-NUL terminated.  The
+   array of pointers is incorporated by ssUI as one of the "cmds run <cmds>" choices.  ssUI does
+   a limit check using the array's size (Compute_pCharNArray_CT below).  Each quoted Ascii-NUL
+   array has an address, each address is of type "pCmd_t", and each is in the "pcCmds..." array.
+   -------------------------------------------------------------------------------------------------
+   A confusing and odd effect occurs when the ',' is missing between two quoted Ascii-NUL arrays:
+   the ssHL-language compiler helpfully contentates two command lines into one command line and moves on.
+   -------------------------------------------------------------------------------------------------
+   #ifdef SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP
+//
+//
+   -------------------------------------------------------------------------------------------------
+   The purpose of defining a specific type for "command arrays" (arrays of pointers to characters;
+   the characters, when considered by the ssUI, turn out to be an ssUI command with parameters) is:
+   the "Cmd_t" typedef creates a data type definition different from what looks like an AsciiA type.
+   This is an attempt to place large arrays of strings and pointers to strings outside RAM memory.
+   -------------------------------------------------------------------------------------------------
+   Commands in a single array are a CmdArray, pointed to by a CmdArrayLink (name pointer and max_i).
+   max_i for a CmdArray is the number of elements, where each element in the array is a pointer.
+   The pointer to the start of the CmdArray
+   Each CmdArray and its associated CmdArrayLink are includable/excludable from the build and help.
+   -------------------------------------------------------------------------------------------------
+   typedef     const char    *pCmd_t;               pointer to an instance in an array of characters
+
+// S~S  SimpleSal signal ends  S~S

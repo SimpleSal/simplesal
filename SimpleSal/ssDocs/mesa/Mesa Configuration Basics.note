@@ -1,0 +1,68 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Mesa Configuration Basics.note]     search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   Multiple applications based on the same mesa may have the same mesa_*.h files within each sketch.
+   A portable application based on more than one mesa will have to build each version separately in
+   a sketch, or, manage multiple mesa declarations within the same mesa_*.h controlled by ifdefs.
+   The result is that within the ssTEA/ssUI context, the mesa files are locally modified by a user.
+   -------------------------------------------------------------------------------------------------
+   the configuration of one to N mesas bugbugbug
+
+   // =============================================================================================
+   // SimpleSal's suggestion: name EVERY mesa declare/define pair with specific reference to the mesa.
+   // otherwise, the "mesa_*.h" you have may or may not match the mesa you are targeting in the build.
+   // The "mesa_min_*.h" pair resides in SimpleSal directory; copied in from "mesa_*.start", renamed.
+    // =============================================================================================
+
+   ------------------------------------------------------------------------------------------------
+   because ssTEA is meant to work at the mesa level, bits are addressed as mesas define them, but
+   the debate over byte/word size was settled back in 1980 (Intel 8086) and 2000 (ARM) dominance,
+   which is a pompous way of saying the least significant bit (LSB) is called bit 0 and the LSB
+   is the one at the far right, when all the bits are drawn as zeros and ones. just like integers
+   are represented with integer digits, and the least significant digit (LSD) is at the far right.
+   ------------------------------------------------------------------------------------------------
+   the idea of byte order and bit order
+
+   -------------------------------------------------------------------------------------------------
+   The mesa assumption about serial device data is that a human is typing the input and reading the
+   output.  There is a variety of buffering and live editing by terminal programs before sending the
+   bytes that arrive at the mesa, between human speed and back-to-back serial transmission speed.
+   Another assumption is that when the human is typing, the App should pay close attention to input.
+   The output, or bytes emitted using the serial port signal carrier, is probably back-to-back at the
+   serial transmit baud rate; the HostOS chooses how to drive data through the serial port based on
+   the needs of the HostOS.  For some Arduino mesas, a busy port brings the processor to logical halt.
+   The mesa provides a buffered transmit service as a solution: a byte is stored if there is room
+   and a time-based FSM will send it and any others in "loop". If there is no room, revert to the
+   "logical halt" model: emit the oldest byte in the Fifo and THEN put the new byte into the Fifo.
+   -------------------------------------------------------------------------------------------------
+   #ifdef HOST_ONEOF_hostOS_Is_Arduino
+//
+   -------------------------------------------------------------------------------------------------
+
+   Variables in algorithms are static (existing at all times), or, dynamic (existing for a moment).
+   Because FSMs exist over Time, and because FSMs reference values when granted Agency to operate,
+   values in the variables for those algorithms must exist over Time.  A dynamic variable is given a
+   value at runtime; when the software owning the variable ceases to exist, the value also vanishes.
+
+   The initial value of a static variable may be assigned at build time or run time in several ways.
+   The methods are variations on actions taken by the compiler in reaction to ssHL-language found
+   describing the variable.  This is a meta-language about the variable beyond the basic language.
+   This topic is very advanced for SimpleSal users, so the meta-language is left as an exercise.
+
+   1) a variable referenced but never written may be placed in Read Only memory with the software;
+   2) a variable referenced and modified may have a HostOS-defined initial value in Writable memory.
+      a) the HostOS can initialize all of memory to a value
+      b) the HostOS can copy an image of the build-time value into Writable memory from the image
+      c) the HostOS can leave the memory from mesa initialization and use SimpleSal Run Time Init.
+   3) a variable never referenced or modified might have the software appearing to do so left out
+   4) some co-existing software may require or prohibit certain methods; run time is deterministic.
+
+   -------------------------------------------------------------------------------------------------
+
+   // #define MESA_ONEOF_CONTROL_INIT_BUILDTIME
+   #define MESA_ONEOF_CONTROL_INIT_RUNTIME
+
+// S~S  SimpleSal signal ends  S~S

@@ -1,0 +1,43 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Agency Events Defined.note]         search in ssTEA source files for a reference to this file.
+//
+   ----------------------------------------------------------------------------------------------
+   A Time signal requests a grant of agency to an Event,
+        which is done based on the OccursAt Time in relation to CurrentTime in Agency Root,
+        continued agencying is a choice of the Event itself and Agency Root.
+
+   A Data signal requests a grant of agency to an Event,
+        which is done at the next occurence of Agency Root under the control of pace/period.
+        A data Event is paused automatically, to prevent an Event running every Agency Root.
+        To run an Event every pace/period, a 2nd Event (resumed by 1st) must resume 1st Event.
+
+   A Ireq signal requests a grant of agency to an Event,
+        which is done at the next occurence of Agency Root while ignoring pace/period.
+        An Ireq Event is paused automatically, to prevent an Event running every Agency Root.
+        To run an Event every Agency Root, a 2nd Ireq Event (resumed by 1st) must resume 1st.
+        Ireq Events running every Agency Root is a "hot interrupt", not generally useful.
+    ----------------------------------------------------------------------------------------------
+//
+   -----------------------------------------------------------------------------------------
+   Ireq and Data Events need take no action as to state except to return any "_ok_" return.
+   Agency Run FSM state is set to paused on OK return, UNLESS Event paused or stopped itself.
+   This fine point only matters when considering which statistic to update when paused.
+   -----------------------------------------------------------------------------------------
+   In addition to that rule: Ireq and Data Events run for one Planck and then they are paused.
+   This causes the Ireq Event Type to act like a hardware interrupt controller that requires
+     interactions to change the state of the Interrupt Indication FSM within the controller.
+     This is called the "interrupt acknowledgement"; the FSM readies the controller to re-fire.
+   This causes the Data Event Type to act like a signal: the data exists between the Time
+     the Data Event is signaled to resume and the Time the Data Event consumes the Data.
+     A continuation of the signal would require more data, distinguishable from the first.
+     The signal carrier in this case is the data allocated and pointed to by the sender.
+   -----------------------------------------------------------------------------------------
+   The result: Agency not allowed in the NEXT planck unless the Event's Agency Run FSM is
+   resumed during THIS Planck.  An Ireq Event can run in the next Planck by signaling Resume
+   to a Data Event that is otherwise ready to run in this Planck, as found by Agency Next.
+   The Data Event's only task would be to Resume the Ireq Event, to run at the next Planck.
+   -----------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

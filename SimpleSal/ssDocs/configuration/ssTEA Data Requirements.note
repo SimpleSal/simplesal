@@ -1,0 +1,10 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [ssTEA Data Requirements.note]       search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   in static memory for use at any Time, and gets the "volatile" attribute assigned at the roots.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

@@ -1,0 +1,48 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Event Declarations.note]            search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   The ssTEA Event Declarations note explains the compiler language terms used to implement ssTEA.
+   The ssTEA Event Agency note explains Event activities as they are implemented using the terms.
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   These are states used by ssTEA to describe Events; the Agency Run FSM will be in one of these.
+   These are probably not states that a USER's FSM Events will go through as the USER's FSM runs;
+   state changes in user FSMs are only possible while the Agency Run FSM is in "agencying" state.
+   -------------------------------------------------------------------------------------------------
+typedef enum ssA_Runfsm_State_e
+//
+   -------------------------------------------------------------------------------------------------
+   when an event is run (the function pointed to is called by AgencyRoot), it owns the mesa.
+   when an event runs and encounters non-normal events that require the event by halted: return reset.
+   when an event runs and has no errors occur regardless of operations performed: return Normal.
+   when some piece of ssTEA services fail to work as described: return Flaw.
+   the Event function return value signals to ssTEA : this event ran as normal, or, a reset is occuring.
+   In all cases, the result value returned is stored in the Event agency User data structure.
+   ssTEA does not refer to any value that is beyond the declared range, storing it in the User agency
+   data structure for reference by the User who wants to know why they signaled an error to ssTEA.
+   -------------------------------------------------------------------------------------------------
+typedef enum ssE_EvResult_e
+//
+   -------------------------------------------------------------------------------------------------
+   These counters are used to track Agency grants and the action taken after Agency is given up.
+   The counters are related to the operations of the Event Agency Run FSM as ssA's agency controller.
+   -------------------------------------------------------------------------------------------------
+//
+   -------------------------------------------------------------------------------------------------
+   The App's Event data is available during the Event, a pointer is provided when Agency is granted.
+   When the pointer is stored in the About Event data by the App, it is typecast: "pointer to void".
+   The canonical parameter definition for an Event includes "a pointer to void": the App's pointer.
+   This is typecast in the Event to the App's definition of the data, so the App code sees its data.
+   ssTEA does not access the actual value of the field, except when granting Agency to the Event.
+   -------------------------------------------------------------------------------------------------
+   It would be nice to avoid the transition through "pointer to void", but the dependency of ssTEA
+   for the App Data definition would require the definition precede ssTEA to be referenced by ssTEA.
+   This also would in precede the definition by ssTEA of useful ssTEA types such as Time Variables.
+   -------------------------------------------------------------------------------------------------
+   typedef pVoid_t                 EvEx_App_pEventData_t
+
+// S~S  SimpleSal signal ends  S~S

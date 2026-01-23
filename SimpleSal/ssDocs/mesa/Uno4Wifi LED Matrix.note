@@ -1,0 +1,68 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Uno4wifi LED Matrix.note]           search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   The UnoR4wifi mesa has a row/column display, accessed through the mesa vendor's ArduinoLEDMatrix.
+   Access is available to the fsmDemo App software directly through the ArduinoLEDMatrix C++ code
+   and data definitions, or at a simpler level through the mesa "LEDM_" functions specific to UnoR4.
+   Before writing to complain, recognize the original intent of ssTEA was in support of MrBlinky.
+   -------------------------------------------------------------------------------------------------
+   Individual LEDs on the Matrix are completely controlled by any software using the "modify the LED
+   @[row][column] with this value" function.  "Modifying the LED" consists of modifying the memory
+   locations being used to describe the state of each LED. To affect the LEDs, use "matrix refresh".
+   Separating data preparation from data transfer allows the device interactions to be independent.
+   -------------------------------------------------------------------------------------------------
+   Groups of LEDs being updated individually as 0/1 bit values are supported by the mesa software.
+   An integer value displayed as a complex image is useful because Humans gain knowledge visually;
+   an image such as a "minute hand" on the face of an 1850's clock, or a chevron of 8 large dots.
+   -------------------------------------------------------------------------------------------------
+   A meaningful grouping of LEDs is called a "Shape"; each Shape defines on/off values for 4 LEDs.
+   The sequence of on/off values is applied to the Matrix to "light" the shape, the reverse of the
+   on/off values is applied to the matrix to "clear" the shape.  A related grouping of Shapes is
+   called a "Shape Set", which is a sequence of Shapes with an arbitrary number of Shapes defined.
+   -------------------------------------------------------------------------------------------------
+   The range of integers 0 to 7, called octal, has a builtin Shape set of 8 clock "hands": Cloctal.
+   The software allows for any Shape Set to be displayed in any location, each using any 0-7 input.
+   The definition of Shape Sets is contained within this file, separate from SimpleSal or ssTEA.
+   -------------------------------------------------------------------------------------------------
+   Each OPTIN build option defined will manipulate the Matrix, in sequence the source code describes
+   as a result of the independent OPTIN references.  All of the defined OPTINs are given agency to
+   make modifications to the Matrix, in some order, which must be changed here to change the order.
+   The overlap of one Shape with another will result in each LED's state being the last value set.
+   -------------------------------------------------------------------------------------------------
+   This is really a choice by the fsmDemo_Application to assume UnoR4 use includes using the Matrix.
+   This could be moved to the MesaSelect_UnoR4wifi include file, but then all UnoR4 users include.
+   -------------------------------------------------------------------------------------------------
+   #ifdef MESA_ONEOF_mesa_IsUnoR4wifi
+//
+   -------------------------------------------------------------------------------------------------
+   The form of the transfer mechanism is hidden from the ssIO user; there exists a Matrix of LEDs
+   that can be addressed with [row, column] syntax to change individual LED values in the Matrix.
+   -------------------------------------------------------------------------------------------------
+   The Matrix LED device numbers rows as 0-7 and columns from 0-11, as the viewer sees the Matrix,
+   with the UnoR4 positioned before the viewer so that the power LED is visible on the right side.
+   The upper left corner is row number 0 and column number 0.  An assumption made is that when a
+   BitMap group is displayed and the orientation of the group on the Row R is horizontal, the
+   rightmost LED at [R,6] corresponds to Bit0, the leftmost LED at [R,0] corresponds to Bit7.
+   This is so strongly visually similar to bit conventions only horizontal BitMaps are supported.
+   The result is as desired, with for example a bit pattern rotating right moving to the right and
+   an 8-bit value in software or a register in the debugger has the same bit order as displayed.
+   find: defining UnoR4 LEDs as Pins for the map of a BitN to a Matrix column number within a group.
+   -------------------------------------------------------------------------------------------------
+   #define LEDM_LEDs_Rows  (8)
+
+//
+   -------------------------------------------------------------------------------------------------
+   The value written to the cloctal may be directed to either or both (or neither).  This allows the
+   N providers of values to the Driver (each running on an independent timer) to update the fields
+   associated with the cloctal; each provider was assigned by design.  The design is that the Driver
+   is signaled (granted agency) with a Data Event, from a Time Event Cycler and/or Chaser.  If both
+   happen to occur at the same Time (both receive a pointer to the Current Time), they will occur in
+   an order resulting from ssTEA's method to decide order.  Either can OR in their bit, set values.
+   -------------------------------------------------------------------------------------------------
+   typedef unsigned int    octalNumber_t;
+//
+
+// S~S  SimpleSal signal ends  S~S

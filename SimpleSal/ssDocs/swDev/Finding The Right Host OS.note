@@ -1,0 +1,26 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+Consider the STEAM projects in terms of increasing complexity
+
+blink:  BUILTIN_LED manipulation using DELAY (proves build capability)
+
+timed blink: blink with build- or run-time control of the rate of blinking
+
+triggered blink:  blink at a rate when a sensor value triggers the blink
+
+with added sensor, adapt “blink” into “unlock or lock”
+
+with added co-device, create local data access and protocols (bit bus)
+
+with added co-device, adapt “blink” into a “push data to host” protocol
+
+with added co-device, adapt “push data to host” into  “push button on wall”
+
+Complexity is reduced by giving up responsibility for features
+
+interacting with two devices over Time at two different rates (LED, sensor)
+
+// S~S  SimpleSal signal ends  S~S
+
+

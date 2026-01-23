@@ -1,0 +1,210 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Agency FSM Algorithm.note]          search in ssTEA source files for a reference to this file.
+//
+   ----------------------------------------------------------------------------------------
+   This is the API the App uses to transfer ownership of Agency to ssTEA.  This transfer of
+   Agency ownership happens during the App's "loop" (Arduino) or "idle" (RTOS) function.
+   ----------------------------------------------------------------------------------------
+   The special name for this API indicates the main view the App has of ssTEA software.
+   ----------------------------------------------------------------------------------------
+   void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSinceLast);
+
+   ----------------------------------------------------------------------------------------
+   The Agency algorithm's Root refers to Next.
+        [.\SimpleSal\ssDocs\ssTEA\Agency Next Algorithm.note]
+   ----------------------------------------------------------------------------------------
+   This note does not discuss the algorithm used by the implementation in ssTEA to store
+   event data per event or the algorithm used to store and manipulate an Event's daa.
+   The Next function may be rewritten to a different model, without changing Agency Root.
+   ----------------------------------------------------------------------------------------
+   The ssTEA source file also contain comments about the local algorithm's implementation.
+   ----------------------------------------------------------------------------------------
+   ssE_pEvInfo_t ssA_EvAg_AgencyNext (ssE_pEvInfo_t pEvInfo, ssE_EvType_t  eventType)
+//
+   -------------------------------------------------------------------------------------------------
+   Control of the flow of execution, or agency, is granted by the user by calling Agency Root.
+   This function performs the highest-level algorithms for managing events.   Is this efficient?
+   Let's say that all that is happening in the embedded system is calls to Agency Root, and it is
+   spending all of its time going through the complex "if" statement below, waiting for events.
+   Truth: The user not using ssTEA would be making all of the same choices while waiting.
+   -------------------------------------------------------------------------------------------------
+   Several rules and features are in conflict with each other:
+        AgencyNext only returns either a NULL pointer or a pointer to an Event that needs attention,
+        the rules for agency prohibit running one event twice in the same planck,
+        events are triggered by a prioritized set of classifications (hot interrupt, data, time)
+   The resolution of these conflicting influences is hidden within the Agency Root function.
+   -------------------------------------------------------------------------------------------------
+   rules for when events may be run
+    interrupt-triggered and data-triggered events are always run on the next planck boundary,
+    regardless of pace selection and pace precision.  They must wait for the next planck so ssTEA
+    Events cannot starve the App and Host OS; Agency is returned to the Host OS for a turn.
+   -------------------------------------------------------------------------------------------------
+    The difference between interrupts and data is that all interrupts are run before any Data/Time,
+    in the same Planck.  However, an interrupt or data Event that signals an interrupt or data event
+    will not see that Event granted Agency until the next planck.  This prevents infinite loops.
+    pace | TimeEv | pace | TimeEv | IntEv-signal | planck | IntEv DataEv-signal | planck | DataEv.
+   -------------------------------------------------------------------------------------------------
+    Interrupt/Data events may signal for the occurence of a Time Event with Current Time or earlier,
+    AgencyNext will find the event and grant it Agency, as early as the next pace period boundary;
+   -------------------------------------------------------------------------------------------------
+//
+    ---------------------------------------------------------------------------------------------
+    Claiming dominion over Time requires that all of Time be accounted for; if you refuse to make
+    a choice, that action is the result of making a choice.  All Time outside ssTEA is the App's.
+    ---------------------------------------------------------------------------------------------
+    ssA_EvAg_RootMath_Entry ();
+//
+    ---------------------------------------------------------------------------------------------
+    Rule: Agency only executes if Time is running; no Time means no Agency. Change takes Time.
+    while Time is not running, statistics are not maintained about Time at the ssTEA level.
+    ---------------------------------------------------------------------------------------------
+    A "32-bit unsigned long int" is the base counter type, a maximum value of (4,294,967,295).
+    that 32-bit microsecond counter turns into 4,294-second counter, which is around 71 mins.
+    ---------------------------------------------------------------------------------------------
+    Relying on Current Time in every situation allows software to not care about the true Time.
+    Software such as SimpleSal will use this concept to construct Events simulating any Time.
+    ---------------------------------------------------------------------------------------------
+    ssT tracks Current Time in a Time Variable; ssT can += (N usecs) until Time's days overflow
+      (see ssT but the range of values for days is probably 0-999, so your Time context may fit).
+    After the timeOp, TimeCurr represents the current time throughout ssTEA, accurate to N usecs.
+    Perform the TimeCurr calculation at this moment as it allows for variation and manipulation.
+    ---------------------------------------------------------------------------------------------
+    if (ssTEA_control.TimeState != ssTEA_state_running)
+//
+    ---------------------------------------------------------------------------------------------
+    Time is running and measured independent of the Agency state of the ssTEA Agency Root FSM.
+    some categories of Time only exist or result from computations while Agencying.
+    ---------------------------------------------------------------------------------------------
+    if (ssTEA_control.Agency_state != ssTEA_state_running)
+//
+    ---------------------------------------------------------------------------------------------
+    There is an FSM running that cycles through EvTypes (Ireq, Data, Time), and in addition,
+    there is an FSM running that checks every database entry for a type that matches.  A key
+    design issue is that the EvType cycle FSM only knows about the 3 types, while the database
+    FSM only knows about the database and hides the database methodology from the cycle FSM.
+    Multiple similar Events within this Agency Root occur in an order determined by the database.
+    ---------------------------------------------------------------------------------------------
+    Agency Root does not care how a database is organized or manipulated, it just wants an Event
+    with an Agency Api FSM active, which is required in order to have the Agency Run FSM active.
+    There is a priority between event Types (Ireq, Data, Time; in descending priority) and there
+    may be a priority between Events within a type (as implementation of AgencyNext determines).
+    ---------------------------------------------------------------------------------------------
+    EvTypeFSM_state = ssE_EvType_Ireq;
+//
+    ------------------------------------------------------------------------------------------
+    A programming model for a looping mechanism which has complex and/or multiple exit critera
+    can be implemented as "set a flag and continue to find flag" or "break out of while now".
+    Software Engineering argues against this in coding standards; ssTEA's goal is readable.
+    -----------------------------------------------------------------------------------------
+    The K&R ssHL-language construct is "call the function, assign return value to variable, compare
+    return value in variable to a value, enter loop if resolution is: values are not equal".
+    The parentheses '(' and ')' pairing is correct to implement this construct: it forces
+    the assignment to pEvInfo to complete first, then that value is compared to Null.
+    Leaving out the parenthesis causes pEvInfo to be assigned the result of a != comparison.
+    ----------------------------------------------------------------------------------------------
+    everything within the "while" begin/end is in the context of a valid pEvInfo/ssE_pAboutEv.
+    In addition, we know that the database returned an event of type requested, so actions
+    are taken without consideration of error conditions or values out of range and invalid.
+    Features associated with each Type while being manipulated by ssA are implemented here.
+    -----------------------------------------------------------------------------------------
+    while (true)
+    {
+        while ((pEvInfo = ssA_EvAg_AgencyNext (pEvInfo, EvTypeFSM_state)) != ssE_pEvInfoNull)
+//
+   -----------------------------------------------------------------------------------------
+   non-Time Event types have been handled before this point; this one, by definition, Time.
+   -----------------------------------------------------------------------------------------
+   if (ssE_pAboutEv->Runfsm_EvType != ssE_EvType_Time)
+       switch (ssE_pAboutEv->AgencyResult)
+//
+   -----------------------------------------------------------------------------------------
+   Event Agency itself, as represented in the data structures, is always interpreted anew.
+   Those values are OccursAt, Period, and Recurs; an Event may change in any combination:
+        a new OccursAt Time in the future at which it wants to be granted Agency,
+        the fact that the event is recurring or not recurring
+        the period that will be added to a Time (using a rule) for a recurring event
+   -----------------------------------------------------------------------------------------
+   The Time event has occured at the Time requested, and the event thought it all went OK.
+   The state of the Run FSM must have been "Agencying" for Agency to have been granted.
+   The Event may change its Run FSM state to Stopped or Paused, whether Recurring or not.
+   A Time event may stay in the agencying state after changing any values defining Events.
+   Recall that only Events of type Time are under consideration here.
+   -----------------------------------------------------------------------------------------
+   switch (ssE_pAboutEv->AgencyResult)
+//
+   ----------------------------------------------------------------------------------------
+   When recursFromTrue, the TimeCurr value given to the Event on Agency is "the base".
+     this has the effect of allowing variations in the Pace Period to affect OccursAt.
+   When not recursFromTrue, the time requested (OccursAt) for the Event is "the base".
+      this has the effect of preventing slew/jitter/noise in the timing of Event agency.
+   ----------------------------------------------------------------------------------------
+   if the event recurs, the period is added to the selected base; no states are changed.
+   ----------------------------------------------------------------------------------------
+   An event may refer to and change its own configuration.   For example, an Event is
+   allowed to change its own one-time OccursAt, as a form of a cascading periodic event.
+   Note that the self-Resume of an Event changing its own OccursAt requires a future Time.
+   -------------------------------------------------------------------------------------
+   take no action with respect to the Run FSM state, only adjust OccursAt using Period.
+   The math does not check or filter any values in "the base"
+       Actual: continue recurring 100ms from now (605ms), set OccursAt to 705ms.
+      !Actual: continue recurring 100ms from requested (600ms), OccursAt gets 700ms.
+   -------------------------------------------------------------------------------------
+   if (ssE_pAboutEv->recurs)
+       pTime = (ssE_pAboutEv->recursFromTrue) ? ssT_gpTime_Current : &ssE_pAboutEv->OccursAt;
+//
+   -----------------------------------------------------------------------------------------
+   insert Monty Python Dead Parrot Sketch, an Agencying Event has occured, now it is dead.
+   If your event doesn't want to be dead, put a million volts through it.  Then... Voom!
+   -----------------------------------------------------------------------------------------
+   an event that was only intended to occur run once has occured at the Time requested, AND,
+   the event occurrence returned a normal result to the ssTEA Agency grantor, AND,
+   the Event owner did not Stop/Pause the Event, leaving it in Agencying state in Run FSM.
+   Stop the event if OccursAt has not changed during the event, the most normal conclusion.
+   Continue the EVENT if Event's OccurAt has been changed by the Event itself, a feature.
+   -----------------------------------------------------------------------------------------
+   A dying Event is flipped to pending through the Agency post-Event grant processing: in
+   that the test above ("greater than") skips pending events, this test ("not greater than")
+   catches events that have an OccursAt not greater than the Current Time (just Agencied).
+   An Event with OccursAt changed to a valid future Time is allowed to continute agencying.
+   -----------------------------------------------------------------------------------------
+   if (ssT_timeIf_P1equalsORafterP2 (&ssE_pAboutEv->OccursAt, ssT_gpTime_Current))
+//
+   -----------------------------------------------------------------------------------------
+   if the Event changed the OccursAt value, Event "chose" to automatically keep Agencying.
+   This is a feature of ssTEA, but the value of OccursAt has to be a valid value, and the
+   Time value is going to often be the result of blind math operation with full faith.  The
+   OccursAt value may be changed at the same time as the recurs indicator, because any
+   transition from direct/recurring to recurring/direct happens by definition at Curr Time.
+   Said another way, an Event comes back from Agency with a blank slate in ssTEA's view.
+   Note that the filter is that the value is a valid Time value, which includes -/0/+ range.
+   -----------------------------------------------------------------------------------------
+   if (!ssE_pAboutEv->OccursAt.Valid)
+//
+   ----------------------------------------------------------------------------------------
+   All event instances of one type have been checked for this Agency Root instance.
+   Because this is Agency Root, there is no knowledge of the organization of the database.
+   ----------------------------------------------------------------------------------------
+   Modifications to types and states may occur when Events are granted agency.  Thus an
+   Ireq event can change its own type to Data, and then that same event will run (as Data).
+   a Data Event may trigger an Event of type Time by modifying the Occurs At for the Event.
+
+   ----------------------------------------------------------------------------------------
+
+   The ability to do this directly requires building ssTEA such that all event data
+   allocations occur only one time and are shared between the application and ssTEA.
+
+   The !TRUSTED model of building requires that a user check about event's current state:
+    1) API calls from Events while being granted Agency change the database.
+    2) API calls from the App and not within granted Agency change the database.
+   This is accomplished by using the API to request the current state.
+
+   The TRUSTED model of building makes all modifications to a single shared live copy.
+   ----------------------------------------------------------------------------------------
+   if (EvTypeFSM_state == ssE_EvType_Ireq)
+       if (EvTypeFSM_state == ssE_EvType_Data)
+           if (EvTypeFSM_state == ssE_EvType_Time)
+//
+
+// S~S  SimpleSal signal ends  S~S

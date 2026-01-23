@@ -1,0 +1,44 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+
+
+A suggestion: at the same level in your directory tree where the development of software
+occurs; when you are editing source code files and building one or more Apps.  In Arduino
+ecosystems the name of the App's root ".ino" file must be the same as the App directory.
+This results in a directory of Apps, each with the ".ino" file and a SimpleSal directory.
+
+
+
+
+The structure of this directory matches the structure of the development directory under Apps.  This
+is the point of control that interconnects the dirty development directory and the clean repository.
+The portal, or the liminal space, between "user source control" and "repository source control" is key.
+
+The term "read-only" means "something blocks the modification of the contents of the file".
+The term "writable" means "nothing blocks the ...".
+
+Each directory will contain a read-only or writable copy of a repository's contents, with no Git data.
+
+The repository directory is the possession of the manager and can be changed at any moment.  Modifying
+the content of repository directory outside the manager application is only for the most advanced user.
+
+The repo manager uses the file system to enforce the "something/nothing blocks" modification controls.
+Carrier and development modification controls are implemented by the user, personally, in their head.
+
+A carrier directory with a read-only copy of a repository's development tree can be referred to directly
+by a build path directive.  In the Arduino ecosystem, each App directory contains all the files included;
+each App's directory will contain a copy of the carrier's data.  The App copy may be modified but would
+never be copied back to the carrier and therefore would never be transferred back to the repository.
+
+A carrier directory with a writable copy can also be referred to directly in a build path directive.
+This makes the carrier directory into a development directory.  This also makes the development directory
+into the carrier.
+
+
+<for post: create a drawio showing state machine description of this same thing>
+
+<sequences: create new blank piece of paper in development, transfer to carrier, transfer to repo.>
+<get writable copy of blank piece of paper into carrier, tranfer to dev, modify, transfer to carrier>
+
+// S~S  SimpleSal signal ends  S~S

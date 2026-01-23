@@ -1,0 +1,57 @@
+// license-text-string   copyright-text-string
+// S~S  SimpleSal signal starts  S~S
+
+// [Mesa Pin Basics.note]               search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+   The mesa is a solution humans have created, in which hardware and software implement features to
+   solve a human problem.  The hardware and the software implementations are highly configurable.
+
+   There are two views to the configuration of the mesa, or computer, on which SimpleSal is running.
+   1) there must be references to interfaces of devices that cause the device to work in some manner
+        a) what are the registers of a serial port device on this mesa that configure the baud rate?
+        b) multiplexed interfaces are common in larger chips, the device itself has to be enabled.
+   2) references by software for each device need to know where the registers exist on this mesa
+   ------------------------------------------------------------------------------------------------
+   GPIO interfaces of chipset mesas is the bread-and-butter money-maker for the chip manufacturer,
+   so the interface can often by quite complex in both implementation and configuration choices.
+   The more sets of useful configurations that can be created from one chip, the more customers.
+   The demand for these interfaces compared to the pin requirements results in multiplexed pins,
+   both at power-on due to fused pins controlling the purchased abilities, or, at run time when
+   either one device OR another device (of many) is configured to be controlling the pin itself.
+   ------------------------------------------------------------------------------------------------
+   The values LOW and HIGH are conclusions by the mesa, choosing from 0 or 1.  Physical signal
+   attributes are interpreted by the mesa after an electronic configuration is applied.  The
+   interpretation by the electronic circuity as configured through the inclusion/exclusion of the
+   electronic components affects the electronic signal reported by the Digital GPIO pin as 0 or 1.
+   For example, inputs with a "pull up" configuration will report 1 for values detected as less
+   1 by some amount.  This occurs within the chip, between the external pin and the processor.
+   ------------------------------------------------------------------------------------------------
+   Pins on Arduino shields line up with Arduino mesa Pins which are connected to true processor pins.
+        "true mesa pin 12" means the pin on mesa labeled with "12" on the connector to the shield.
+        "processor pin 22" means the pin on the processor as described by the mesa design documents.
+   The tuple (mesa pin 12, processor pin 22) identifies one signal carrier between the processor
+   and the device at the other end of the wire.  Arduino designs keep these two numbers the same;
+   a complex chip with dozens of pins with configurations changeable in real time probably won't.
+   -------------------------------------------------------------------------------------------------
+   typedef int PinNumber_t;
+
+   ------------------------------------------------------------------------------------------------
+   The idea of a pin is instantiated in every mesa.  The definition of the specific attributes of
+   pins is at some level generic, within the context of the software supporting the mesa.  The
+   definition of the mesa provided by the Vendor is almost always a requirement for implementing
+   software for the mesa.  The definition includes #defines for bit fields, registers, meanings of
+   bit fields (HIGH and LOW) that the Vendor asserts matches the physical attributes of the device.
+   ------------------------------------------------------------------------------------------------
+   "Pin Mode" is a common concept based on electronics fundamentals; implementation may vary by Mesa
+   with respect to the values used to configure each Mesa.  Creating an abstract symbol here, and
+   using it in the software that is common to all Mesas, allows the focus of variation to be here.
+   ----------------------------------------------------------------------------------------------------
+   typedef enum PinMode_e
+
+
+   The Uno is a good example because it has a variety of Mesas produced over the years, their
+   own software developers have already created an abstraction that can be adopted and narrowed.
+   #ifdef MESA_ONEOF_UNO_R7
+
+// S~S  SimpleSal signal ends  S~S
