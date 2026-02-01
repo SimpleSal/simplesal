@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -331,12 +331,6 @@ typedef unsigned long ss_EvInfoChannel_t;
 #define Signal_ApiFsm_Off   ss_ApiSigMsgValue_AgApifsm_Off
 
 #define AskThePumpFSMToStop ss_ApiSigMsgValue_AgRunfsm_Stop
-
-// =================================================================================================
-// -------------------------------------------------------------------------------------------------
-// the public interface with ssTEA about ssTEA data is limited to the signal "Initialize your data".
-// -------------------------------------------------------------------------------------------------
-ss_macSNR_t         ssTEA_Agency_Initialize (void);
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------

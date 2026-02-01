@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -103,14 +103,14 @@ void mesa_uiOp_LEDoff (void)
 // One method for creating repeatable sequences of random numbers is creating local data.  One good
 // reason to have a repeatable sequence is when a sequence of random numbers is crashing your code.
 // ------------------------------------------------------------------------------------------------
-#ifdef MESA_OPTIN_RandomNumbers
+#ifdef MESA_OPTIN_RANDOM_NUMBERS
 // -------------------------------------------------------------------------------------------------
 // The tables both have 100 numbers in them.  One algorithm might go through the table containing
 // numbers from 0-99 (using "for (i=0;i<99;++)"), using each entry in the table as a random number;
 // and then similarly go through the table of numbers from 0-999 (using "for (i=0;i<99;++)"). "Seq".
 // Another algorithm might use the value from the 0-99 table as an index into the table of numbers
 // from 0-999: "random = from_1000[from_100[i]]";.  Two examples of generating deterministic random
-// number sequences; deterministic meaning the algorithm will produce the same sequence each time.
+// number sequences; deterministic meanoing the algorithm will produce the same sequence each time.
 // -------------------------------------------------------------------------------------------------
 #define RANDOM_100_TABLE_CT     (100)
 #define RANDOM_100_TABLE_MAX_I  (RANDOM_100_TABLE_CT-1)
@@ -194,7 +194,7 @@ void    mesa_Random_Init (void)
     gNextRandom_100_i = 0;
     gNextRandom_1000_i = 0;
 }   // mesa_Random_Init
-#endif  // MESA_OPTIN_RandomNumbers
+#endif  // MESA_OPTIN_RANDOM_NUMBERS
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------

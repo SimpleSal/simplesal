@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ typedef RO_substate_t  *pRO_substate_t;
 // ------------------------------------------------------------------------------------------------
 // SimpleSal uses psuedo-random numbers for simple purposes; the implementation is based on arrays.
 // ------------------------------------------------------------------------------------------------
-#ifdef MESA_OPTIN_RandomNumbers
+#ifdef MESA_OPTIN_RANDOM_NUMBERS
 typedef     unsigned long  int  mesa_Random_t;
 typedef     int                 mesa_Random_i_t;
 
@@ -74,7 +74,7 @@ mesa_Random_t    mesa_Random_Pick (mesa_Random_i_t which_i);
 mesa_Random_t    mesa_Random_NextFrom100 (void);
 mesa_Random_t    mesa_Random_NextFrom256 (void);
 mesa_Random_t    mesa_Random_NextFrom1000 (void);
-#endif  // MESA_OPTIN_RandomNumbers
+#endif  // MESA_OPTIN_RANDOM_NUMBERS
 
 typedef     unsigned char       Bits8_t;
 typedef     Bits8_t            *pBits8_t;

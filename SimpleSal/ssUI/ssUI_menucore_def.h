@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -295,7 +295,6 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
         {
             continue;
         }
-        Bld_ApiData_Debug_Access_func (pEvApi);
 
         ssA_statOp_All_Zero (&ThisEv_All_Stats);
 
@@ -765,7 +764,6 @@ eHandlerResult_t  H_ev_apivar (int tkn_i, boolean moreInputTkns)
             // CHANGE pEvApi to refer to a specific EvApiData database entry or record.
             // -----------------------------------------------------------------------------------------
             pEvApi = ssUI_dbOp_Lookup_UsingEvApi_i(EvApi_i);
-            Bld_ApiData_Debug_Access_func (pEvApi);
 
             if (
                  ssUI_tknIf_P1eqP2 (pEvApi->pEvApiNameTkn_ssDB,  &gTokens[ssUI_tkn2nd_i])
@@ -887,7 +885,6 @@ eHandlerResult_t RunThis_ev_subcmd (ev_subcmd_handler_t pEv_HandlerFunc, boolean
     // ---------------------------------------------------------------------------------------------
     if (gThisCmds_pEvApi != ssUI_db_pEvApiNull)
     {
-        Bld_ApiData_Debug_Action (gThisCmds_pEvApi, "Running handler on specific named EvApi");
 
         FuncReturn = pEv_HandlerFunc (gThisCmds_pEvApi, moreInputTkns);
         if (FuncReturn == eH_rError)
@@ -900,7 +897,6 @@ eHandlerResult_t RunThis_ev_subcmd (ev_subcmd_handler_t pEv_HandlerFunc, boolean
             return (FuncReturn);
         }   // if
 
-        Bld_ApiData_Debug_Action (gThisCmds_pEvApi, "   handler returned !Error and !Defer");
         return (FuncReturn);
     }   // if specific EvApi in process
 
@@ -909,13 +905,11 @@ eHandlerResult_t RunThis_ev_subcmd (ev_subcmd_handler_t pEv_HandlerFunc, boolean
     // ---------------------------------------------------------------------------------------------
     for (EvApi_i=0; EvApi_i <= SSUI_EVAPI_ALLOC_MAX_I; EvApi_i++)
     {
-        Bld_ApiData_Debug_Action (pEvApi, "Running handler(s) within EvApi_i loop");
 
         // -----------------------------------------------------------------------------------------
         // CHANGE pEvApi to refer to a specific EvApiData database entry or record.
         // -----------------------------------------------------------------------------------------
         pEvApi = ssUI_dbOp_Lookup_UsingEvApi_i (EvApi_i);
-        Bld_ApiData_Debug_Access_func (pEvApi);
 
         // gThisCmds_pEvApi??   value now?
         FuncReturn = pEv_HandlerFunc (pEvApi, moreInputTkns);
@@ -930,7 +924,6 @@ eHandlerResult_t RunThis_ev_subcmd (ev_subcmd_handler_t pEv_HandlerFunc, boolean
             return (FuncReturn);
         }   // exact match to eH_rError returned
 
-        Bld_ApiData_Debug_Action (pEvApi, "   handler returned !Error and !Defer");
         // keep going, don't return error code until final (bugbugbug)
     }   // for
 

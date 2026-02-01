@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -326,7 +326,6 @@ void ssUI_dbOp_Show_AllEvApis (void)
         pEvApi = ssUI_dbOp_Lookup_UsingEvApi_i (EvApi_i);
         if (pEvApi->accessOn)
         {
-            Bld_ApiData_Debug_Access_func (pEvApi);
             ss_uiOp_emit_newline ();
             ss_uiOp_emit_Dash (20);
             ssUI_dbOp_Show_OneEvApi (pEvApi);
@@ -389,7 +388,6 @@ void ssUI_dbOp_Init_AllEvApis (boolean doDeepInit)
     for (EvApi_i=0; EvApi_i <= SSUI_EVAPI_ALLOC_MAX_I; EvApi_i++)
     {
         pEvApi = ssUI_dbOp_Lookup_UsingEvApi_i (EvApi_i);
-        Bld_ApiData_Debug_Access_func (pEvApi);
 
 #ifdef BLD_DEBUG_MEMORYACCESS
         // -----------------------------------------------------------------------------------------

@@ -1,15 +1,17 @@
-// license-text-string   copyright-text-string
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+   The contents of this file are the opinion of TSC LLC about a specific topic, no license applies to it.
+  -------------------------------------------------------------- */
+
+   ---------------------------------------------------------------------------------------------------
+
+
 // S~S  SimpleSal signal starts  S~S
 
-
+If SimpleSal is accessible by any App, which App is used to develop and test SimpleSal?
 
 A suggestion: at the same level in your directory tree where the development of software
-occurs; when you are editing source code files and building one or more Apps.  In Arduino
-ecosystems the name of the App's root ".ino" file must be the same as the App directory.
-This results in a directory of Apps, each with the ".ino" file and a SimpleSal directory.
-
-
-
+occurs, where you are editing source code files and building one or more Apps, create a
+app-simplesal-dev instance, where any SimpleSal App and any SimpleSal being modified can mix.
 
 The structure of this directory matches the structure of the development directory under Apps.  This
 is the point of control that interconnects the dirty development directory and the clean repository.

@@ -22,6 +22,35 @@ TruSoft Computing LLC
 
      branch                 main-simplsal
 
+       label on branch      release-260131
+
+ Date of Publishment        January 31, 2026
+
+ TSC LLC Version identifier 260131
+
+ Human version identifier   v0.9b
+
+------------------------------------------
+
+    Update all notations calling for "copyright-text" with proper copyright assertion text.
+    Update all notations of copyright assertion for 2025 to also assert for 2026.
+
+    Source file changes related to completing the integration of v0.9a into "app-clock".
+
+------------------------------------------
+
+=====================
+
+ S~S Changes to a repository have been published by SimpleSal
+
+------------------------------------------
+
+ GitHub username            simplesal
+
+   repository               simplesal
+
+     branch                 main-simplesal
+
        label on branch      release-260123
 
  Date of Publishment        January 23, 2026

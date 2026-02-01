@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
 // ssTEA co-exists with the App but as with any software, ssTEA has a language based on words.
 // The software assumes the reader has full knowledge of the words and the language; the notes
 // associated explain the words and language in a natural human language (American English); the
-// fsmDemo software App used to test ssTEA contains complete references to all of the interface.
+// fsmDemo SimpleSal App used to test ssTEA contains complete references to all of the interface.
 // -------------------------------------------------------------------------------------------------
 pAscii_t    ssTEA_plbl_StateGood    = S("  result: <as expected>");
 pAscii_t    ssTEA_plbl_StateFail    = S("  result: <not expected>");
@@ -28,7 +28,9 @@ pAscii_t    ssTEA_plbl_Carrier      = S("  -- carrier --  :");
 pAscii_t    ssTEA_plbl_Channel      = S("  -- channel --  :");
 
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t  ssTEA_Agency_Initialize (void)
+// the collection of ssTEA FSMs all have an Init State.  Each is granted Agency, in turn, to start.
+// -------------------------------------------------------------------------------------------------
+ss_macSNR_t  ssTEA_InitState (void)
 {
     ss_macSNR_t  signalReturn;
 
@@ -45,8 +47,9 @@ ss_macSNR_t  ssTEA_Agency_Initialize (void)
     }   // OK signal
 
     ssTEA_Agency_Root (0, 0);                   // Init State for Agency FSM allowed to occur
+
     return (signalReturn);
-}   // ssTEA_Agency_Initialize
+}   // ssTEA_InitState
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------

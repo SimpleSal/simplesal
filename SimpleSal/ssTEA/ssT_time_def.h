@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -200,13 +200,13 @@ void ssTEA_Time_MathExit (void)
 //  <bigbang> = <zero-based time, from hardware, after reset>
 // -------------------------------------------------------------------------------------------------
             ssT_Time_t  ssT_gTime_BigBang;
-ReadOnly  ssT_pTime_t ssT_gpTime_BigBang = &ssT_gTime_BigBang;
+ReadOnly    ssT_pTime_t ssT_gpTime_BigBang = &ssT_gTime_BigBang;
 
 // -------------------------------------------------------------------------------------------------
 // Time of build contains the time this software image running now was built on another mesa.
 // -------------------------------------------------------------------------------------------------
             ssT_Time_t  ssT_gTime_OfBuild;
-ReadOnly  ssT_pTime_t  ssT_gpTime_Built = &ssT_gTime_OfBuild;
+ReadOnly    ssT_pTime_t  ssT_gpTime_Built = &ssT_gTime_OfBuild;
 
 // -------------------------------------------------------------------------------------------------
 // The mechanism used to determine the actual value of current Time is a service provided by ssT.
@@ -221,7 +221,7 @@ ReadOnly  ssT_pTime_t  ssT_gpTime_Built = &ssT_gTime_OfBuild;
 //                <manipulated time from software, in ssTEA_Agency_Root when granted Agency by the Host>
 // -------------------------------------------------------------------------------------------------
             ssT_Time_t  ssT_gTime_Current;
-ReadOnly  ssT_pTime_t  ssT_gpTime_Current = &ssT_gTime_Current;
+ReadOnly    ssT_pTime_t ssT_gpTime_Current = &ssT_gTime_Current;
 
 // -------------------------------------------------------------------------------------------------
 // "Ephemeral" == "transient" == "everchanging" == "existing only while it is being referenced".
@@ -234,12 +234,12 @@ ReadOnly  ssT_pTime_t  ssT_gpTime_Current = &ssT_gTime_Current;
 // ssTEA itself does not use the ephemeral Time to hold intermediate results during math operations.
 // -------------------------------------------------------------------------------------------------
             ssT_Time_t  ssT_gTime_Ephemeral;
-ReadOnly  ssT_pTime_t  ssT_gpTime_Ephemeral = &ssT_gTime_Ephemeral;
+ReadOnly    ssT_pTime_t ssT_gpTime_Ephemeral = &ssT_gTime_Ephemeral;
 
 // =================================================================================================
 // A Time moved from below, inside the PREDEFINED_TIMES_AVAILABLE ifdef, becomes available to code.
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t   ssT_gTime_Zero =
+ReadOnly    ssT_Time_t   ssT_gTime_Zero =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    true,   0,  0,  0,  0,  0,  0,
@@ -248,9 +248,9 @@ ReadOnly  ssT_Time_t   ssT_gTime_Zero =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_Zero = &ssT_gTime_Zero;
+ReadOnly    ssT_pTime_t ssT_gpTime_Zero = &ssT_gTime_Zero;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_10sc =
+ReadOnly    ssT_Time_t  ssT_Time_10sc =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0, 10,  0,  0,
@@ -259,9 +259,9 @@ ReadOnly  ssT_Time_t  ssT_Time_10sc =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_10sc = &ssT_Time_10sc;
+ReadOnly    ssT_pTime_t ssT_gpTime_10sc = &ssT_Time_10sc;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_1sc =
+ReadOnly    ssT_Time_t  ssT_Time_1sc =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  1,  0,  0,
@@ -270,9 +270,9 @@ ReadOnly  ssT_Time_t  ssT_Time_1sc =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_1sc = &ssT_Time_1sc;
+ReadOnly    ssT_pTime_t ssT_gpTime_1sc = &ssT_Time_1sc;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_5sc =
+ReadOnly    ssT_Time_t  ssT_Time_5sc =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  5,  0,  0,
@@ -281,9 +281,9 @@ ReadOnly  ssT_Time_t  ssT_Time_5sc =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_5sc = &ssT_Time_5sc;
+ReadOnly    ssT_pTime_t ssT_gpTime_5sc = &ssT_Time_5sc;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_3sc =
+ReadOnly    ssT_Time_t  ssT_Time_3sc =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  3,  0,  0,
@@ -292,11 +292,11 @@ ReadOnly  ssT_Time_t  ssT_Time_3sc =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_3sc = &ssT_Time_3sc;
+ReadOnly    ssT_pTime_t ssT_gpTime_3sc = &ssT_Time_3sc;
 // -------------------------------------------------------------------------------------------------
 #ifdef  PREDEFINED_TIMES_AVAILABLE
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_1ms =
+ReadOnly    ssT_Time_t  ssT_Time_1ms =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  0,  1,  0,
@@ -305,9 +305,9 @@ ReadOnly  ssT_Time_t  ssT_Time_1ms =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_1ms = &ssT_Time_1ms;
+ReadOnly    ssT_pTime_t ssT_gpTime_1ms = &ssT_Time_1ms;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_10ms =
+ReadOnly    ssT_Time_t  ssT_Time_10ms =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  0, 10,  0,
@@ -316,9 +316,9 @@ ReadOnly  ssT_Time_t  ssT_Time_10ms =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_10ms = &ssT_Time_10ms;
+ReadOnly    ssT_pTime_t ssT_gpTime_10ms = &ssT_Time_10ms;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_100ms =
+ReadOnly    ssT_Time_t  ssT_Time_100ms =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  0,100,  0,
@@ -327,9 +327,9 @@ ReadOnly  ssT_Time_t  ssT_Time_100ms =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_100ms = &ssT_Time_100ms;
+ReadOnly    ssT_pTime_t ssT_gpTime_100ms = &ssT_Time_100ms;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_1us =
+ReadOnly    ssT_Time_t  ssT_Time_1us =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  0,  0,  1,
@@ -338,9 +338,9 @@ ReadOnly  ssT_Time_t  ssT_Time_1us =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_1us = &ssT_Time_1us;
+ReadOnly    ssT_pTime_t ssT_gpTime_1us = &ssT_Time_1us;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t  ssT_Time_10us =
+ReadOnly    ssT_Time_t  ssT_Time_10us =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  0,  0, 10,
@@ -349,9 +349,9 @@ ReadOnly  ssT_Time_t  ssT_Time_10us =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_10us = &ssT_Time_10us;
+ReadOnly    ssT_pTime_t ssT_gpTime_10us = &ssT_Time_10us;
 // -------------------------------------------------------------------------------------------------
-ReadOnly  ssT_Time_t ssT_Time_100us =
+ReadOnly    ssT_Time_t ssT_Time_100us =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
     true, true,    false,  0,  0,  0,  0,  0,100,
@@ -360,7 +360,7 @@ ReadOnly  ssT_Time_t ssT_Time_100us =
 #endif  // SST_OPTIN_TIME_NSECS_TU
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
-ReadOnly  ssT_pTime_t  ssT_gpTime_100us = &ssT_Time_100us;
+ReadOnly    ssT_pTime_t ssT_gpTime_100us = &ssT_Time_100us;
 #endif // PREDEFINED_TIMES_AVAILABLE
 
 // =================================================================================================
@@ -1245,11 +1245,15 @@ TimeUnitsBig_t  ssT_rawCt_NextPlanck (void)
     Incrementer += 1;
 
 #ifdef SST_ONEOF_TIME_PLANCKS_RANDOM
+#ifdef MESA_OPTIN_RANDOM_NUMBERS
     // Each planck value in Random mode has an incrementing portion and the rest is as selected,
     //   because the incrementing trick is restricted to the least significant 8 bits.
     ThisPlanck |= ( (TimeUnitsBig_t) (mesa_Random_From256_Seq () << 24) );
     ThisPlanck |= ( (TimeUnitsBig_t) (mesa_Random_From256_Seq () << 16) );
     ThisPlanck |= ( (TimeUnitsBig_t) (mesa_Random_From256_Seq () <<  8) );
+#else   // MESA_OPTIN_RANDOM_NUMBERS
+    ThisPlanck |= 0x8675309;            // indicate a build conflict between source wanted/enabled
+#endif  // MESA_OPTIN_RANDOM_NUMBERS
 #endif  // SST_ONEOF_TIME_PLANCKS_RANDOM
 
 #ifdef SST_ONEOF_TIME_PLANCKS_ZERO

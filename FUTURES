@@ -12,52 +12,15 @@ TruSoft Computing LLC
 
 =====================
 
- S~S  Unique or Unusual Release Note: Incomplete SimpleSal Content
-
-------------------------------------------
-
-   Note: A specific release note for version 260123 of SimpleSal software...
-
-        the root of the main-simplesal branch was instantiated
-
-        from the file system version control database
-
-        as a time-stamped snapshot of the working version in use to support
-
-        the development of videos for the simplesal substack site.
-
-    The version released here is intended to demonstrate software development tasks during
-    the late phases of a development project; things still need to be changed, carefully.
-
-    A sophisticated version control database can identify more deltas than file date and time.
-
-------------------------------------------
-
-=====================
-
- S~S  Software Development Plans versus Publishing Plans
-
-------------------------------------------
-
-   The software named "ssTEA" is added to an App to make it into a "SimpleSal App".
-
-   ssTEA was architected, designed and implemented to not do anything the user can do.
-   Said the other way around: if an App's software can do the task, SimpleSal won't volunteer.
-
-   ssTEA will keep Time and then execute your Event function at the Time you requested.
-
-   Publishing the definition of the interface to ssTEA, a so-called API, sets it in stone.
-
-   Development plans are constrained to completing the implementation without breaking anything.
-
-   The expectation is that the SimpleSal software ecosystem will be fairly static once published.
-
-   The SimpleSal Apps published by TSC LLC, written by anyone, will be where all the activity is.
-
 ------------------------------------------
 
    A release is planned implementing changes required to transition from Development to Production.
    TSC LLC calls the transition, big 'D' Development to big 'P' Production, "publishing software".
+
+   Another way to view the transition is as the accumulation of all modifications to move the content
+   from version "0.9_" to "1.0a", where '_' is the last release candidate before "it" is "done".
+
+   Always in the plan:
 
     * formalize and make canonical all metadata files across all SimpleSal ecosystem releases
 

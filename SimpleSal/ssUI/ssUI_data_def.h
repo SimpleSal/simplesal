@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@
 // The highest-level FSMs control turn-taking sharing of a serial input/output device and local echo.
 // ssTEA services run without UI services; ssUI is of course dependent on input/output devices.
 // -------------------------------------------------------------------------------------------------
-// ssFeature: ssUI's "restart everything" requires a run-time initialization: ssUI_Initialize.
+// ssFeature: ssUI's "restart everything" requires a run-time initialization: ssUI_InitState.
 // -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ ssUI_control_t    ssUI_control
 // -------------------------------------------------------------------------------------------------
 // [.\SimpleSal\ssDocs\ssUI\UI Considerations for ssUI.note]     select the method of initialization
 // -------------------------------------------------------------------------------------------------
-void ssUI_Initialize (void)
+void ssUI_InitState (void)
 {
     msg_ssTEA_Path ();
 
@@ -80,7 +80,7 @@ void ssUI_Initialize (void)
     // establish the relationships between all the structures, which creates an accessible database.
     ssUI_dbOp_Init_AllEvApis (DEEPINIT);
 
-} // ssUI_Initialize
+} // ssUI_InitState
 
 // -------------------------------------------------------------------------------------------------
 // An input string to the UI is received, and tokenized by ssUI into individual tokens in an array;
