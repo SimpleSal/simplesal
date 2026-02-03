@@ -108,17 +108,17 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // -------------------------------------------------------------------------------------------------
 #ifdef SS_ACCEPT_SIMPLEST_CONFIG
 // -------------------------------------------------------------------------------------------------
-//      A SimpleSal is an App that has chosen to co-exist with ssTEA; maybe also making use of ssUI.
+// A SimpleSal App has chosen to co-exist with ssTEA; maybe also making use of ssUI and/or ssIO.
 // -------------------------------------------------------------------------------------------------
-//      True SimpleSalness occurs through understanding that Time is a value modified by an FSM;
-//          on the path to True SimpleSalness, the Arrow of Time is the way humans understand Time.
-//      Plancks are not perceivable so the plancks field in a Time value is used for other purposes.
+// True SimpleSalness occurs through understanding that Time is a value modified by an FSM;
+// on the path to True SimpleSalness, the Arrow of Time is the way humans understand Time.
+// Plancks are not perceivable so the plancks field in a Time value is used for other purposes.
 // -------------------------------------------------------------------------------------------------
-//      ABOUTEVDB gives responsibility for allocation to ssE's DB functions, while trusting the App.
-//      A Trusted App has direct access to the information ssTEA uses to manage Events at run-time.
+// ABOUTEVDB gives responsibility for allocation to ssE's DB functions, while trusting the App.
+// A Trusted App has direct access to the information ssTEA uses to manage Events at run-time.
 // -------------------------------------------------------------------------------------------------
-//      The choice of initialization timing (build or run time) may be limited by the development
-//      and/or execution environments of the actual App running on the Mesa.  Or maybe not limited.
+// The choice of initialization timing (build or run time) may be limited by the development
+// and/or execution environments of the actual App running on the Mesa.  Or maybe not limited.
 // -------------------------------------------------------------------------------------------------
 /* simplest */ #define      SS_OPTIN_INCLUDE_SSUI
 

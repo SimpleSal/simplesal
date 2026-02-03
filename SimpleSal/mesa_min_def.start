@@ -15,11 +15,32 @@
 // =================================================================================================
 
 // =================================================================================================
-#define     THIS_BUILDS_BAUD_RATE  (9600)
+#define     THIS_BUILDS_BAUD_RATE  (57600)
 
 // =================================================================================================
 // #define MESA_ONEOF_CONTROL_INIT_BUILDTIME
 #define MESA_ONEOF_CONTROL_INIT_RUNTIME
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// Because the App defines the substates, and ssUI has menu options to change substates: the menu
+// developer may need to change the ssUI menu software for substates, modified as substates changed.
+// -------------------------------------------------------------------------------------------------
+// The Resource FSM Mesa software should only refer to the states defined by this mesa, right here.
+// -------------------------------------------------------------------------------------------------
+#define mesa_RO_substate_delay       ((int) Bit0)    // measure and signal Time: waiting while it occurs
+#define mesa_RO_substate_classic     ((int) Bit1)    // measure and signal Time: counting milliseconds
+
+#define mesa_RO_substate_pace        ((int) Bit2)    // indicate ssTEA's Agency pace period has occured
+#define mesa_RO_substate_agency      ((int) Bit3)    // indicate an Event is being granted agency
+#define mesa_RO_substate_ssTEA       ((int) (Bit2 | Bit3))
+
+#define mesa_RO_substate_group0      ((int) Bit4)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_group1      ((int) Bit5)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_shape0      ((int) Bit6)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_shape1      ((int) Bit7)    // managed by fsmdemo Apps using Driver to manage
+#define mesa_RO_substate_none        ((int) 0)
+#define mesa_RO_substate_all         ((int) (Bit0|Bit1|Bit2|Bit3|Bit4|Bit5|Bit6|Bit7))
 
 #ifdef MESA_ONEOF_CONTROL_INIT_RUNTIME
 RO_state_t      mesa_LED_RO_state;
@@ -38,6 +59,16 @@ RO_substate_t   mesa_Ascii_RO_substate  = mesa_RO_substate_none;
 RO_state_t      mesa_Matrix_RO_state    = mesa_RO_state_App;
 RO_substate_t   mesa_Matrix_RO_substate = mesa_RO_substate_none;
 #endif  // MESA_ONEOF_CONTROL_INIT_BUILDTIME
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// The ssUI input function uses one of these global variables maintained using classic Timekeeping.
+// These variables satisfy the reference by ssUI until the software to keep Time is needed and added.
+// -------------------------------------------------------------------------------------------------
+TimeUnitsBig_t  mesa_gCtOf_1usThis1ms;      // # of microsecond periods this 1 millisecond period
+TimeUnitsBig_t  mesa_gCtOf_1msThis100ms;    // # of millisecond periods this 100 millisecond period
+TimeUnitsBig_t  mesa_gCtOf_1msThisCycle;    // # of millisecond periods this cycle (on|off|on)
+TimeUnitsBig_t  mesa_gCtOf_1msFreeRunning;  // # of millisecond periods ever, since Time began
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
@@ -110,7 +141,7 @@ void mesa_uiOp_LEDoff (void)
 // and then similarly go through the table of numbers from 0-999 (using "for (i=0;i<99;++)"). "Seq".
 // Another algorithm might use the value from the 0-99 table as an index into the table of numbers
 // from 0-999: "random = from_1000[from_100[i]]";.  Two examples of generating deterministic random
-// number sequences; deterministic meanoing the algorithm will produce the same sequence each time.
+// number sequences; deterministic meaning the algorithm will produce the same sequence each time.
 // -------------------------------------------------------------------------------------------------
 #define RANDOM_100_TABLE_CT     (100)
 #define RANDOM_100_TABLE_MAX_I  (RANDOM_100_TABLE_CT-1)
@@ -197,6 +228,10 @@ void    mesa_Random_Init (void)
 #endif  // MESA_OPTIN_RANDOM_NUMBERS
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
+// The "serial port" communications medium supports text-based exchanges of data with humans (TTY?),
+// and supports out-of-bandwidth control values; the receiver handles within the receiver's context.
+// The receiver for humans receives the values and updates a visual representation; when originally
+// used between computers in 1970 the receiver might have had complex mechanisms to perform CR, LF.
 // -------------------------------------------------------------------------------------------------
 void mesa_uiOp_emit_newline (void)
 {

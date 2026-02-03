@@ -40,24 +40,6 @@ typedef enum RO_state_e
 typedef RO_state_t      *pRO_state_t;
 #define pRO_stateNull   ((pRO_state_t) NULL)
 
-// -------------------------------------------------------------------------------------------------
-// Because the App defines the substates, and ssUI has menu options to change substates, the App
-// developer may need to change the ssUI menu software for substates, modified to substates changed.
-// -------------------------------------------------------------------------------------------------
-#define mesa_RO_substate_delay       ((int) Bit0)    // measure and signal Time: waiting while it occurs
-#define mesa_RO_substate_classic     ((int) Bit1)    // measure and signal Time: counting milliseconds
-
-#define mesa_RO_substate_pace        ((int) Bit2)    // indicate ssTEA's Agency pace period has occured
-#define mesa_RO_substate_agency      ((int) Bit3)    // indicate an Event is being granted agency
-#define mesa_RO_substate_ssTEA       ((int) (Bit2 | Bit3))
-
-#define mesa_RO_substate_group0      ((int) Bit4)    // managed by fsmdemo Apps using Driver to manage
-#define mesa_RO_substate_group1      ((int) Bit5)    // managed by fsmdemo Apps using Driver to manage
-#define mesa_RO_substate_shape0      ((int) Bit6)    // managed by fsmdemo Apps using Driver to manage
-#define mesa_RO_substate_shape1      ((int) Bit7)    // managed by fsmdemo Apps using Driver to manage
-#define mesa_RO_substate_none        ((int) 0)
-#define mesa_RO_substate_all         ((int) (Bit0|Bit1|Bit2|Bit3|Bit4|Bit5|Bit6|Bit7))
-
 typedef int             RO_substate_t;
 typedef RO_substate_t  *pRO_substate_t;
 #define pRO_substateNull ((pRO_substate_t) NULL)
@@ -70,10 +52,15 @@ typedef RO_substate_t  *pRO_substate_t;
 typedef     unsigned long  int  mesa_Random_t;
 typedef     int                 mesa_Random_i_t;
 
-mesa_Random_t    mesa_Random_Pick (mesa_Random_i_t which_i);
-mesa_Random_t    mesa_Random_NextFrom100 (void);
-mesa_Random_t    mesa_Random_NextFrom256 (void);
-mesa_Random_t    mesa_Random_NextFrom1000 (void);
+mesa_Random_t   mesa_Random_Pick (mesa_Random_i_t which_i);
+
+mesa_Random_t   mesa_Random_From100_Pick (mesa_Random_i_t which_i);
+mesa_Random_t   mesa_Random_From256_Pick (void);
+mesa_Random_t   mesa_Random_From1000_Pick (mesa_Random_i_t which_i);
+
+mesa_Random_t   mesa_Random_From100_Seq (void);
+mesa_Random_t   mesa_Random_From256_Seq (void);
+mesa_Random_t   mesa_Random_From1000_Seq (void);
 #endif  // MESA_OPTIN_RANDOM_NUMBERS
 
 typedef     unsigned char       Bits8_t;
