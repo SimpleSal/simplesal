@@ -102,7 +102,7 @@ void        ssTEA_dbOp_Init_SigData (ssTEA_pApiSig_t pApiSig, boolean doDeepInit
 #define     TIDYINIT  (false)
 
 pAscii_t    ss_uiOp_Get_pName_ssState           (ssTEA_state_t state);
-pAscii_t    ss_uiOp_Get_pName_ssAgency_Pace     (ssTEA_Agency_Pace_t Agency_Pace);
+pAscii_t    ss_uiOp_Get_pName_ssAgency_pace     (ssTEA_Agency_pace_t Agency_pace);
 
 pAscii_t    ss_uiOp_Get_pName_Runfsm_state      (ssA_Runfsm_state_t Runfsm_state);
 void        ss_uiOp_Show_RunfsmData             (ssE_pAboutEv_t ssE_pAboutEv);

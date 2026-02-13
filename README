@@ -1,8 +1,8 @@
 ------------------------------------------
 
-   This file believes that this file is:    README  in the simplesal repository.
+   This file thinks it is:    README  in the SimpleSal/simplesal repository human metadata.
 
-   This file is expected to be unique to the repository as it is metadata about the managed object.
+   The managed object, for TSC LLC repos, is a directory in the repo root (i.e., rr\SimpleSal\).
 
 ------------------------------------------
 
@@ -86,24 +86,23 @@ TruSoft Computing LLC
 
 ------------------------------------------
 
- S~S The Story of the 3-legged stool used while milking cows
+  S~S The value of a 3-legged footstool
 
-    In ancient history, people learned that a tripod form, a thing with three legs, is stable.
-    Work tasks around the farm were easier with a small simple base to sit on while working.
+    What is the increase in complexity when moving from three legs to four legs?  It is the
+    addition of the fourth leg that creates a need in the design for parallel lines and symmetry.
+    The four-legged footstool wobbles usually; the three-legged footstool is stable anywhere.
+    It probably is never truly level across the surface, but it is stable to stand on.
 
-    The SimpleSal three-legged stool is built from these three legs:
+    The SimpleSal three-legged stool is built from:
 
     1) the published software in the repo:
+        GitHub username SimpleSal, simplesal repository, branch main-simplesal
 
-        from simplesal GitHub user, simplesal repository, main-simplesal branch
-
-        instantiated with the App in the file system as the directory .\SimpleSal
-
-    2) the information within the repo about how to make use of the SimpleSal software:
-        .\SimpleSal\ssDocs\Find and Open Documents.html          <web browser viewable>
+    2) the information within the published software about how to make use of SimpleSal software:
+        \SimpleSal\ssDocs\Find and Open Documents.html          <web browser viewable>
 
     3) the information about how to write signal algorithms using software
-        simplesal's substack.com website, described below
+        simplesal's substack.com website, most content free without a subscription, see below
 
 ------------------------------------------
 
@@ -141,7 +140,7 @@ TruSoft Computing LLC
     TSC LLC's chosen publishing style:
         1) the repo contains human metadata text files and the managed object as defined here;
         2) naming conventions followed for separating metadata are adopted (GiTHUB and LiNUX);
-        2) the managed object is a single subdirectory, self-contained within the repository root.
+        3) the managed object is a single subdirectory in the root of the repository.
 
     Note: this is not conventional; it may result in metadata files in the App directory.
         The convention for many projects is that metadata files co-exist with the software files.
@@ -185,7 +184,7 @@ TruSoft Computing LLC
   The intention of the repository collection under the username simplesal on GitHub is
   to provide a medium through which information about software development can be exchanged.
 
-  A proper (e.g., copyleft-licensed) SimpleSim App from any developer is proof it is working.
+  A proper (e.g., copyleft-licensed) SimpleSal App from any developer is proof it is working.
 
   There will be a mechanism through which developers submit SimpleSal Apps for posting here.
 
@@ -224,19 +223,19 @@ TruSoft Computing LLC
 
   * for the SimpleSal source:
 
-      the managed object, a directory, goes into the App directory as .\SimpleSal.
+      the managed object, a directory, goes into the "\App" directory as "\App\SimpleSal\".
 
       A repository-to-instance transfer may include the SimpleSal repo metadata files in the
       App directory, depending upon the method of distribution of the SimpleSal repo contents.
 
   The SimpleSal App references the version of SimpleSal indicated by the software build.
 
-      This means the include path used by the software build determines where .\SimpleSal lives.
-      The SimpleSal model using the Arduino out-of-the-box build environment is .\App\SimpleSal.
+      This means the include path used by the software build determines where rr\SimpleSal lives.
+      The SimpleSal model using the Arduino out-of-the-box build environment is rr\App\SimpleSal.
 
       A more sophisticated user, with for example multiple SimpleSal Apps, could use one copy.
 
-    The contents of the App's directory and the contents of .\SimpleSal are mutually exclusive.
+    The contents of the App's directory and the contents of rr\SimpleSal are mutually exclusive.
 
 ------------------------------------------
 

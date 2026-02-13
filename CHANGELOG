@@ -1,6 +1,8 @@
 ------------------------------------------
 
-   This file believes that this file is:    CHANGELOG  in the simplesal repository.
+   This file thinks it is:    CHANGELOG  in the SimpleSal/simplesal repository human metadata.
+
+   The managed object, for TSC LLC repos, is a directory in the repo root (i.e., rr\SimpleSal\).
 
 ------------------------------------------
 
@@ -16,11 +18,39 @@ TruSoft Computing LLC
 
 ------------------------------------------
 
- GitHub username            simplesal
+ GitHub username            SimpleSal
 
    repository               simplesal
 
      branch                 main-simplsal
+
+       label on branch      release-260210
+
+ Date of Publishment        February 10, 2026
+
+ TSC LLC Version identifier 260210
+
+ Human version identifier   v0.9c
+
+------------------------------------------
+
+    Publishment of SimpleSal Apps exposes SimpleSal naming inconsistencies best eliminated.
+
+    Source file changes related names of state, Time base, and Time period variables
+
+------------------------------------------
+
+=====================
+
+ S~S Changes to a repository have been published by SimpleSal
+
+------------------------------------------
+
+ GitHub username            SimpleSal
+
+   repository               simplesal
+
+     branch                 main-simplesal
 
        label on branch      release-260131
 
@@ -45,7 +75,7 @@ TruSoft Computing LLC
 
 ------------------------------------------
 
- GitHub username            simplesal
+ GitHub username            SimpleSal
 
    repository               simplesal
 
@@ -143,8 +173,8 @@ TruSoft Computing LLC
   * 2023/12/03   Agencying functional for single and recurring events; message choices prototyped.
   * 2024/01/03   Time and Data Events running as one-time or recurring events under software control.
   * 2024/02/01   Alpha content level for myUI/ssUI, Beta content level for ssTEA, pre-refactoring.
-  * 2024/02/10   evapi menu cleaned up, SSP messaging cleaned up, name conventions towards simpleSim.
-  * 2024/03/07   refactor third pass: transition to ssTEA and simpleSim separation except myUI->ssUI.
+  * 2024/02/10   evapi menu cleaned up, SSP messaging cleaned up, name conventions towards simpleSal.
+  * 2024/03/07   refactor third pass: transition to ssTEA and simpleSal separation except myUI->ssUI.
   * 2024/03/12   functioning version based on cleaned up third pass.
   * 2024/04/07   functioning version; refactor fourth pass; filenames changed; junk deleted.
   * 2024/04/09   First pass at features and capabilities of pins/registers/sensors/signalers data I/O.

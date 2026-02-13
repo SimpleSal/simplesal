@@ -126,7 +126,7 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
     // ---------------------------------------------------------------------------------------------
     ssA_EvAg_RootMath_Entry ();
 
-    if (ssTEA_control.TimeState != ssTEA_state_running)
+    if (ssTEA_control.Time_state != ssTEA_state_running)
     {
         ssA_EvAg_RootMath_Exit (0);
         return;
@@ -143,7 +143,7 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
     // ---------------------------------------------------------------------------------------------
     // ssTEA's Agency Pace Period implementation is here; following this gate is the Agency Root FSM.
     // ---------------------------------------------------------------------------------------------
-    if (ssTEA_control.Agency_pace != ssTEA_Agency_Pace_planck)
+    if (ssTEA_control.Agency_pace != ssTEA_Agency_pace_planck)
     {
         // -----------------------------------------------------------------------------------------
         // MathSumMillis is a true count of milliseconds SINCE the last time MathSumMillis was 0.

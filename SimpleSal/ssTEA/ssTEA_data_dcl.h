@@ -106,7 +106,7 @@ typedef void * pVoid_t;
 // Pacing gates entry into the Agencying process; the Time used by the process is a separate idea.
 //
 // -------------------------------------------------------------------------------------------------
-//  TimeBase
+//  Time_base
 //     reality: the Current Time is established by a source of information based on clocks and chips
 //              that are in turn based on electrical properties in silicon, as electrons move about.
 //
@@ -123,24 +123,24 @@ typedef void * pVoid_t;
 //     virtual: Current Time is established using the OccursAt Time of the next event in Time.
 //              for example, a 60-second, once-per-second, event will run every planck, 60 times.
 // -------------------------------------------------------------------------------------------------
-typedef enum ssTEA_TimeBase_e
+typedef enum ssTEA_Time_base_e
 {
-    ssTEA_TimeBase_reality,
-    ssTEA_TimeBase_virtual,
-    ssTEA_TimeBase_error,
-    ssTEA_TimeBase_flaw
-}   ssTEA_TimeBase_t;
+    ssTEA_Time_base_reality,
+    ssTEA_Time_base_virtual,
+    ssTEA_Time_base_error,
+    ssTEA_Time_base_flaw
+}   ssTEA_Time_base_t;
 // -------------------------------------------------------------------------------------------------
-typedef enum ssTEA_Agency_Pace_e
+typedef enum ssTEA_Agency_pace_e
 {
-    ssTEA_Agency_Pace_planck,
-    ssTEA_Agency_Pace_period,
-    ssTEA_Agency_Pace_error,
-    ssTEA_Agency_Pace_flaw
-}   ssTEA_Agency_Pace_t;
+    ssTEA_Agency_pace_planck,
+    ssTEA_Agency_pace_period,
+    ssTEA_Agency_pace_error,
+    ssTEA_Agency_pace_flaw
+}   ssTEA_Agency_pace_t;
 
-#define ssTEA_Agency_Pace_period_minimum  (1)
-#define ssTEA_Agency_Pace_period_maximum  (999)
+#define ssTEA_Agency_pace_period_minimum  (1)
+#define ssTEA_Agency_pace_period_maximum  (999)
 // -------------------------------------------------------------------------------------------------
 typedef enum ssTEA_state_e
 {
@@ -210,11 +210,11 @@ typedef ss_TimeUnit_e   ss_TimeUnit_t;
 // -------------------------------------------------------------------------------------------------
 typedef struct ssTEA_controlDesc_s
 {
-    ssTEA_state_t       TimeState;
-    ssTEA_TimeBase_t    TimeBase;
+    ssTEA_state_t       Time_state;
+    ssTEA_Time_base_t   Time_base;
 
     ssTEA_state_t       Agency_state;
-    ssTEA_Agency_Pace_t Agency_pace;
+    ssTEA_Agency_pace_t Agency_pace;
     unsigned long int   Agency_period;
 
     boolean             Show_Path;

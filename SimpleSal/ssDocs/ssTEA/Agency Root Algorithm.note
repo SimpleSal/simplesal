@@ -77,7 +77,7 @@
     After the timeOp, TimeCurr represents the current time throughout ssTEA, accurate to N usecs.
     Perform the TimeCurr calculation at this moment as it allows for variation and manipulation.
     ---------------------------------------------------------------------------------------------
-    if (ssTEA_control.TimeState != ssTEA_state_running)
+    if (ssTEA_control.Time_state != ssTEA_state_running)
 //
     ---------------------------------------------------------------------------------------------
     Time is running and measured independent of the Agency state of the ssTEA Agency Root FSM.

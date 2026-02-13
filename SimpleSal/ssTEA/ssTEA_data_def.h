@@ -19,10 +19,10 @@ ssTEA_control_t ssTEA_control
 =
 {
     ssTEA_state_stopped,        // time state: stopped until application starts it
-    ssTEA_TimeBase_reality,     // time basis: based on reality until application changes it
+    ssTEA_Time_base_reality,     // time basis: based on reality until application changes it
 
     ssTEA_state_stopped,        // agency state: stopped until App starts it
-    ssTEA_Agency_Pace_period,   // ssTEA_Agency_Root is called as often as possible, or as desired
+    ssTEA_Agency_pace_period,   // ssTEA_Agency_Root is called as often as possible, or as desired
     1,                          // period has no meaning if pace is planck; valid period is 1-999ms.
 
     false,                      // emit ssTEA function's name on entry to ssTEA function (PATH)

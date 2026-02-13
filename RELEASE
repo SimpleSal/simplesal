@@ -1,6 +1,8 @@
 ------------------------------------------
 
-   This file believes that this file is:    RELEASE  in the simplesal repository.
+   This file thinks it is:    RELEASE  in the SimpleSal/simplesal repository human metadata.
+
+   The managed object, for TSC LLC repos, is a directory in the repo root (i.e., rr\SimpleSal\).
 
 ------------------------------------------
 
@@ -16,26 +18,25 @@ TruSoft Computing LLC
 
 ------------------------------------------
 
- GitHub username            simplesal
+ GitHub username            SimpleSal
 
    repository               simplesal
 
      branch                 main-simplsal
 
-       label on branch      release-260131
+       label on branch      release-260210
 
- Date of Publishment        January 31, 2026
+ Date of Publishment        February 10, 2026
 
- TSC LLC Version identifier 260131
+ TSC LLC Version identifier 260210
 
- Human version identifier   v0.9b
+ Human version identifier   v0.9c
 
 ------------------------------------------
 
-    Update all notations calling for "copyright-text" with proper copyright assertion text.
-    Update all notations of copyright assertion for 2025 to also assert for 2026.
+    Publishment of SimpleSal Apps exposes SimpleSal naming inconsistencies best eliminated.
 
-    Source file changes related to completing the integration of v0.9a into "app-clock".
+    Source file changes related names of state, Time base, and Time period variables
 
 ------------------------------------------
 

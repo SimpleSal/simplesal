@@ -63,7 +63,7 @@ void        ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAter
 #define     ss_uiOp_qBanner(xlfB,xpqAA,xlfA)    ss_uiOp_pBanner (xlfB, S(xpqAA), xlfA)
 
 #define OK_to_Blast_Ascii_Live() (                                                      \
-                                  (ssTEA_control.Agency_pace == ssTEA_Agency_Pace_period) \
+                                  (ssTEA_control.Agency_pace == ssTEA_Agency_pace_period) \
                                   &&                                                    \
                                   (ssTEA_control.Agency_period >= 100)                   \
                                  )

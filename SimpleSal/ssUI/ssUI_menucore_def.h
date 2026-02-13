@@ -59,7 +59,7 @@ eHandlerResult_t H_ss_Time (int tkn_i, boolean moreInputTkns)
 eHandlerResult_t H_ss_TimeStart (int tkn_i, boolean moreInputTkns)
 {
     msg_ssTEA_Path ();
-    switch (ssTEA_control.TimeState)
+    switch (ssTEA_control.Time_state)
     {
         case ssTEA_state_stopped :
             break;
@@ -73,7 +73,7 @@ eHandlerResult_t H_ss_TimeStart (int tkn_i, boolean moreInputTkns)
             return (eH_rError);
     }   // switch
 
-    ssTEA_control.TimeState = ssTEA_state_running;
+    ssTEA_control.Time_state = ssTEA_state_running;
     ss_uiOp_Show_ssTime_state ();
     return (eH_rHandled);
 }   // H_ss_TimeStart
@@ -95,7 +95,7 @@ eHandlerResult_t H_ss_TimeStop (int tkn_i, boolean moreInputTkns)
             return (eH_rError);
     }   // switch
 
-    switch (ssTEA_control.TimeState)
+    switch (ssTEA_control.Time_state)
     {
         case ssTEA_state_running :
             break;
@@ -109,7 +109,7 @@ eHandlerResult_t H_ss_TimeStop (int tkn_i, boolean moreInputTkns)
             return (eH_rError);
     }   // switch
 
-    ssTEA_control.TimeState = ssTEA_state_stopped;
+    ssTEA_control.Time_state = ssTEA_state_stopped;
     ssTEA_control.Agency_state = ssTEA_state_stopped;
     ss_uiOp_Show_ssTime_state ();
     return (eH_rHandled);
@@ -152,7 +152,7 @@ eHandlerResult_t H_ss_AgencyStart (int tkn_i, boolean moreInputTkns)
 {
     msg_ssTEA_Path ();
 
-    if (ssTEA_control.TimeState == ssTEA_state_stopped)
+    if (ssTEA_control.Time_state == ssTEA_state_stopped)
     {
         ss_uiOp_Show_ssTime_state ();
         ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
@@ -233,7 +233,7 @@ eHandlerResult_t H_ss_AgencyPeriod (int tkn_i, boolean moreInputTkns)
     pCopy = ssUI_AaOp_Copy_gets_pP1_lc (gTokens[tkn_i].pAsciiA);
     if (ssUI_AaIf_pP1_eq_pP2 (pCopy, ss_pPlanck))
     {
-        ssTEA_control.Agency_pace = ssTEA_Agency_Pace_planck;
+        ssTEA_control.Agency_pace = ssTEA_Agency_pace_planck;
         return (eH_rHandled);
     }
 
@@ -261,7 +261,7 @@ eHandlerResult_t H_ss_AgencyPeriod (int tkn_i, boolean moreInputTkns)
         return (eH_rError);
     }
 
-    ssTEA_control.Agency_pace = ssTEA_Agency_Pace_period;
+    ssTEA_control.Agency_pace = ssTEA_Agency_pace_period;
     ssTEA_control.Agency_period = sum;
     ss_uiOp_Show_ssAgency_state ();
     return (eH_rHandled);

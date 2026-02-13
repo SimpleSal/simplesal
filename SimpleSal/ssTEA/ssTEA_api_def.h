@@ -310,18 +310,18 @@ pAscii_t ss_uiOp_Get_pName_ssState (ssTEA_state_t state)
     }   // switch state
 }   // ss_uiOp_Get_pName_ssState
 // -------------------------------------------------------------------------------------------------
-pAscii_t ss_uiOp_Get_pName_ssAgency_Pace (ssTEA_Agency_Pace_t Agency_pace)
+pAscii_t ss_uiOp_Get_pName_ssAgency_pace (ssTEA_Agency_pace_t Agency_pace)
 {
     switch (Agency_pace)
     {
-        case ssTEA_Agency_Pace_planck    :  return (ss_pPlanck);
-        case ssTEA_Agency_Pace_period    :  return (ss_pPeriod);
-        case ssTEA_Agency_Pace_error     :  return (ss_pError);
-        case ssTEA_Agency_Pace_flaw      :
+        case ssTEA_Agency_pace_planck    :  return (ss_pPlanck);
+        case ssTEA_Agency_pace_period    :  return (ss_pPeriod);
+        case ssTEA_Agency_pace_error     :  return (ss_pError);
+        case ssTEA_Agency_pace_flaw      :
         default                         :  return (ss_pFlaw);
     }   // switch pace
     return (ss_pFlaw);
-}   // ss_uiOp_Get_pName_ssAgency_Pace
+}   // ss_uiOp_Get_pName_ssAgency_pace
 // -------------------------------------------------------------------------------------------------
 pAscii_t  ss_uiOp_Get_pName_Apifsm_state (ssA_Apifsm_state_t Apifsm_state)
 {
@@ -354,8 +354,8 @@ void ss_uiOp_Show_ssAgency_state  (void)
 {
     ss_uiOp_qBanner (lfY, "Agency Root FSM: ", lfN);
     ss_uiOp_emit_lbld_AsciiA (ss_pState, ss_uiOp_Get_pName_ssState (ssTEA_control.Agency_state));
-    ss_uiOp_emit_lbld_AsciiA (ss_pPace, ss_uiOp_Get_pName_ssAgency_Pace (ssTEA_control.Agency_pace));
-    if (ssTEA_control.Agency_pace == ssTEA_Agency_Pace_period)
+    ss_uiOp_emit_lbld_AsciiA (ss_pPace, ss_uiOp_Get_pName_ssAgency_pace (ssTEA_control.Agency_pace));
+    if (ssTEA_control.Agency_pace == ssTEA_Agency_pace_period)
     {
         ss_uiOp_emit_lbld_int (ss_pPeriod, ssTEA_control.Agency_period);
     }
@@ -366,7 +366,7 @@ void ss_uiOp_Show_ssAgency_state  (void)
 void ss_uiOp_Show_ssTime_state (void)
 {
     ss_uiOp_qBanner (lfY, "Time FSM: ", lfN);
-    ss_uiOp_emit_lbld_AsciiA (ss_pState, ss_uiOp_Get_pName_ssState (ssTEA_control.TimeState));
+    ss_uiOp_emit_lbld_AsciiA (ss_pState, ss_uiOp_Get_pName_ssState (ssTEA_control.Time_state));
     ss_uiOp_qBanner (lfY, "@Time:", lfN);
     ss_uiOp_Show_Time (ssT_gpTime_Current, lfY);
 }   // ss_uiOp_Show_ssTime_state
