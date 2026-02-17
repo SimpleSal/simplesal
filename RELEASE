@@ -24,19 +24,17 @@ TruSoft Computing LLC
 
      branch                 main-simplsal
 
-       label on branch      release-260210
+       label on branch      release-260216
 
- Date of Publishment        February 10, 2026
+ Date of Publishment        February 16, 2026
 
- TSC LLC Version identifier 260210
+ TSC LLC Version identifier 260216
 
- Human version identifier   v0.9c
+ Human version identifier   v0.9d
 
 ------------------------------------------
 
-    Publishment of SimpleSal Apps exposes SimpleSal naming inconsistencies best eliminated.
-
-    Source file changes related names of state, Time base, and Time period variables
+    Extensive use of EvApi data shows that the descriptive headers need to be cleaned up, slightly.
 
 ------------------------------------------
 

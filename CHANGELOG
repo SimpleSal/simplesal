@@ -24,6 +24,32 @@ TruSoft Computing LLC
 
      branch                 main-simplsal
 
+       label on branch      release-260216
+
+ Date of Publishment        February 16, 2026
+
+ TSC LLC Version identifier 260216
+
+ Human version identifier   v0.9d
+
+------------------------------------------
+
+    Extensive use of EvApi data shows that the descriptive headers need to be cleaned up, slightly.
+
+------------------------------------------
+
+=====================
+
+ S~S Changes to a repository have been published by SimpleSal
+
+------------------------------------------
+
+ GitHub username            SimpleSal
+
+   repository               simplesal
+
+     branch                 main-simplsal
+
        label on branch      release-260210
 
  Date of Publishment        February 10, 2026
