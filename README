@@ -1,16 +1,10 @@
-------------------------------------------
-
-   This file thinks it is:    README  in the SimpleSal/simplesal repository human metadata.
-
-   The managed object, for TSC LLC repos, is a directory in the repo root (i.e., rr\SimpleSal\).
-
-------------------------------------------
+   This file thinks it is:  README in the SimpleSal/simplesal repo root   
 
 =====================
 
 TruSoft Computing LLC
 
- S~S The SimpleSal software is educational software.
+ S~S README metadata: The SimpleSal software is educational software.
 
 =====================
 
@@ -110,9 +104,9 @@ TruSoft Computing LLC
 
     This text is not-clickable information about the free SimpleSal ecosystem of code and documents.
 
-    The site includes multi-colored circles and squares with lines with arrows between them.
+    The site includes drawings with multi-colored circles and rectangles and lines with arrows.
 
-    Also, videos showing the effect of the annotated software being shown alongside the software.
+    Also, videos showing the algorithm executing, at varying rates, alongside the software source code.
 
          simplesal.substack.com          simplesal username on substack.com public web site
 
@@ -249,15 +243,15 @@ TruSoft Computing LLC
 
   The Arduino IDE build environment expects a SimpleSal directory to be in each App's directory.
 
-  the simplesal directory contains all of the software source code needed to use SimpleSal.
+  the \App\SimpleSal\ directory contains all of the software source code needed to use SimpleSal.
 
-  the "ssTEA" subdirectory contains the software implementing Time and Event Agency (TEA).
+    the ssTEA subdirectory contains the software implementing Time and Event Agency (TEA).
 
-  the "ssUI" subdirectory contains the menu system that displays Time and Event information.
+    the ssUI subdirectory contains the menu system that displays Time and Event information.
 
-  the "ssDocs" subdirectory contains documentation, each file is pointed to by source code files.
+    the ssDocs subdirectory contains documentation, each file is pointed to by source code files.
 
-  the "ssIO" subdirectory is independent of ssTEA and implements the virtualization of hardware.
+    the ssIO subdirectory is independent of ssTEA and implements the virtualization of hardware.
 
 ------------------------------------------
 
@@ -294,7 +288,7 @@ TruSoft Computing LLC
 ------------------------------------------
 
   There is ssDocs documentation specific to the architecture and implementation of ssTEA and ssUI,
-  as a software component co-existing with the App.  For example, allocation of the database used
+  as software components co-existing with the App.  For example, allocation of the database used
   for Event descriptors may be performed by the App or ssTEA; the App is free to take control and
   replace ssTEA's static allocation algorithm with a dynamic allocation using malloc.  Try it.
 

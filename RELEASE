@@ -1,8 +1,5 @@
-------------------------------------------
 
-   This file thinks it is:    RELEASE  in the SimpleSal/simplesal repository human metadata.
-
-   The managed object, for TSC LLC repos, is a directory in the repo root (i.e., rr\SimpleSal\).
+   This file thinks it is:  RELEASE in the SimpleSal/simplesal  repo root
 
 ------------------------------------------
 
@@ -24,17 +21,39 @@ TruSoft Computing LLC
 
      branch                 main-simplsal
 
-       label on branch      release-260216
+       label on branch      release-260306
 
- Date of Publishment        February 16, 2026
+ Date of Publishment        March 3, 2026
 
- TSC LLC Version identifier 260216
+ TSC LLC Version identifier 260306
 
- Human version identifier   v0.9d
+ Human version identifier   v0.9e
 
 ------------------------------------------
 
-    Extensive use of EvApi data shows that the descriptive headers need to be cleaned up, slightly.
+    Formal release from the published repository of project documents (SimpleSal/template-docs)
+    triggered edits to simplesal repository human metadata files: conform, conform, conform.
+
+------------------------------------------
+
+=====================
+
+    S~S NOTE: this release only: change in procedure for copying release notes to the change log.
+
+------------------------------------------
+
+    Lessons learned:  RELEASE/CHANGELOG edits.  Previously, edits copied the contents of release
+    to the changelog AFTER the release file was edited; convention now is to copy the release note about
+    the release (the previous release) to the changelog BEFORE editing the release file for this release.
+
+    This results in the combined content of RELEASE (this) and CHANGELOG (past)
+        telling the story completely without duplication.
+
+    For this release only: in order to change the model,
+        no edits to CHANGELOG occur in this release.
+
+    Actually this process note will be added to CHANGELOG,
+        but not as part of a release note.
 
 ------------------------------------------
 
