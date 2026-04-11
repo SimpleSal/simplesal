@@ -535,11 +535,13 @@ ssUI_Token_t        gTknHelpMsgSetMsg       = { pcHelpSetMsg    ,10, NoBananas }
 ReadOnly pAsciiA_t  pcMsg_VarnameHelp               = S("time variable names (may be used as Lvalue, Operand1 or Operand2)");
 ReadOnly pAsciiA_t  pcMsg_AgApifsm_ErrorApiNotOn    = S("Agency Api FSM not On for this event.");
 ReadOnly pAsciiA_t  pcMsg_AgApifsm_ErrorApiNotOff   = S("Agency Api FSM already On for this event.");
+ReadOnly pAsciiA_t  pcMsg_AgApiSignalError          = S("!@#$%^&* Agency Api failure");
+ReadOnly pAsciiA_t  pcMsg_AgApiSignalSuccess        = S("........ Agency Api success");
+ReadOnly pAsciiA_t  pcMsg_ArrowsReqDir              = S(">>to>>");
+ReadOnly pAsciiA_t  pcMsg_ArrowsRespDir             = S("<<to<<");
 ReadOnly pAsciiA_t  pcMsg_AgApiReqError             = S("<error in request data>");
-ReadOnly pAsciiA_t  pcMsg_Carrier_Worked            = S("  signal carrier success, ");
-ReadOnly pAsciiA_t  pcMsg_Carrier_Failed            = S("  signal carrier failure, ");
-ReadOnly pAsciiA_t  pcMsg_apiSignalOp_Worked        = S("API signal success.");
-ReadOnly pAsciiA_t  pcMsg_apiSignalOp_Failed        = S("API signal failure.");
+ReadOnly pAsciiA_t  pcMsg_apiSignalOp_Worked        = S(", Api signal success.");
+ReadOnly pAsciiA_t  pcMsg_apiSignalOp_Failed        = S(", Api signal failure.");
 
 ReadOnly pAsciiA_t  pcMsg_plbl_TimeVariable         = S(" Time variable   :");
 
@@ -554,9 +556,6 @@ ReadOnly pAsciiA_t  pcMsg_AgRunfsm_StopReq          = S("Agency Run FSM Stop req
 ReadOnly pAsciiA_t  pcMsg_AgRunfsm_PauseReq         = S("Agency Run FSM Pause request...");
 ReadOnly pAsciiA_t  pcMsg_AgRunfsm_ResumeReq        = S("Agency Run FSM Resume request...");
 ReadOnly pAsciiA_t  pcMsg_AgRunfsm_StateReq         = S("Agency Run FSM State request...");
-ReadOnly pAsciiA_t  pcMsg_AgApiSignalError          = S("!@#$%^&*signal error");
-ReadOnly pAsciiA_t  pcMsg_ArrowsReqDir              = S(">>to>>");
-ReadOnly pAsciiA_t  pcMsg_ArrowsRespDir             = S("<<to<<");
 ReadOnly pAsciiA_t  pcMsg_CurrentViewData           = S("   current App view of all ssTEA Data:");
 #ifdef SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
 #else   // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP

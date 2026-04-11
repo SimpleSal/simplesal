@@ -135,17 +135,17 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 /* simplest */ #define      SSUI_ONEOF_CONTROL_INIT_RUNTIME
 
 // -------------------------------------------------------------------------------------------------
-//      ssTEA statistics count Api FSM transitions, App Run FSM and EvEx Run FSM transitions.
-//      Statistics about FSM transitions in real Time become handy when Time is in milliseconds.
+// ssTEA statistics count Api FSM transitions, App Run FSM and EvEx Run FSM transitions.
+// Statistics about FSM transitions in real Time become handy when Time is in milliseconds.
 // -------------------------------------------------------------------------------------------------
-//      ssTEA and ssUI have a two-layer information subsystem: if #defined to exist (layer 1), the
-//      software will make announcements as it operates.  Layer 2 consists of run-time boolean FSMs
-//      controlling whether groups of layer 1 messages ANNOUNCED actually SHOW on the output device.
+// ssTEA and ssUI have a two-layer information subsystem: if #defined to exist (layer 1), the
+// software will make announcements as it operates.  Layer 2 consists of run-time boolean FSMs
+// controlling whether groups of layer 1 messages ANNOUNCED actually ARE SENT to the output device.
 // -------------------------------------------------------------------------------------------------
-//      ssUI has the ability to "execute" collections of "commands" as user input in real time.
-//      Arrays of commands may be added/modified in ssUI (local copy in SimpleSal) or in the App.
+// ssUI has the ability to "execute" collections of "commands" as user input in real time.
+// Arrays of commands may be added/modified in ssUI (local copy in SimpleSal) or in the App.
 // -------------------------------------------------------------------------------------------------
-//      The Build options in effect (having been #defined) are displayed to the user by a function.
+// The Build options in effect (having been #defined) are displayed to the user by a function.
 // -------------------------------------------------------------------------------------------------
 /* simplest */ #define      SSA_OPTIN_STATS_FSM
 /* simplest */ #define      SSA_OPTIN_STATS_RUNFSM
@@ -153,7 +153,7 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 
 /* simplest */ #define      SSTEA_OPTIN_SHOW_PATH
 /* simplest */ #define      SSTEA_OPTIN_SHOW_CAUSE
-/* simplest */ #define      SSTEA_OPTIN_SHOW_NOTES
+/* simplest */ #define      SSTEA_OPTIN_SHOW_FACTS
 /* simplest */ #define      SSTEA_OPTIN_SHOW_SIGNALS
 
 /* simplest */ #define      SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI

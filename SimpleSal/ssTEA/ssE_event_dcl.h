@@ -152,7 +152,7 @@ typedef struct ssE_EventInfoDesc_s
 {
     ssA_Apifsm_state_t      Apifsm_state;   // Agency Api FSM treats an event as a resource
 
-    ssE_pAboutEv_t          ssE_pAboutEv;   // this is a pointer to the allocated event Agency data
+    ssE_pAboutEv_t          ssE_pAboutEv;   // this is a pointer to the allocated Event's AboutEvent data
 
     ssE_EventAlloc_t        Alloc;          // this is allocation method for EventInfoDesc data
 

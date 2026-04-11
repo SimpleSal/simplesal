@@ -30,7 +30,7 @@ typedef enum ssUI_EvApi_Range_e
 // -------------------------------------------------------------------------------------------------
 // Each Event managed through the Api must have a signal mechanism to communicate with the API.
 // That mechanism is sssA_ApiSig: the data signal carrier for commands and their parameters.
-// Within the sssApi signal data is the Event Agency descriptor structure allocation for the event.
+// Within the sssApi signal data is the Event's AboutEvent data structure allocation for the event.
 // Therefore, a single data structure that must be allocated for each Event:  sssA_ApiSig_t.
 // If you want to minimize data storage requirements it is feasible to use a single data structure
 // and multiplex (share) between all Events, but code will have to do that and code can't store data.
@@ -66,10 +66,13 @@ typedef ssUI_db_pEventApiDataDesc_t     ssUI_db_pEvApi_t;
 
 // =================================================================================================
 boolean ssUI_apiSignalOp_Emit (ssUI_db_pEvApi_t pEvApi, ss_ApiSigMsgValue_t ApiSigMsgValue);
+
 void    ssUI_apiSignalOp_Show_Data (ssUI_db_pEvApi_t pEvApi, boolean lfBefore, boolean lfAfter, boolean bShowResults);
 #define     DoHideResults     false
 #define     DoShowResults     (!DoHideResults)
-void    ssUI_apiSignalOp_Show_ApiError (ssUI_db_pEvApi_t pEvApi);
+
+void    ssUI_apiSignalOp_Show_ApiError      (ssUI_db_pEvApi_t pEvApi);
+void    ssUI_apiSignalOp_Show_ApiSuccess    (ssUI_db_pEvApi_t pEvApi);
 
 // This is used widely by ssUI when displaying information about an Event and/or its carrier signal.
 #define pApiSigName(xpEvApiData)                            \

@@ -22,7 +22,7 @@ pAscii_t    ssTEA_plbl_StateFail    = S("  result: <not expected>");
 
 pAscii_t    ssTEA_plbl_AgRunfsm     = S(" Agency Run FSM  :");
 pAscii_t    ssTEA_plbl_AgApifsm     = S(" Agency Api FSM  :");
-pAscii_t    ssTEA_plbl_AppApiName   = S(" App");
+pAscii_t    ssTEA_plbl_AppApiName   = S("App");
 
 pAscii_t    ssTEA_plbl_Carrier      = S("  -- carrier    ");
 pAscii_t    ssTEA_plbl_Signal       = S("     signal --  ");

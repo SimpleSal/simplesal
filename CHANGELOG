@@ -11,28 +11,28 @@ TruSoft Computing LLC
 
 =====================
 
-    S~S NOTE: this release only: change in procedure for copying release notes to the change log.
+ S~S Changes to a repository have been published by SimpleSal
 
 ------------------------------------------
 
-    Lessons learned:  RELEASE/CHANGELOG edits.  Previously, editors copied the contents of release
-    to the changelog AFTER the release file was edited; convention now is to copy the release note about
-    the release (the previous release) to the changelog BEFORE editing the release file for this release.
+ GitHub username            SimpleSal
 
-    This results in the combined content of RELEASE (this) and CHANGELOG (past)
-        telling the story completely without duplication.
+   repository               simplesal
 
-    For this release only: in order to change the model,
-        no edits to CHANGELOG occur in this release.
+     branch                 main-simplsal
 
-    Actually this process note will be added to CHANGELOG,
-        but not as part of a release note.
+       label on branch      release-260306
+
+ Date of Publishment        March 6, 2026
+
+ TSC LLC Version identifier 260306
+
+ Human version identifier   v0.9e
 
 ------------------------------------------
 
-    S~S NOTE: return now to normal programming, which is an accumulation of release notes over Time.
-    At the time of the next release note being added, this process note need no longer be visible.
-    The sequence of changes (process note exists and then does not) is visible in the repository App.
+    Formal release from the published repository of project documents (SimpleSal/template-docs)
+    triggered edits to simplesal repository human metadata files: conform, conform, conform.
 
 ------------------------------------------
 

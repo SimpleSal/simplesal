@@ -11,15 +11,14 @@
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-// The ssUI_ application is implemented as a harness, from which ssTEA functionality may be exercised.
-// ssTEA/E maintains Event Agency descriptors for some configurable number of simultaneously
+// The ssUI_ application is implemented as a foundation, from which ssTEA features may be exercised.
+// ssTEA/E maintains Event's AboutEvent datas for some configurable number of simultaneously
 // scheduled events.  That number is not related directly to the number of API descriptors and
 // event descriptors that are used (needed/easiest/smoothest) in an App, ssUI tests the models.
 // -------------------------------------------------------------------------------------------------
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-// Event descriptors are used to exchange information with the API, ssTEA/E services may write
-// into the API data structures.  Event Agency data is always copied to an ssTEA/E data structure.
+// Event descriptors are used to exchange information with the API, ssTEA/E services may write them.
 // Users enter strings that are names of eventApi data structures, this maps names to ssHL variables,
 // the mapping is from the user saying "evapiN" resulting in a mapping to "evapi[N]", using LookupWiths.
 // -------------------------------------------------------------------------------------------------
@@ -97,33 +96,30 @@ void ssUI_apiSignalOp_Show_Data (ssUI_db_pEvApi_t pEvApi,
         ss_uiOp_emit_lbld_hex (ssTEA_plbl_Channel, (unsigned long) pApiSig->channel);
     }
     // the signal is active or not active, called here "Live"
-    if (bShowSignalResults)
+    if (pApiSig->sigDir == ss_ApiSigDir_ToApi)
     {
-        if (pApiSig->sigDir == ss_ApiSigDir_ToApi)
-        {
-            ss_uiOp_emit_Space (ssUI_standard_fieldgap);
-            ss_uiOp_emit_pAsciiA (pcMsg_ArrowsReqDir);
-        }
-        else
-        {
-            ss_uiOp_emit_Space (ssUI_standard_fieldgap);
-            ss_uiOp_emit_pAsciiA (pcMsg_ArrowsRespDir);
-        }
+        ss_uiOp_emit_Space (ssUI_standard_fieldgap);
+        ss_uiOp_emit_pAsciiA (pcMsg_ArrowsReqDir);
+    }
+    else
+    {
+        ss_uiOp_emit_Space (ssUI_standard_fieldgap);
+        ss_uiOp_emit_pAsciiA (pcMsg_ArrowsRespDir);
     }
     ss_uiOp_emit_newline ();
 
-    // Show_SignalCarrier repeats the signal value, not knowing what the caller has already stated.
+    //
     ssTEA_apiOp_Show_SignalData  (pApiSig);
 
     if (bShowSignalResults)
     {
+        ss_uiOp_pBanner (lfN,
+                             ((pApiSig->macSNR == ss_macSNR_OK) ?
+                                 pcMsg_AgApiSignalSuccess : pcMsg_AgApiSignalError),
+                             lfN);
+
         if (pApiSig->sigDir == ss_ApiSigDir_FromApi)
         {
-            ss_uiOp_pBanner (lfN,
-                                 ((pApiSig->macSNR == ss_macSNR_OK) ?
-                                     pcMsg_Carrier_Worked : pcMsg_Carrier_Failed),
-                                 lfN);
-
             if (pApiSig->macSNR == ss_macSNR_OK)
             {
                 ss_uiOp_pBanner (lfN,
@@ -153,8 +149,19 @@ void ssUI_apiSignalOp_Show_ApiError (ssUI_db_pEvApi_t pEvApi)
     msg_ssTEA_Path ();
 
     ss_uiOp_emit_qAsciiA (pcMsg_AgApiSignalError);
+
     ssUI_apiSignalOp_Show_Data (pEvApi, lfY, lfN, DoShowResults);
+
 }   //  ssUI_apiSignalOp_Show_ApiError
+// -------------------------------------------------------------------------------------------------
+void ssUI_apiSignalOp_Show_ApiSuccess (ssUI_db_pEvApi_t pEvApi)
+{
+    msg_ssTEA_Path ();
+
+    ss_uiOp_emit_qAsciiA (pcMsg_AgApiSignalSuccess);
+
+    ssUI_apiSignalOp_Show_Data (pEvApi, lfY, lfN, DoShowResults);
+}   //  ssUI_apiSignalOp_Show_ApiSuccess
 // =================================================================================================
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
@@ -204,63 +211,61 @@ boolean ssUI_apiSignalOp_Emit (ssUI_db_pEvApi_t pEvApi, ss_ApiSigMsgValue_t ApiS
     pApiSig->macSNR     = ss_macSNR_flaw;      // force the API to set a valid value before return
     pApiSig->apiSNR     = ss_apiSNR_flaw;      // force the API to set a valid value before return
 
-    // ssTEA will use the "ssm_ssTEA_" choices to display information; ssUI matches for a reason.
+    // ssTEA will use the "control.Show" choices to display information; ssUI matches for a reason.
     if (ssTEA_control.Show_Signals)
     {
-        ssUI_apiSignalOp_Show_Data (pEvApi, lfN, lfN, DoShowResults);
+        ssUI_apiSignalOp_Show_Data (pEvApi, lfN, lfN, DoHideResults);
     }
 
     if (!ssTEA_apiOp_Emit_Signal (pApiSig))
     {
-        // bugbugbug show api error regardless of output selected
-        ssUI_apiSignalOp_Show_ApiError (pEvApi);
-
-        // if the carrier signal was OK, it must have been an error in the API signal
-        if (pApiSig->macSNR == ss_macSNR_OK)
-        {
-            ss_uiOp_pBanner (lfY, pcMsg_AgApiReqError, lfY);
-        }
-        return (false);
-    }   // signal had error at signal or API level
-    else
-    {   // a successful request-response signal gets changed to a response before return by ApiSignal
         if (ssTEA_control.Show_Signals)
         {
-            if (pApiSig->sigDir == ss_ApiSigDir_FromApi)
+            ssUI_apiSignalOp_Show_ApiError (pEvApi);
+
+            // if the carrier signal was OK, it must have been an error in the API signal
+            if (pApiSig->macSNR == ss_macSNR_OK)
             {
-                ssUI_apiSignalOp_Show_Data (pEvApi, lfN, lfN, DoShowResults);
-            }
+                msg_ssTEA_Cause (pcMsg_AgApiReqError);
+            }   // message content moved from ssTEA to App space
+        }   // should signals be reported?
+
+        return (false);         // the ssTEA API failed while trying to perceive this signal
+    }   // signal emit error
+    else
+    {
+        if (ssTEA_control.Show_Signals)
+        {
+            ssUI_apiSignalOp_Show_ApiSuccess (pEvApi);
         }
         return (true);
     }
+
+    // there is no to path here because one return or the other is executed
+
 }   // ssUI_apiSignalOp_Emit
-#undef lcl_ssm_ssTEA_Full
 // =================================================================================================
+// These are the algorithms implemented by ssUI to provide memory allocations for per-Event data.
+// The implementation of these algorithms specifically addresses an ARM processor instruction issue.
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // given an index into EvApis array, return a pointer to a ssTEA API data structure or return NULL.
-// there are multiple purposes or reasons for doing this.
-// 1) the events code of the user is referenced in this file, so must be included before this file.
-//    that file's source code uses an declaration of this function to compile, in order to get
-//    a pointer to an element in the array.  Otherwise Events code would have to reference the
-//    allocated data array directly, which would require that the events code be included last.
-// 2) SimpleSal and ssTEA abstract concepts are built entirely within the assumption that the
-//    processor does not matter, but in fact the domination of ARM as a choice for many products
-//    means that the best skill to have is the ability to learn enough details on one ARM at a time.
+// Every access to an individual EvApi starts with calling a function that returns the pointer in a
+// register: a 32-bit pointer to an EvApi data structure in memory ready for [register+offset] use.
 // -------------------------------------------------------------------------------------------------
-//    The true most basic assumption is that SimpleSal and ssTEA are running on an ARM processor,
-//    which of course causes the mesa to also contain all those devices built to work with ARM.
-//    This includes the specification of "memory" on the ARM's Hal architecture code and data buses.
+// The true most basic assumption is that SimpleSal and ssTEA are running within an ARM architecture.
+// This includes the specification of "memory" as in ARM's Harvard architecture code and data buses.
+// Device interfaces are visible in memory on the data bus; access to the code bus for local values
+// may compete with the processor accessing instructions to execute in the future (the pipeline).
 // -------------------------------------------------------------------------------------------------
-//    probably true: ARM instructions and registers are 32-bits; ARM data pointers are 32-bits.
-//      ARM registers are used in pointer instructions; e.g., read data from memory into registers.
-//    The address of any memory location is described with a 32-bit number, computed at build time.
-//    The 32-bit address is stored in memory, there is no "I am not an instruction" instruction,
-//      so the 32-bit address can't be tucked into the pipeline content, other architectures may.
-//    The value is stored in the program's image, near enough to use an ARM [register+offset] read.
-//         That nearby location is in the code memory of the architecture, on the code memory bus.
-//    The other reader of code memory is the processor instruction pipeline, complex/cheap helper
-//         for the pipeline in order to run the ARM faster without ever finding an empty pipeline.
+// deeper view: ARM instructions and registers are 32-bits; ARM data pointers are 32-bits.  How does
+// software instantiate a 32-bit address value into a 32-bit register?  It must be stored in memory.
+// This model supports the address of data being computed at run time by a function, not build time.
+// -------------------------------------------------------------------------------------------------
+// The value is stored in the program's image, near enough to use an ARM [register+offset] read.
+//      That nearby location is in the code memory of the architecture, on the code memory bus.
+// The register used in the ARM instruction is the instruction pointer; the value is nearby, as a
+// function of the rules for the offset value used in the instruction with the register value.
 // -------------------------------------------------------------------------------------------------
 ssUI_db_pEvApi_t  ssUI_dbOp_Lookup_UsingEvApi_i (int EvApi_i)
 {

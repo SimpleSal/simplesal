@@ -18,11 +18,10 @@
 
    Another way to view the transition is as the accumulation of all modifications to move the content
    from version "0.9_" to "1.0a", where '_' is the last release candidate before "it" is "done".
+
    Always in the plan:
     * formalize and make canonical all metadata files across all SimpleSal ecosystem releases
     * remove all demo and debug configuration hacks present in the software to support videos
-
-
     * incorporate "soft open" feedback from experienced GitHub users and Arduino users
 
 ------------------------------------------

@@ -12,7 +12,7 @@
    -------------------------------------------------------------------------------------------------
    Central concept for ssTEA: where are the allocations made of the data structures used with ssTEA?
    There is within ssE event data management a basic "event database" where events are described;
-   allocation of the Event Agency data is controlled by independent factors: location and access.
+   allocation of the Event's AboutEvent data is controlled by independent factors: location and access.
    The Event data structure is the primary requirement per active event, as accessible memory.
    -------------------------------------------------------------------------------------------------
    The solution should be the same for a User with one, 5 and 50 events.  The location only matters

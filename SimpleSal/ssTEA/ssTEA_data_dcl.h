@@ -208,6 +208,10 @@ typedef ss_TimeUnit_e   ss_TimeUnit_t;
 //   What is the source of ssTEA's knowledge of "the Current Time" (base)?
 //   How often may a moment in Time be perceived when agency is granted to ssTEA (pace/period)?
 // -------------------------------------------------------------------------------------------------
+// ssTEA OPTIN_SHOW_ #defines include/exclude messages into/from the build; the run-time variables
+// exist and are referenced under either choice. These educational and debug run-time messages are
+// inherent in the ssTEA/ssUI software design; also, messages consume space in memory at run-time.
+// -------------------------------------------------------------------------------------------------
 typedef struct ssTEA_controlDesc_s
 {
     ssTEA_state_t       Time_state;
@@ -219,8 +223,9 @@ typedef struct ssTEA_controlDesc_s
 
     boolean             Show_Path;
     boolean             Show_Cause;
+    boolean             Show_Facts;
     boolean             Show_Signals;
-    boolean             Show_Notes;
+
 }  ssTEA_controlDesc_t, *ssTEA_pcontrolDesc_t;
 
 typedef ssTEA_controlDesc_t    ssTEA_control_t;
@@ -312,8 +317,6 @@ typedef enum ss_ApiSigDir_e
 }   ss_ApiSigDir_t;
 
 // -------------------------------------------------------------------------------------------------
-// ssTEA controls the data that is critical to "true" operation of the event Agency engine, after
-// event agency data structures containing requests are validated, the contents is copied to "true".
 // Calls to the API must provide a magic number used by ssTEA to validate the caller to the API.
 // When the Event Agency Api FSM is Off, there is no "true" data within ssTEA describing the Event.
 // Signaling the Event Agency Api FSM to enter On_and_Reset state results in a channel magic number.

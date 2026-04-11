@@ -21,39 +21,26 @@ TruSoft Computing LLC
 
      branch                 main-simplsal
 
-       label on branch      release-260306
+       label on branch      release-260327
 
- Date of Publishment        March 3, 2026
+ Date of Publishment        March 27, 2026
 
- TSC LLC Version identifier 260306
+ TSC LLC Version identifier 260327
 
- Human version identifier   v0.9e
-
-------------------------------------------
-
-    Formal release from the published repository of project documents (SimpleSal/template-docs)
-    triggered edits to simplesal repository human metadata files: conform, conform, conform.
+ Human version identifier   v0.9f
 
 ------------------------------------------
 
-=====================
+   The "app-events" SimpleSal App identified errors in ssTEA software; fixed in this version.
 
-    S~S NOTE: this release only: change in procedure for copying release notes to the change log.
+   A release is planned implementing changes required to transition from Development to Production.
+   TSC LLC calls the transition, big 'D' Development to big 'P' Production, "publishing software".
+
+   This collection of changes is within the scope of the transition.
 
 ------------------------------------------
 
-    Lessons learned:  RELEASE/CHANGELOG edits.  Previously, edits copied the contents of release
-    to the changelog AFTER the release file was edited; convention now is to copy the release note about
-    the release (the previous release) to the changelog BEFORE editing the release file for this release.
-
-    This results in the combined content of RELEASE (this) and CHANGELOG (past)
-        telling the story completely without duplication.
-
-    For this release only: in order to change the model,
-        no edits to CHANGELOG occur in this release.
-
-    Actually this process note will be added to CHANGELOG,
-        but not as part of a release note.
+    FIXIT    F03B033   Cleaner runtime messages during Event data validation, API signal exchange.
 
 ------------------------------------------
 

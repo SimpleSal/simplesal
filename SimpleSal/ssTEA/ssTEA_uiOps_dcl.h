@@ -68,11 +68,26 @@ void        ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAter
                                   (ssTEA_control.Agency_period >= 100)                   \
                                  )
 
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// A working SimpleSal App might only communicate programmatically with software and never a user;
+// it does not need to include all the Ascii character messages or the code to emit the messages.
+// -------------------------------------------------------------------------------------------------
+// A failing SimpleSal App can include the messages and the code to communicate reasons and causes.
+// -------------------------------------------------------------------------------------------------
+// These #defines makes software exist or not exist; variables gate Agency granting to the software.
+// When software does not exist, the reference it does not make causes the message to not exist.
+// -------------------------------------------------------------------------------------------------
+
 // -------------------------------------------------------------------------------------------------
 // In order to provide information to the Human User of ssTEA and SimpleSal, allow the User to
 // decide whether ssTEA and SimpleSal should emit a signal with a human-UI encoded message:
-//   "a message carrying the name of the ssHL function executing this line of ssHL code right now"
+//  "a message carrying the name of the ssTEA function executing this ssTEA software right now"
+// -------------------------------------------------------------------------------------------------
 // This is a not-User-friendly feature of ssTEA; also it is not related to Time and/or Agency.
+// On the other hand, the trick is a very useful debug tool for logging the software flow over Time.
+// -------------------------------------------------------------------------------------------------
+// Path descriptions are output encoded as "{name}", sequentially this appears as "{name}{name}".
 // -------------------------------------------------------------------------------------------------
 #ifdef SSTEA_OPTIN_SHOW_PATH
 #define msg_ssTEA_Path()  if (ssTEA_control.Show_Path) { CTRICK_Show_FunctionsName ((unsigned char *) __func__); }
@@ -81,17 +96,18 @@ void        ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAter
 #endif  // SSTEA_OPTIN_SHOW_PATH
 
 // -------------------------------------------------------------------------------------------------
-// A version of SimpleSal that only communicates programmatically with software and not with a user
-// does not need to include all the communication messages or the code to switch the feature on/off.
+// Cause descriptions are output in banner form without regard to whatever the App has displayed.
+// They are also the debug tool built-in for the times when an error in state machine data is found.
 // -------------------------------------------------------------------------------------------------
 #ifdef SSTEA_OPTIN_SHOW_CAUSE
-#define msg_ssTEA_Cause(msg)    if (ssTEA_control.Show_Cause)  { ss_uiOp_emit_qAsciiA (S(msg)); }
+#define msg_ssTEA_Cause(msg)    if (ssTEA_control.Show_Cause)  { ss_uiOp_emit_qAsciiA (S(msg)); ss_uiOp_emit_newline (); }
 #else   // make macro have no content
 #define msg_ssTEA_Cause(msg)
 #endif  // SSTEA_OPTIN_SHOW_CAUSE
 
 // -------------------------------------------------------------------------------------------------
-// Signals between the App and the ssTEA interface need to be displayed sometimes, when they fail.
+// Signal carriers and signals are complex; debug displays are large scale: everything or nothing.
+// Which is to say this macro is rarely used; the signal API interaction always builds into the App.
 // -------------------------------------------------------------------------------------------------
 #ifdef SSTEA_OPTIN_SHOW_SIGNALS
 #define msg_ssTEA_Signals(msg)  if (ssTEA_control.Show_Signals)  { ss_uiOp_emit_qAsciiA (S(msg)); }
@@ -100,13 +116,14 @@ void        ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAter
 #endif  // SSTEA_OPTIN_SHOW_SIGNALS
 
 // -------------------------------------------------------------------------------------------------
-// Some things are not that interesting or useful but still need to be at least shown to the user.
+// The raw facts are often useful clues when the software written on the page appears to be correct.
+// Which is to say this macro is rarely used; the display of facts requires more manipulation.
 // -------------------------------------------------------------------------------------------------
-#ifdef SSTEA_OPTIN_SHOW_NOTES
-#define msg_ssTEA_Notes(msg)    if (ssTEA_control.Show_Notes)  { ss_uiOp_emit_qAsciiA (S(msg)); }
+#ifdef SSTEA_OPTIN_SHOW_FACTS
+#define msg_ssTEA_Facts(msg)    if (ssTEA_control.Show_Facts)  { ss_uiOp_emit_qAsciiA (S(msg)); ss_uiOp_emit_newline (); }
 #else   // make macro have no content
-#define msg_ssTEA_Notes(msg)
-#endif  // SSTEA_OPTIN_SHOW_NOTES
+#define msg_ssTEA_Facts(msg)
+#endif  // SSTEA_OPTIN_SHOW_FACTS
 
 #endif  // __SSTEA_UIOPS_DCL_H
 

@@ -205,11 +205,10 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
 
             // -------------------------------------------------------------------------------------
             // [.\SimpleSal\ssDocs\ssTEA\Agency Root Algorithm.note]
-            // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+            // -------------------------------------------------------------------------------------
             // Please be aware that TruSoft Computing LLC believes it is silly to claim a patent on
             // easily-arrived-at computer software for universal problems by claiming "invention!".
             // But, all of the time involved in SimpleSal was spent to make this useful trick work.
-            // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             // -------------------------------------------------------------------------------------
             if (ssE_pAboutEv->Runfsm_EvType == ssE_EvType_Time)
             {
@@ -235,11 +234,13 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             {
                 ssA_ChangeStateAgencyingTo (ssA_Runfsm_State_stopped);
                 ssE_pAboutEv->AgencyResult = ssE_EvResult_notOK_pEvFunc;
+#ifdef SSTEA_OPTIN_SHOW_CAUSE
                 if (ssTEA_control.Show_Cause)
                 {
                     ssA_EvOp_Show_EvAg_State (ssE_pAboutEv);
-                    ssA_EvOp_Show_EvAg_Time ("pEvFunc cannot be NULL here", ssT_pTimeNull);
+                    ssA_EvOp_Show_EvAg_Time ("pEvFunc cannot be NULL here, deep within ssA", ssT_pTimeNull);
                 }
+#endif  // SSTEA_OPTIN_SHOW_CAUSE
                 continue;   // this event instance completely handled, find the next event
             }
 
@@ -262,11 +263,9 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             // -----------------------------------------------------------------------------------------
             // Dominion: Giving out a pointer to the official Current Time risks corruption.
             // -----------------------------------------------------------------------------------------
-            // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             // Please be aware that TruSoft Computing LLC believes it is silly to claim a patent on
             // easily-arrived-at computer software for universal problems by claiming "invention!".
             // But, all of the time involved in SimpleSal was spent to make this useful trick work.
-            // $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
             // -----------------------------------------------------------------------------------------
             // Use "a pointer to a function returning a result" to call the function and get a result.
             // Pass a valid Agency Descriptor, indicating this is within RunFSM, not Init validation.

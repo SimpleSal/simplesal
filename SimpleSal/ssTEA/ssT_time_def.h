@@ -294,8 +294,6 @@ ReadOnly    ssT_Time_t  ssT_Time_3sc =
 };
 ReadOnly    ssT_pTime_t ssT_gpTime_3sc = &ssT_Time_3sc;
 // -------------------------------------------------------------------------------------------------
-#ifdef  PREDEFINED_TIMES_AVAILABLE
-// -------------------------------------------------------------------------------------------------
 ReadOnly    ssT_Time_t  ssT_Time_1ms =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
@@ -307,17 +305,6 @@ ReadOnly    ssT_Time_t  ssT_Time_1ms =
 };
 ReadOnly    ssT_pTime_t ssT_gpTime_1ms = &ssT_Time_1ms;
 // -------------------------------------------------------------------------------------------------
-ReadOnly    ssT_Time_t  ssT_Time_10ms =
-{
-//  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
-    true, true,    false,  0,  0,  0,  0, 10,  0,
-#ifdef SST_OPTIN_TIME_NSECS_TU
-/* not blank, don't delete */                      0,
-#endif  // SST_OPTIN_TIME_NSECS_TU
-/* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
-};
-ReadOnly    ssT_pTime_t ssT_gpTime_10ms = &ssT_Time_10ms;
-// -------------------------------------------------------------------------------------------------
 ReadOnly    ssT_Time_t  ssT_Time_100ms =
 {
 //  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
@@ -328,6 +315,19 @@ ReadOnly    ssT_Time_t  ssT_Time_100ms =
 /* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
 };
 ReadOnly    ssT_pTime_t ssT_gpTime_100ms = &ssT_Time_100ms;
+// -------------------------------------------------------------------------------------------------
+#ifdef  PREDEFINED_TIMES_AVAILABLE
+// -------------------------------------------------------------------------------------------------
+ReadOnly    ssT_Time_t  ssT_Time_10ms =
+{
+//  valid positive zero    d   h   m   s  ms  us  ns  p    note: order MUST match ssTEA_data_dcl
+    true, true,    false,  0,  0,  0,  0, 10,  0,
+#ifdef SST_OPTIN_TIME_NSECS_TU
+/* not blank, don't delete */                      0,
+#endif  // SST_OPTIN_TIME_NSECS_TU
+/* not blank, don't delete */                         0, 0, 0       // all TUs, momentU/L
+};
+ReadOnly    ssT_pTime_t ssT_gpTime_10ms = &ssT_Time_10ms;
 // -------------------------------------------------------------------------------------------------
 ReadOnly    ssT_Time_t  ssT_Time_1us =
 {

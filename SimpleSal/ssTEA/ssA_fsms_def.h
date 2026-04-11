@@ -657,41 +657,30 @@ ss_apiSNR_t ssA_ApifsmOp_validate_pEvFunc (ssTEA_pApiSig_t pApiSig)
 
     msg_ssTEA_Path ();
 
-    if (ssTEA_control.Show_Cause)
-    {
-        ss_uiOp_emit_qAsciiA ("pEvFunc validation");
-        ss_uiOp_emit_newline ();
-    }
+    msg_ssTEA_Cause ("pEvFunc validation in process");
 
     if (!ssA_ApifsmOp_IsChannelValid (pApiSig->channel))
     {
-        if (ssTEA_control.Show_Cause)
-        {
-            ss_uiOp_emit_qAsciiA ("bad channel in validate pEvFunc");
-            ss_uiOp_emit_newline ();
-        }
+        msg_ssTEA_Cause ("bad channel in validate pEvFunc");
         return (pApiSig->apiSNR = ss_apiSNR_databad_Channel);
     }
     // Channel valid so use for pEvInfo
     pEvInfo = (ssE_pEvInfo_t) pApiSig->channel;
 
     // Validation may be called from Agency Api FSM Off or Agency Api FSM On state.
-    // when called in the Off state, the function cannot be called because there is no context yet.
+    // when called in the Off state, the function cannot be called because there is no FSM instance.
     if (pEvInfo->Apifsm_state == ssA_Apifsm_state_off)
     {
-        if (ssTEA_control.Show_Cause)
-        {
-            ss_uiOp_emit_newline ();
-            ss_uiOp_emit_qAsciiA ("function validation requires the Agency Api FSM to be in the On state.");
-            ss_uiOp_emit_qAsciiA ("Not an error; but until Run FSM is On_reset or On_running, no Run FSM exists.");
-            ss_uiOp_emit_newline ();
-        }
+        msg_ssTEA_Cause ("function validation requires the Agency Api FSM to be in the On state.");
+        msg_ssTEA_Cause ("Not an error; but until Run FSM is On_reset or On_running, no Run FSM exists.");
         return (pApiSig->apiSNR = ss_apiSNR_stateWrong);
     }
 
     pApisAboutEvData = pApiSig->ssE_pAboutEv;
     if (pApisAboutEvData->pEvFunc == pEvFuncNull)
     {
+        msg_ssTEA_Cause ("Assignment of <the address of a function to the function pointer variable> must be");
+        msg_ssTEA_Cause ("performed AFTER the AboutEv allocation; it occurs when Api FSM On state is entered.");
         return (pApiSig->apiSNR = ss_apiSNR_dataBad_pEvFunc);
     }
 
@@ -702,48 +691,40 @@ ss_apiSNR_t ssA_ApifsmOp_validate_pEvFunc (ssTEA_pApiSig_t pApiSig)
 
     if (u32_a != u32_b)
     {
-        if (ssTEA_control.Show_Cause)
+        msg_ssTEA_Facts ("warning: (upper 16 bits of function pointer) != (upper 16 bits ssTEA function address)");
+        msg_ssTEA_Facts ("Not an error; the pointer pointer should be similar to that of this validation software.");
+#ifdef SSTEA_OPTIN_SHOW_FACTS
+        if (ssTEA_control.Show_Facts)
         {
-            ss_uiOp_emit_qAsciiA ("warning: (upper 16 bits of function pointer) != (upper 16 bits ssTEA function address)");
-            ss_uiOp_emit_newline ();
             ss_uiOp_emit_lbld_hex ("ssTEA...validateFunc", u32_a);
             ss_uiOp_emit_lbld_hex (ss_pEvFunc, u32_b);
             ss_uiOp_emit_newline ();
-        }   // wanna hear theories
+        }   // I wanna hear about facts behind the theories
+#endif  // SSTEA_OPTIN_SHOW_FACTS
     }   // code for ssTEA is not in the same chunk of memory as the code for the user event
 
+#ifdef SSTEA_OPTIN_SHOW_FACTS
     u32_b = (unsigned long) pApisAboutEvData->pEvFunc;
     // determine whether the least signficant 2 bits are nonzero
     if ((u32_b & (Bit0|Bit1)) != 0)
     {
-        if (ssTEA_control.Show_Notes)
+        if (u32_b & (ThumbBit))
         {
-            ss_uiOp_emit_qAsciiA ("note: ARM code instructions are always at a 4-byte boundary (Thumb excluded).");
-            ss_uiOp_emit_newline ();
-            if (u32_b & (ThumbBit))
-            {
-                ss_uiOp_emit_qAsciiA ("    : the least significant bit(s) in '&code as pointer' may point to Thumb code.");
-                ss_uiOp_emit_newline ();
-            }
+            msg_ssTEA_Facts ("note: ARM instructions should always align on a 4-byte boundary (Thumb excluded).");
+            msg_ssTEA_Facts ("    : the least significant bit(s) in '&code as pointer' may point to Thumb code.");
+        }
+        if (ssTEA_control.Show_Facts)
+        {
             ss_uiOp_emit_lbld_hex (ss_pEvFunc, u32_b);
-            ss_uiOp_emit_qAsciiA ("    : unless flames are coming out the back, this is not important.");
-            ss_uiOp_emit_newline ();
-        }   // I wanna hear about theories
+        }   // I wanna hear about facts behind the theories
+        msg_ssTEA_Facts ("    : unless flames are coming out the back, this is not important.");
     }   // least significant two bits in a 32-bit aligned address were nonzero
+#endif  // SSTEA_OPTIN_SHOW_FACTS
 
-    if (ssTEA_control.Show_Cause)
-    {
-        ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("granting Init State Agency to Event, with a NULL Event Agency");
-        ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("   pointer and a pointer to the Current Time...");
-        ss_uiOp_emit_newline ();
-        // -----------------------------------------------------------------------------------------
-        // what does it look like when the Event Function "EvFunc" instantiation of the Event
-        // software (by calling the host language function with proper paramters) crashes everything?
-        // When a pointer value is not valid, or, when the Event software causes a processor fault.
-        // -----------------------------------------------------------------------------------------
-    }   // explain everything
+    msg_ssTEA_Cause ("--");
+    msg_ssTEA_Cause ("granting Init State Agency to Event, with a NULL Event Agency");
+    msg_ssTEA_Cause ("   pointer and a pointer to the Current Time...");
+    msg_ssTEA_Cause ("--");
 
     // ---------------------------------------------------------------------------------------------
     // use the pointer to function returning a result to call the function and get the result.
@@ -757,18 +738,15 @@ ss_apiSNR_t ssA_ApifsmOp_validate_pEvFunc (ssTEA_pApiSig_t pApiSig)
 
     // ---------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
-    if (ssTEA_control.Show_Cause)
-    {
-        // -----------------------------------------------------------------------------------------
-        // What has actually happened when this message is visible to the User?  The Event function
-        // returned without crashing the processor, these messages were sent, the ssTEA and Host OS
-        // functions have returned Agency to the Host OS, and the serial port has been given Agency.
-        // The Event has satisfied the Golden Rule of Programming: Don't Cause A Hard Fault.
-        // -----------------------------------------------------------------------------------------
-        ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("and, we're back! Thank you, Doc. Doc Severinsen, everyone!");
-        ss_uiOp_emit_newline ();
-    }
+    // -----------------------------------------------------------------------------------------
+    // What has actually happened when this message is visible to the User?  The Event function
+    // returned without crashing the processor, these messages were sent, the ssTEA and Host OS
+    // functions have returned Agency to the Host OS, and the serial port has been given Agency.
+    // The Event has satisfied the Golden Rule of Programming: Don't Cause A Hard Fault.
+    // -----------------------------------------------------------------------------------------
+    msg_ssTEA_Cause ("--");
+    msg_ssTEA_Cause ("and, we're back! Thank you, Doc. Doc Severinsen, everyone!");
+    msg_ssTEA_Cause ("--");
 
     if (pApisAboutEvData->AgencyResult != ssE_EvResult_OK_go)
     {
