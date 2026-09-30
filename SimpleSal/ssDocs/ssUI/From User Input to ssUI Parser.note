@@ -7,14 +7,7 @@
 
 // S~S  SimpleSal signal starts  S~S
 
-// [From User Input to ssUI Parser.note]search in ssUI source files for a reference to this file.
-//
-   -------------------------------------------------------------------------------------------------
-   Initialization of data can occur at build time (compiler sets value into image, image ends up in
-   processor memory with a value to run with) or run time (code runs during "setup", processor
-   memory gets a value to run with).  Contexts like MicroPy may impose a method that must be used.
-   -------------------------------------------------------------------------------------------------
-   #define      SSUI_ONEOF_CONTROL_INIT_RUNTIME
+// [From User Input to ssUI Parser.note]   search in ssUI source files for a reference to this file.
 //
    -------------------------------------------------------------------------------------------------
    ssUI's parser FSM receives input, tokenizes it, and matches the tokens against a table of tokens.
@@ -25,6 +18,7 @@
    ssUI. "in ssUI form" means "exact format for direct inclusion into the source file for ssUI".
    -------------------------------------------------------------------------------------------------
    #define  SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP
+   #define  SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
 //
    -------------------------------------------------------------------------------------------------
    As an Ascii-based application, SimpleSal UI uses mesa facilities to read/write Ascii characters.
@@ -38,7 +32,7 @@
    use by the User to communicate with ssUI will determine whether there is a CR and/or LF or not.
    The ssUI input processor 1) collects bytes received until a control value is received; 2) removes
    "terminating" control values from the bytes received as input; 3) passes the filtered input on
-   to the ssUI input parser.  CMDS_IN_SSUI allows an inclusion of arrays of characters in this form.
+   to the ssUI input parser.  CMDS_IN_SSUI allows an inclusion of arrays of Ascii values in this form.
    All ssUI input related buffers are based on this number, whether allocated statically or stacked.
    -------------------------------------------------------------------------------------------------
    #define SSUI_UIBUFFER_ALLOC  (60+2+1)    <0-60 Ascii values><0-2 Ascii input terminators><1 nul>

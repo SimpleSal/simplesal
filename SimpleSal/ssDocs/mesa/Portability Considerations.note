@@ -8,6 +8,12 @@
 // S~S  SimpleSal signal starts  S~S
 
 // [Portability considerations.note]    search in ssTEA source files for a reference to this file.
+
+   -------------------------------------------------------------------------------------------------
+   The portability requirement is a result of SimpleSal's desire to support Apps in a variety of
+   development environments and mesas.  The App's portability is independent from SimpleSal's.
+   These solutions to the issues are the full extent of attention needed to use SimpleSal on a mesa.
+   -------------------------------------------------------------------------------------------------
 //
    -------------------------------------------------------------------------------------------------
    Multiple applications based on the same mesa may have the same mesa_*.h files with each sketch.

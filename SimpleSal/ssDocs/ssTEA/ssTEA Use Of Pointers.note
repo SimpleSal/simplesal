@@ -108,7 +108,7 @@
         this does not emit any code, it changes the compiler's view of the type of the pointer.
    -------------------------------------------------------------------------------------------------
    problem: if the information provided to the Event is a copy of ssTEA's copy of the User's
-   Event Agency Descriptor, there is no the information available to the event about its own Agency.
+   Event's AboutEvent data, there is no the information available to the event about its own Agency.
       compiler's solution:
         I told you that you can't refer to types you have not defined yet.
       coder's solution within the context of always using the most basic ssHL-language features:

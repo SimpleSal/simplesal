@@ -1,0 +1,40 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+   The contents of this file are the opinion of TSC LLC about a specific topic, no license applies to it.
+  -------------------------------------------------------------- */
+
+   ---------------------------------------------------------------------------------------------------
+
+
+// S~S  SimpleSal signal starts  S~S
+
+// [FSMs- Init FSM Memory States]        search in ssTEA source files for a reference to this file.
+//
+   -------------------------------------------------------------------------------------------------
+
+//
+   -------------------------------------------------------------------------------------------------
+   .\SimpleSal\ss_configuration.start                   How does memory learn what it remembers?
+   -------------------------------------------------------------------------------------------------
+   FSMs are comprised of events that write and read memory to remember the state(s) they are in.
+   It is often useful that FSM variables have a value when the FSM is granted Agency in Init State.
+
+   Memory that can be written and read will usually take the form of classic RAM memory locations
+   accessed through variable names in a higher-level language.  Machine language instructions only
+   contain the address of the memory and an operation to be performed, such as "write 0 to memory[x]".
+   Machine language only is possible while the processor is powered and executing instructions;
+   the first opportunity to write values to memory locations only occurs when a processor powers on.
+
+   The machine instructions that execute when the processor begins executing instructions may
+   contain algorithms to zero memory locations (higher-level language variables with an initial
+   value of 0) or copy memory values from the persistent stored copy to RAM (higher-level variables
+   with an initializer that is non-0).  The higher-level language software performs this operation,
+   affected by choices in the build operation that indicate the method chosen from those possible.
+
+   The mesa, the App architecture and design, the electronic devices involved, the use of low power
+   or sleep modes, everything about the build: these all affect the choice from methods possible.
+
+   ssTEA simply shows an example of a simple bifurcation into "when the image is written into
+   persistent memory such as Flash" as opposed to "when the machine instructions are executed".
+   A common model is "Flash-based machine instructions copy the App image to RAM and execute it".
+
+// S~S  SimpleSal signal ends  S~S

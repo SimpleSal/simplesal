@@ -11,7 +11,7 @@
 //
    -------------------------------------------------------------------------------------------------
    The UnoR4wifi mesa has a row/column display, accessed through the mesa vendor's ArduinoLEDMatrix.
-   Access is available to the fsmDemo App software directly through the ArduinoLEDMatrix C++ code
+   Access is available to the app-fsmDemo software directly through the ArduinoLEDMatrix C++ code
    and data definitions, or at a simpler level through the mesa "LEDM_" functions specific to UnoR4.
    Before writing to complain, recognize the original intent of ssTEA was in support of MrBlinky.
    -------------------------------------------------------------------------------------------------
@@ -38,7 +38,7 @@
    make modifications to the Matrix, in some order, which must be changed here to change the order.
    The overlap of one Shape with another will result in each LED's state being the last value set.
    -------------------------------------------------------------------------------------------------
-   This is really a choice by the fsmDemo_Application to assume UnoR4 use includes using the Matrix.
+   This is really a choice by the SimpleSal app-fsmDemo assuming UnoR4 use includes using the Matrix.
    This could be moved to the MesaSelect_UnoR4wifi include file, but then all UnoR4 users include.
    -------------------------------------------------------------------------------------------------
    #ifdef MESA_ONEOF_mesa_IsUnoR4wifi

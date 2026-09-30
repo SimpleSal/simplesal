@@ -10,7 +10,6 @@
 // [big attempt to explain ssTEA.note]  search in ssTEA source files for a reference to this file.
 //
    -------------------------------------------------------------------------------------------------
-   bugbugbug  this needs to be rewritten   layers of signal control: led/UI ownership, context
 //
    ssTEA: is meant to be co-compiled and co-exist alongside an Application making use of the mesa.
         : service provided can be thought of as a database, the User defines the Event data and goes.
@@ -60,7 +59,7 @@
             Event is granted agency before AgencyRoot returns to the ssTEA "loop" function.  The part
             that is "automagic" is that the Event will contain the Application "loop" function,
             or, it will contain the SimpleSal menu system, possibly interacting with the human.
-bugbugbug
+
           The function implementing the Application's cmdZone Event is the Application "loop" function.
           When any UI Event has the designation "the UI", a resume signal is sent to the RunFSM that
             uses the Ascii device: to look for, input, and process bytes; or create and output bytes.

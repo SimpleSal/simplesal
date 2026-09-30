@@ -1,0 +1,37 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025 TruSoft Computing LLC |  All rights reserved. --
+   The contents of this file are the opinion of TSC LLC about a specific topic, no license applies to it.
+  -------------------------------------------------------------- */
+
+   ---------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal starts  S~S
+
+Why go to the trouble of using a formal signal carrier directory, or "medium"?
+
+The SimpleSal development model has the user create an instance of a managed blob, from the repo,
+through a medium.  All managed objects are transported through the medium to and from the repo.
+Changes made to the instance are pushed out to the repo through the medium, under source control.
+
+The contents of the medium directory matches the contents of the development directory.  The
+contents of the medium directory matches the repo contents, except the repo metadata is not present.
+The term source control refers to managing the differences between the directories, over time.
+
+Each instance or medium will contain a read-only or writable copy of a repository's managed blob.
+The term "read-only" means "something blocks any modification of the file".
+The term "writable" means "nothing blocks any ...".
+
+The repository directory is the possession of the manager and can be changed at any moment.  Modifying
+the content of repository directory outside the manager application is only for the most advanced user.
+
+The repo manager uses the file system to enforce the "something/nothing blocks" modification controls.
+Medium and development modification controls are implemented by the user, personally, in their head.
+
+A Medium directory with a copy of a repository's development tree can be referred to directly by a
+build path directive.  In the Arduino ecosystem, each App directory contains all the files included;
+each App's directory will contain a directory tree that matches the Medium and the repository.
+
+A Medium directory with a writable copy can also be referred to directly in a build path directive.
+This makes the Medium directory into a development directory, and makes the development directory
+into the Medium. This kind of dilemma is a good reason to strictly partition instance/medium/repo.
+
+// S~S  SimpleSal signal ends  S~S

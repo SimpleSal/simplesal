@@ -7,7 +7,7 @@
 
 // S~S  SimpleSal signal starts  S~S
 
-// [ARM memory considerations.note]     search in ssTEA source files for a reference to this file.
+// [ARM memory considerations.note]     this note is not specific to software source code
 //
    In all processors, instructions for methods of accessing an "input" or "output" such as a GPIO
    pin are fundamental to the processor.  This is a mechanism in the mesa electronics that moves a

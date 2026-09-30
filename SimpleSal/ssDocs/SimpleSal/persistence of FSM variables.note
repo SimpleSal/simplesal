@@ -12,11 +12,11 @@
    -------------------------------------------------------------------------------------------------
    Finite State Machine (FSM) architectures work well for devices taking action based on Time.
    Any computation answering "how long has it been?" compares the time now to some historical value;
-   "time-since-X" is the number of times a unit occured since Time started to run, or was checked.
+   "time-since-X" is the number of times a unit occurred since Time started to run, or was checked.
    -------------------------------------------------------------------------------------------------
    Traditional, legacy, standard, algorithm midterm, homebrew/DIY, 20th-century FSM solutions are:
         baremetal software in a loop, keeping track of "time-until" and "time-since".  In human
-        terms: sample a clock for "how many minutes have occured today?" and then subtract the "how
+        terms: sample a clock for "how many minutes have occurred today?" and then subtract the "how
         many minutes was it when I last sampled?" to find the number of minutes between the samples.
         When the math result of the time-since exceeds the value of time-until, the Event software
         of the App is run, or in ssTEA terms, given Agency by the Agency manager. Software solutions

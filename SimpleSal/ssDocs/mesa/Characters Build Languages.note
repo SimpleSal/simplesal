@@ -7,7 +7,7 @@
 
 // S~S  SimpleSal signal starts  S~S
 
-// [Characters Build Languages.note]    search in ssTEA source files for a reference to this file.
+// [Characters Build Languages.note]    this note is not specific to software source code
 //
    ------------------------------------------------------------------------------------------------
    This is not an attempt to internationalize the text input and output beyond the Ascii standards.

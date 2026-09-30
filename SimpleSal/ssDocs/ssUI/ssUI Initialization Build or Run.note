@@ -1,0 +1,24 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+   The contents of this file are the opinion of TSC LLC about a specific topic, no license applies to it.
+  -------------------------------------------------------------- */
+
+
+   ---------------------------------------------------------------------------------------------------
+
+
+// S~S  SimpleSal signal starts  S~S
+
+// [ssUI Initialization Build or Run.note]   search in ssTEA source files for a reference to this file.
+//
+    -------------------------------------------------------------------------------------------------
+   Initialization of data can occur at build time (compiler sets value into image, image ends up in
+   processor memory with a value to run with) or run time (code runs during "setup", processor
+   memory gets a value to run with).  Contexts like MicroPy may impose a method that must be used.
+   -------------------------------------------------------------------------------------------------
+   The method chosen for the mesa, ssTEA, and ssUI are not necessarily but probably in alignment.
+   -------------------------------------------------------------------------------------------------
+   #define      SSUI_ONEOF_CONTROL_INIT_BUILDTIME
+   #define      SSUI_ONEOF_CONTROL_INIT_RUNTIME
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S

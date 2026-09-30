@@ -18,14 +18,14 @@
    The purpose of defining a specific type for "command arrays" (arrays of pointers to characters;
    the characters, when considered by the ssUI, turn out to be an ssUI command with parameters) is:
    the "Cmd_t" typedef creates a data type definition different from what looks like an AsciiA type.
-   This is an attempt to place large arrays of strings and pointers to strings outside RAM memory.
+   This is an attempt to place large arrays of arrays of Ascii values and pointers to arrays of Ascii values outside RAM memory.
    -------------------------------------------------------------------------------------------------
    Commands in a single array are a CmdArray, pointed to by a CmdArrayLink (name pointer and max_i).
    max_i for a CmdArray is the number of elements, where each element in the array is a pointer.
    The pointer to the start of the CmdArray
    Each CmdArray and its associated CmdArrayLink are includable/excludable from the build and help.
    -------------------------------------------------------------------------------------------------
-   typedef     const char    *pCmd_t;               pointer to an instance in an array of characters
+   typedef     const char    *pCmd_t;               pointer to an instance in an array of Ascii values
 //
    -------------------------------------------------------------------------------------------------
    The user may define a series of ssUI "CMD" arrays and have that available, independent of ssUI.
@@ -63,13 +63,13 @@
    The purpose of defining a specific type for "command arrays" (arrays of pointers to characters;
    the characters, when considered by the ssUI, turn out to be an ssUI command with parameters) is:
    the "Cmd_t" typedef creates a data type definition different from what looks like an AsciiA type.
-   This is an attempt to place large arrays of strings and pointers to strings outside RAM memory.
+   This is an attempt to place large arrays of arrays of Ascii values and pointers to arrays of Ascii values outside RAM memory.
    -------------------------------------------------------------------------------------------------
    Commands in a single array are a CmdArray, pointed to by a CmdArrayLink (name pointer and max_i).
    max_i for a CmdArray is the number of elements, where each element in the array is a pointer.
    The pointer to the start of the CmdArray
    Each CmdArray and its associated CmdArrayLink are includable/excludable from the build and help.
    -------------------------------------------------------------------------------------------------
-   typedef     const char    *pCmd_t;               pointer to an instance in an array of characters
+   typedef     const char    *pCmd_t;               pointer to an instance in an array of Ascii values
 
 // S~S  SimpleSal signal ends  S~S

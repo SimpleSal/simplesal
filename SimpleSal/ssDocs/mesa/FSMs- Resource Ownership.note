@@ -36,19 +36,18 @@
    -------------------------------------------------------------------------------------------------
    The "ownership FSM" allows N owners of the resources LED_BUILTIN, the Ascii input/streams, and
    the Matrix. "allows N owners" means "use an FSM to prevent simultaneous access to a resource".
-   In the fsmDemo sketch, ownership is held by: 1) the App and friends, or, 2) fsmDemo and friends.
    This is the simplest form, using 2 states: what the scientists call a "binary semaphore".
    -------------------------------------------------------------------------------------------------
-   From reset, "the Default owner" has ownership of the resource, until ownership is changed.  When
-   the default configuration is put into place, fsmDemo/ssUI/ssTEA adopt the opposite configuration.
-   The default configuration is instantiated by loadtime values in the build image, or code running.
+   In app-fsmDemo, ownership is held by: 1) the App and friends, or, 2) fsmDemo and friends.
+   Ownership occurs at the highest level, the App may grant Agency to an ssUI friend, who will act.
+   (trying to say: an ssUI display function will act assuming it was called by a proper Owner).
+   -------------------------------------------------------------------------------------------------
+   From reset, "the Default owner" has ownership of the resource, until ownership is changed.
+   The default configuration is instantiated by loadtime values in the build image, or at runtime.
    -------------------------------------------------------------------------------------------------
    One way to build a version of fsmDemo that is silent is to default Ascii ownership to the App.
    UnoR4 fsmDemo builds in the LED matrix but it is not required for any ssTEA or ssUI functionality.
    One way to build a version of fsmDemo that is dark is to default Matrix ownership to the App.
-   -------------------------------------------------------------------------------------------------
-   typedef enum RO_state_e
-
    -------------------------------------------------------------------------------------------------
    A binary, or 2-state, FSM can be managed using any two values.  The states are mutually exclusive.
    An N-state FSM can have individual states that are mutually exclusive, and similar to binary FSMs.
@@ -60,23 +59,30 @@
    -------------------------------------------------------------------------------------------------
    #define mesa_RO_substate_delay       ((int) Bit0)
 
-   This implementation of the RO FSM uses an enumerated set of states and a bit mapping of states.
+   This implementation of the RO FSM uses an enumerated set of states and a bit mapping of substates.
    For comparison purposes only.  Each is an alternative state-tracking method using data types
    inherent in the processor: integer numbers and bits.  Bits are by definition mutually exclusive
    just as enumerated types are integer numbers that are mutually exclusive.  Testing for a value
    in a set of numbers requires loading a number into a register and comparing other numbers to it.
    Multiple bit-wise comparisons may be made after loading a single bitfield value into a register.
-   Enumerated and named values for states helps the human language process understand the meaning.
-   The complexity and abstraction of bitfield values can be masked behind parameterized macros.
+
+   Enumerated and named values for states/substates help the language process understand the meaning.
+
+   Switch statements in the C language are directly relatable to the enumerated value mapping choice.
+   Small integers for enumerations may be included with the ARM instruction itself in some cases.
+
+   The complexity of bitfield values can be masked behind parameterized macros.  "if ((x&1)&&(y&4))"
+   can be expressed as "if isState(X) and isSubstate(Y)" using macros (#defines with a parameter).
 
    -------------------------------------------------------------------------------------------------
-   A compile-time initialization of the variable that will always exist at runtime.  The runtime use
+   A compile-time initialization of the variable that will always exist at runtime?  The runtime use
    caused by the first call to "flipstate" makes the FSM believe that the last time through was OFF.
    Another solution is to use uninitialized data, and the random value will be OFF or not OFF: GO!
    Another solution is to push the responsibility to the FSM user and require an initializing OFF.
    All of the solutions depend on a permanent (not on the stack) variable for tracking the state.
    -------------------------------------------------------------------------------------------------
-   #ifdef SSUI_ONEOF_CONTROL_INIT_RUNTIME
+   #ifdef xxxx_ONEOF_CONTROL_INIT_RUNTIME
+   #ifdef xxxx_ONEOF_CONTROL_INIT_BUILDTIME
 
    -------------------------------------------------------------------------------------------------
    A flash is defined as "a request, some time OFF, some time ON, then OFF, until requested again".

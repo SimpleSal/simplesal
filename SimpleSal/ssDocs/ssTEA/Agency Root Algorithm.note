@@ -132,7 +132,7 @@
         the fact that the event is recurring or not recurring
         the period that will be added to a Time (using a rule) for a recurring event
    -----------------------------------------------------------------------------------------
-   The Time event has occured at the Time requested, and the event thought it all went OK.
+   The Time event has occurred at the Time requested, and the event thought it all went OK.
    The state of the Run FSM must have been "Agencying" for Agency to have been granted.
    The Event may change its Run FSM state to Stopped or Paused, whether Recurring or not.
    A Time event may stay in the agencying state after changing any values defining Events.
@@ -161,10 +161,10 @@
        pTime = (ssE_pAboutEv->recursFromTrue) ? ssT_gpTime_Current : &ssE_pAboutEv->OccursAt;
 //
    -----------------------------------------------------------------------------------------
-   insert Monty Python Dead Parrot Sketch, an Agencying Event has occured, now it is dead.
+   insert Monty Python Dead Parrot Sketch, an Agencying Event has occurred, now it is dead.
    If your event doesn't want to be dead, put a million volts through it.  Then... Voom!
    -----------------------------------------------------------------------------------------
-   an event that was only intended to occur run once has occured at the Time requested, AND,
+   an event that was only intended to occur run once has occurred at the Time requested, AND,
    the event occurrence returned a normal result to the ssTEA Agency grantor, AND,
    the Event owner did not Stop/Pause the Event, leaving it in Agencying state in Run FSM.
    Stop the event if OccursAt has not changed during the event, the most normal conclusion.

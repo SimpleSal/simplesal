@@ -9,19 +9,26 @@
 
 // [Mesa Configuration Basics.note]     search in ssTEA source files for a reference to this file.
 //
+
+   -------------------------------------------------------------------------------------------------
+   Mesa-related source files released with SimpleSal are an example and a minimum implementation.
+   Files starting with "mesas_" define the SimpleSal view, those starting with "mesa_" are the App's.
+   Porting an App into a SimpleSal App starts with copying and renaming ".start" files to ".h".
+   The focus is on portability across mesas, not languages and Hosts; the vocabulary is static.
+   -------------------------------------------------------------------------------------------------
+
    -------------------------------------------------------------------------------------------------
    Multiple applications based on the same mesa may have the same mesa_*.h files within each sketch.
    A portable application based on more than one mesa will have to build each version separately in
    a sketch, or, manage multiple mesa declarations within the same mesa_*.h controlled by ifdefs.
    The result is that within the ssTEA/ssUI context, the mesa files are locally modified by a user.
    -------------------------------------------------------------------------------------------------
-   the configuration of one to N mesas bugbugbug
 
    // =============================================================================================
    // SimpleSal's suggestion: name EVERY mesa declare/define pair with specific reference to the mesa.
-   // otherwise, the "mesa_*.h" you have may or may not match the mesa you are targeting in the build.
-   // The "mesa_min_*.h" pair resides in SimpleSal directory; copied in from "mesa_*.start", renamed.
-    // =============================================================================================
+   // otherwise, the "mesa*.h" you have may or may not match the mesa you are targeting in the build.
+   // The "mesas_min_*.h" pair resides in SimpleSal directory; copied from "mesas_*.start", renamed.
+   // =============================================================================================
 
    ------------------------------------------------------------------------------------------------
    because ssTEA is meant to work at the mesa level, bits are addressed as mesas define them, but
@@ -66,6 +73,12 @@
    3) a variable never referenced or modified might have the software appearing to do so left out
    4) some co-existing software may require or prohibit certain methods; run time is deterministic.
 
+   -------------------------------------------------------------------------------------------------
+   Initialization of data can occur at build time (compiler sets value into image, image ends up in
+   processor memory with a value to run with) or run time (code runs during "setup", processor
+   memory gets a value to run with).  Contexts like MicroPy may impose a method that must be used.
+   -------------------------------------------------------------------------------------------------
+   The method chosen for the mesa, ssTEA, and ssUI are not necessarily but probably in alignment.
    -------------------------------------------------------------------------------------------------
 
    // #define MESA_ONEOF_CONTROL_INIT_BUILDTIME
