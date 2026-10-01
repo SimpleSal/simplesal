@@ -1,0 +1,82 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+   This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+   This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   ---------------------------------------------------------------------------------------------------
+ *
+ * mesas_vocabulary.start       ssTEA and SimpleSal build choices and allocation choices are possible.
+ *                              This SimpleSal file becomes "mesas_vocabulary.h" in a new App project.
+ *                              The App project file's revision over Time is under control of the App.
+ *
+ **************************************************************************************************/
+#ifndef __MESAS_VOCABULARY_H
+#define __MESAS_VOCABULARY_H
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// Begin "mesas_vocabulary.*" content as released by SimpleSal.
+// -------------------------------------------------------------------------------------------------
+// SimpleSal was written to be portable across languages and Hosts; portability requires the use of
+// words about abstract ideas, and, an implementation of the words in a completely hidden mechanism.
+// -------------------------------------------------------------------------------------------------
+// SimpleSal Apps that are "portable" adapt the configuration of their contents while being "built".
+// -------------------------------------------------------------------------------------------------
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// Host OS Arduino as a choice activates many well-defined assumptions Arduino has about a sketch.
+// The only specific reference to a Host Language in ssTEA is an adoption of C++'s boolean and Null.
+// -------------------------------------------------------------------------------------------------
+#define     HOST_ONEOF_hostOS_Is_Arduino
+// #define     HOST_ONEOF_hostOS_Is_MicroPy
+// #define     HOST_ONEOF_hostOS_Is_FreeRTOS
+// #define     HOST_ONEOF_hostOS_Is_Linux
+
+#define HOST_ONEOF_ssHL_IsArduinoCPP
+// #define HOST_ONEOF_ssHL_IsDriverC
+// #define HOST_ONEOF_ssHL_IsMicroPy
+
+#ifdef HOST_ONEOF_ssHL_IsArduinoCPP
+#define HOST_ONEOF_ssHL_defines_boolean
+#define HOST_ONEOF_ssHL_defines_Null
+#endif // HOST_ONEOF_ssHL_IsArduinoCPP
+
+#ifdef HOST_ONEOF_ssHL_IsDriverC
+// -------------------------------------------------------------------------------------------------
+// The implementation of the software may be more narrow and C-specific for Device Driver Software
+// because the tricks applied to make support of Arduino configurations appear magic are not simple.
+// -------------------------------------------------------------------------------------------------
+#define HOST_ONEOF_ssHL_defines_boolean
+#define HOST_ONEOF_ssHL_defines_Null
+#endif // HOST_ONEOF_ssHL_IsDriverC
+
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+#ifdef HOST_ONEOF_ssHL_Arduino_MicroPy
+// -------------------------------------------------------------------------------------------------
+// MicroPython is considered a Host and an ssHL because it provides a broader context than Arduino.
+// Integration of MicroPython provides access to higher-level signaling with a specific build model,
+// while little about ssTEA as a Timekeeper should affect MicroPython code for any device interactions.
+// -------------------------------------------------------------------------------------------------
+// The first challenge is to conform to the organizational model of microPyThon itself, the second
+// is writing an interface into ssTEA that calls ssHL C++ code from microPy and to MicroPy from C++.
+// MicroPython implementations conform to extensive standards that C++ languages also conform to,
+// the challenge is to complete all of the steps required to conform so integration succeeds.
+// -------------------------------------------------------------------------------------------------
+#endif // HOST_ONEOF_ssHL_Arduino_MicroPy
+
+// -------------------------------------------------------------------------------------------------
+// Properties of memory locations: read only, read/write, executable.  Read Only need not be in RAM.
+// Writable memories that are not accessible directly have an API for use (e.g. flash pages/banks).
+// Properties are specified not as a type of a variable but as an "attribute" the type possesses.
+// -------------------------------------------------------------------------------------------------
+// An apparently uncorrectable mistake with the original K&R C language was overloading "static".
+// ssTEA's convention is that ReadOnly is just that, and only permanently allocated data is static.
+// -------------------------------------------------------------------------------------------------
+#ifdef HOST_ONEOF_ssHL_IsArduinoCPP
+#define   ReadOnly  static
+#endif  // HOST_ONEOF_ssHL_IsArduinoCPP
+
+#ifdef HOST_ONEOF_ssHL_IsMicroPy
+#define   ReadOnly
+#endif  // HOST_ONEOF_ssHL_IsMicroPy
+
+#endif  // __MESAS_VOCABULARY_H

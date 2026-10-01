@@ -1,0 +1,26 @@
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+   The contents of this file are the opinion of TSC LLC about a specific topic, no license applies to it.
+  -------------------------------------------------------------- */
+
+   ---------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal starts  S~S
+
+[Managing App+ssTEA Configurations.note]    search in app-fsmDemo source files for a reference to this file.
+
+   -------------------------------------------------------------------------------------------------
+   A complex configuration may be established on a per-App basis, or, shared by several similar Apps.
+   That configuration can then be shared by every member of the team working on the same App(s).
+   No changes to the ss_configuration.h file should be necessary while enabling/disabling features.
+   -------------------------------------------------------------------------------------------------
+   For a Simple Sal App project, the configuration may evolve and stabilize as development evolves;
+   the definition of a version at a point in Time is best contained in the App, not in a shared file.
+   Propagating changes to the configuration over time as Apps emerge is a software engineering task.
+   -------------------------------------------------------------------------------------------------
+   This creates a duplication of similar or dissimilar configurations across Apps or pressure to
+   conform to the configuration established as the trustworthy baseline.  This is the driving force
+   for placing the specification of the configuration in the App: change and variation management.
+   The App(s) can manage the complexity using build options such as this example; outside SimpleSal.
+   -------------------------------------------------------------------------------------------------
+
+// S~S  SimpleSal signal ends  S~S
