@@ -19,7 +19,7 @@
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // Event descriptors are used to exchange information with the API, ssTEA/E services may write them.
-// Users enter strings that are names of eventApi data structures, this maps names to ssHL variables,
+// Users enter arrays of Ascii values that are names of eventApi data structures, this maps names to ssHL variables,
 // the mapping is from the user saying "evapiN" resulting in a mapping to "evapi[N]", using LookupWiths.
 // -------------------------------------------------------------------------------------------------
 // =================================================================================================
@@ -77,7 +77,7 @@ void ssUI_apiSignalOp_Show_Data (ssUI_db_pEvApi_t pEvApi,
     msg_ssTEA_Path ();
 
     // proceed knowing that the UI banner is actively signaling
-    pApiSig = pEvApi->pssTEA_ApiSig;
+    pApiSig = pEvApi->ssTEA_pApiSig;
 
     if (lfBefore == lfY)
     {
@@ -113,7 +113,7 @@ void ssUI_apiSignalOp_Show_Data (ssUI_db_pEvApi_t pEvApi,
 
     if (bShowSignalResults)
     {
-        ss_uiOp_pBanner (lfN,
+        ss_uiOp_emit_pBanner (lfN,
                              ((pApiSig->macSNR == ss_macSNR_OK) ?
                                  pcMsg_AgApiSignalSuccess : pcMsg_AgApiSignalError),
                              lfN);
@@ -122,7 +122,7 @@ void ssUI_apiSignalOp_Show_Data (ssUI_db_pEvApi_t pEvApi,
         {
             if (pApiSig->macSNR == ss_macSNR_OK)
             {
-                ss_uiOp_pBanner (lfN,
+                ss_uiOp_emit_pBanner (lfN,
                                      ((pApiSig->apiSNR == ss_apiSNR_OK) ?
                                          pcMsg_apiSignalOp_Worked : pcMsg_apiSignalOp_Failed),
                                      lfN);
@@ -142,7 +142,7 @@ void ssUI_apiSignalOp_Show_Data (ssUI_db_pEvApi_t pEvApi,
 }   // ssUI_apiSignalOp_Show_Data
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-// this is at the level of the Agency Api, after a signal transaction has occured.
+// this is at the level of the Agency Api, after a signal transaction has occurred.
 // -------------------------------------------------------------------------------------------------
 void ssUI_apiSignalOp_Show_ApiError (ssUI_db_pEvApi_t pEvApi)
 {
@@ -182,7 +182,7 @@ boolean ssUI_apiSignalOp_Emit (ssUI_db_pEvApi_t pEvApi, ss_ApiSigMsgValue_t ApiS
 {
     msg_ssTEA_Path ();
 
-    ssTEA_pApiSig_t pApiSig = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t pApiSig = pEvApi->ssTEA_pApiSig;
 
     // ---------------------------------------------------------------------------------------------
     // The App should use the Agency Api FSM state to judge the state of a channel, because
@@ -297,15 +297,10 @@ void ssUI_dbOp_Show_OneEvApi (ssUI_db_pEvApi_t pEvApi)
     ss_uiOp_emit_lbld_boolean (S("locked"), pEvApi->locked);
     ss_uiOp_emit_newline ();
 
-#ifdef SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-#else   // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-    // bugbugbug need to get state from ssTEA
-#endif  // SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-
     ssUI_apiSignalOp_Show_Data (pEvApi, lfN, lfN, DoHideResults);
-    ss_uiOp_Show_Apifsm_state (pEvApi->pssTEA_ApiSig, pApiSigName (pEvApi));
-    ss_uiOp_Show_RunfsmData (pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
-    ss_uiOp_Show_EventData (pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+    ss_uiOp_Show_Apifsm_state (pEvApi->ssTEA_pApiSig, pApiSigName (pEvApi));
+    ss_uiOp_Show_RunfsmData (pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
+    ss_uiOp_Show_EventData (pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
 
     ss_uiOp_emit_qAsciiA (pcMsg_plbl_TimeVariable);
     ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
@@ -323,7 +318,7 @@ void ssUI_dbOp_Show_AllEvApis (void)
 
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_Dash (40);
-    ss_uiOp_pBanner (lfY, pcMsg_CurrentViewData, lfY);
+    ss_uiOp_emit_pBanner (lfY, pcMsg_CurrentViewData, lfY);
     ss_uiOp_emit_Dash (40);
 
     for (EvApi_i=0; EvApi_i <= SSUI_EVAPI_ALLOC_MAX_I; EvApi_i++)
@@ -340,12 +335,12 @@ void ssUI_dbOp_Show_AllEvApis (void)
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // A Proper Event Api data structure contains two pointer values
-//   1) pssTEA_ApiSig pointing to allocated memory that is actually the signal carrier or medium.
+//   1) ssTEA_pApiSig pointing to allocated memory that is actually the signal carrier or medium.
 //   2) pTimeVar pointing to allocated memory that is a Time Variable ssUI makes available to Event.
 // -------------------------------------------------------------------------------------------------
 void  ssUI_dbOp_Init_OneEvApi (ssUI_db_pEvApi_t pEvApi, boolean doDeepInit)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     pEvApi->accessOn    = true;
     pEvApi->inWildcard  = true;
@@ -404,7 +399,7 @@ void ssUI_dbOp_Init_AllEvApis (boolean doDeepInit)
         // config depending, ssDB Init may not allocate the ssE_AboutEv pointed to by the Signal.
         // "config depending" means "based on TRUSTED use of Event data structures".
         // ssTEA API signal carrier
-        pEvApi->pssTEA_ApiSig = &ssUI_db_ApiSig_alloc[EvApi_i];
+        pEvApi->ssTEA_pApiSig = &ssUI_db_ApiSig_alloc[EvApi_i];
         ssUI_dbOp_Init_OneEvApi (pEvApi, doDeepInit);
 
         if (doDeepInit)
@@ -425,7 +420,7 @@ void ssUI_dbOp_Init_AllEvApis (boolean doDeepInit)
     }   // for each EvApi structure
 }   // ssUI_dbOp_Init_AllEvApis
 // -------------------------------------------------------------------------------------------------
-// Given a string which is the name of a variable, return the name the user uses.
+// Given an array which is the name of a variable, return the name the user uses.
 // -------------------------------------------------------------------------------------------------
 pAsciiA_t ssUI_dbOp_Get_pName_Using_VarName (pAsciiA_t pVarName)
 {
@@ -448,7 +443,7 @@ pAsciiA_t ssUI_dbOp_Get_pName_Using_VarName (pAsciiA_t pVarName)
 }   // ssUI_dbOp_Get_pName_Using_VarName
 
 // -------------------------------------------------------------------------------------------------
-// Given a string which is the name of a variable, return the ssHL-language name the program uses.
+// Given an array which is the name of a variable, return the ssHL-language name the program uses.
 // If the string value doesn't match a variable, return ephemeral time variable, that will be used.
 // -------------------------------------------------------------------------r------------------------
 ssT_pTime_t ssUI_dbOp_Get_pTimeVar_Using_VarName (pAsciiA_t pVarName)
@@ -497,13 +492,13 @@ void ssUI_dbOp_Init_TimeVars (void)
     }
 }   // ssUI_dbOp_Init_TimeVars
 // -------------------------------------------------------------------------------------------------
-// Given a string which is the name of a variable, return the ssHL-language name the program uses.
+// Given an array which is the name of a variable, return the ssHL-language name the program uses.
 // -------------------------------------------------------------------------------------------------
 void ssUI_dbOp_Show_TimeVars (void)
 {
     int                 Var_i;
 
-    ss_uiOp_pBanner (lfN, pcMsg_VarnameHelp, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_VarnameHelp, lfY);
 
     for (Var_i=0; Var_i <= TimeVar_TUPLE_MAX_I; Var_i++)
     {   // timea or evapi0 or evtime0 or evtime5   as tokens triggers a newline to get all on the page
@@ -545,14 +540,14 @@ void    ssUI_dbOp_Show_EvApi_pointers (ssUI_db_pEvApi_t pEvApi)
     ss_uiOp_emit_1 (Ascii_Period);
     if (pEvApi)
     {
-        ss_uiOp_emit_Hex_32bits (pEvApi->pssTEA_ApiSig);
+        ss_uiOp_emit_Hex_32bits (pEvApi->ssTEA_pApiSig);
     }
     ss_uiOp_emit_1 (Ascii_Period);
     if (pEvApi)
     {
-        if (pEvApi->pssTEA_ApiSig)
+        if (pEvApi->ssTEA_pApiSig)
         {
-            ss_uiOp_emit_Hex_32bits (pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+            ss_uiOp_emit_Hex_32bits (pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
         }
     }
     ss_uiOp_emit_1 (Ascii_Rarrow);

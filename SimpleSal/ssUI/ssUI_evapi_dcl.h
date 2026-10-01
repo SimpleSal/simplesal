@@ -38,7 +38,7 @@ typedef enum ssUI_EvApi_Range_e
 // An Event runs asynchronously to the application, how is data communicated between the two?
 // Variables that always exist (whether the event is running or not) must be allocated and referenced.
 // The EventData data structure allows for a Per-Event data allocation, instantiates the variables
-// in non-stack memory for use at any Time, and gets the "volatile" attribute assigned at the roots.
+// in non-stack memory for use at any Time, and may get the "volatile" attribute assigned at the roots.
 // -------------------------------------------------------------------------------------------------
 typedef struct ssUI_db_EventApiDataDesc_s
 {
@@ -49,7 +49,7 @@ typedef struct ssUI_db_EventApiDataDesc_s
     ssUI_pToken_t           pEvApiNameTkn_ssDB; // for ssUI display and API LookupWith
     ssUI_pToken_t           pEvApiNameTkn_App;  // for ssUI display and API LookupWith
 
-    ssTEA_pApiSig_t         pssTEA_ApiSig;      // signal carrier for ssTEA API requests/responses
+    ssTEA_pApiSig_t         ssTEA_pApiSig;      // signal carrier for ssTEA API requests/responses
 
     ssT_pTime_t             pTimeVar;           // for ssT mathOp purposes
     ssUI_pToken_t           pTimeVarTkn;        // for ssUI mathOp purposes

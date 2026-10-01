@@ -100,7 +100,7 @@ void    ssUI_mathOp_Make_TimeMathWork (ssUI_pMathOp_t pMO)
 }   // ssUI_mathOp_Make_TimeMathWork
 // -------------------------------------------------------------------------------------------------
 // once we've found an Lvalue, we need a clean well-defined data set to do math operations.
-//  pMO->pLvalue = <address of destination for result>; must have occured for mathOp to be valid.
+//  pMO->pLvalue = <address of destination for result>; must have occurred for mathOp to be valid.
 // -------------------------------------------------------------------------------------------------
 void ssUI_mathOp_ClearMO_exceptLvalue (ssUI_pMathOp_t pMO)
 {
@@ -123,8 +123,7 @@ boolean ssUI_mathOp_Match_Varname_SetLvalue_ClearMO (pAsciiA_t pVarName)
     if (gpLive_MO->pLvalue)
     {
         if (gpLive_MO->pLvalue == ssT_gpTime_Ephemeral)
-        {   // bugbugbug why can't ephemeral be used as lvalue?  what can't it be implied in "math 10sc"
-            // bugbugbug is there any purpose in being able to evaluate math TimeStamps in command input?
+        {
             ss_uiOp_emit_qAsciiA ("  an Ephemeral TimeStamp cannot be the destination (Lvalue) of an assignment");
             ss_uiOp_emit_newline ();
             return (false);
@@ -187,7 +186,6 @@ void ssUI_mathOp_Show_OneMathTerm (pAsciiA_t pdesc, pAsciiA_t pName)
     max_i = (SHOWMATH_DESC_LIMIT-i);
     for (i=0; i < max_i; i++)
         ss_uiOp_emit_1 (Ascii_Space);
-    ss_uiOp_emit_1 (Ascii_Colon);
 
     for (i=0; i < SHOWMATH_NAME_LIMIT; i++)
     {
@@ -272,7 +270,7 @@ void    ssUI_mathOp_Show_AllMathTerms (ssUI_pMathOp_t pMO, boolean IsPreOp)
         }   //
         else            // results phase
         {
-            ssUI_mathOp_Show_OneMathTerm (S("Lvalue"), pMO->pLvalue_Name);
+            ssUI_mathOp_Show_OneMathTerm (S("Lvalue is"), pMO->pLvalue_Name);
             ss_uiOp_emit_1 (Ascii_Assign);
             ss_uiOp_emit_1 (Ascii_Space);
             ss_uiOp_Show_Time (pMO->pLvalue, lfN);
@@ -301,7 +299,7 @@ void    ssUI_mathOp_Show_AllMathTerms (ssUI_pMathOp_t pMO, boolean IsPreOp)
         {
             if (!IsPreOp)
             {
-                ssUI_mathOp_Show_OneMathTerm (S("Lvalue =="), pMO->pLvalue_Name);
+                ssUI_mathOp_Show_OneMathTerm (S("Lvalue is"), pMO->pLvalue_Name);
                 ss_uiOp_emit_1 (Ascii_EQ);
                 ss_uiOp_emit_1 (Ascii_Space);
             }   // results phase
@@ -310,7 +308,7 @@ void    ssUI_mathOp_Show_AllMathTerms (ssUI_pMathOp_t pMO, boolean IsPreOp)
         {
             if (!IsPreOp)
             {
-                ssUI_mathOp_Show_OneMathTerm (S("Time == "), pMO->pLvalue_Name);
+                ssUI_mathOp_Show_OneMathTerm (S("Time is "), pMO->pLvalue_Name);
                 ss_uiOp_emit_1 (Ascii_Space);
             }   // results phase
         }   // only Lvalue: this is the result of a constant string entered as a math term

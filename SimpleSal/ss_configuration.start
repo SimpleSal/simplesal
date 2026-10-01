@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |   All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    ---------------------------------------------------------------------------------------------------
@@ -14,11 +14,7 @@
 // =================================================================================================
 // Start of multiple-mesa portability considerations
 // =================================================================================================
-// These are issues relating to portability across mesas: the way the software is able to express
-// and perceive Truth, and perceive the passage of Time, has to be abstracted to allow variation.
-// The portability requirement is a result of SimpleSal's desire to support Apps in a variety of
-// development environments and mesas.  The App's portability is independent from SimpleSal's.
-// These solutions to the issues are the full extent of attention needed to use SimpleSal on a mesa.
+// [.\SimpleSal\ssDocs\Mesa\Portability Considerations.note]
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // define SST_OPTIN_READ_MS_FROM_CHIP to force a mesa chip register read, otherwise, derive from us.
@@ -145,7 +141,7 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // ssUI has the ability to "execute" collections of "commands" as user input in real time.
 // Arrays of commands may be added/modified in ssUI (local copy in SimpleSal) or in the App.
 // -------------------------------------------------------------------------------------------------
-// The Build options in effect (having been #defined) are displayed to the user by a function.
+// The Build options in effect (having been #defined) may be displayed to the user by a function.
 // -------------------------------------------------------------------------------------------------
 /* simplest */ #define      SSA_OPTIN_STATS_FSM
 /* simplest */ #define      SSA_OPTIN_STATS_RUNFSM
@@ -157,6 +153,8 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 /* simplest */ #define      SSTEA_OPTIN_SHOW_SIGNALS
 
 /* simplest */ #define      SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
+/* simplest */ #define      SSUI_UIBUFFER_ALLOC   (60+2+1)
+/* simplest */ #define      SSUI_ONEOF_SERIAL_RECEIVES_LINES
 
 /* simplest */ #define      SS_OPTIN_SHOW_BUILD_OPTIONS
 
@@ -202,13 +200,13 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // #define      SSE_OPTIN_ABOUTEVDB_DEBUG
 
 // -------------------------------------------------------------------------------------------------
-// [.\SimpleSal\ssDocs\ssTEA\bugbugbug.note]     select the method of initialization
+// [.\SimpleSal\ssDocs\swDev\FSMs- Init FSM Memory States.note]     select the initialization method
 // -------------------------------------------------------------------------------------------------
 // #define      SSTEA_ONEOF_CONTROL_INIT_RUNTIME
 // #define      SSTEA_ONEOF_CONTROL_INIT_BUILDTIME
 
 // -------------------------------------------------------------------------------------------------
-// A compressed Time value will shortern the comparison of two Times, but requires bit manipulation.
+// A compressed Time value will shorten the comparison of two Times, but requires bit manipulation.
 // -------------------------------------------------------------------------------------------------
 // #define     SST_OPTIN_TIME_COMPRESSED_TUS    // Agency uses generated compressed values
 
@@ -220,16 +218,15 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // #define     SST_ONEOF_TIME_NSECS_INCR       // "next ns value" returns an incrementing value
 #endif  // SST_OPTIN_TIME_NSECS_TU
 
+// #define     MESA_OPTIN_RANDOM_NUMBERS
+
 // #define     SST_ONEOF_TIME_PLANCKS_RANDOM
 // #define     SST_ONEOF_TIME_PLANCKS_ZERO
 // #define     SST_ONEOF_TIME_PLANCKS_INCR
 
-#ifdef      SST_ONEOF_TIME_PLANCKS_RANDOM
-#define     MESA_OPTIN_RANDOM_NUMBERS
-#endif  // SST_ONEOF_TIME_PLANCKS_RANDOM
 
 // -------------------------------------------------------------------------------------------------
-// SST's debug configuration choices affect SST's build configuration and so are defaulted to off.
+// ssT's debug configuration choices affect ssT's build configuration and so are defaulted to off.
 // -------------------------------------------------------------------------------------------------
 // #define     SST_OPTIN_TIMEMATH_FAIL_ANNOUNCE
 // #define     SST_OPTIN_TIMEMATH_OKAY_ANNOUNCE
@@ -318,11 +315,22 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // -------------------------------------------------------------------------------------------------
 #define  SSUI_UIBUFFER_ALLOC  (60+2+1) // <0-60 Ascii values><0-2 Ascii input terminators><1 nul>
 
+// -------------------------------------------------------------------------------------------------
+// Initialization at run time is more straightforward than using build tricks to initialize memory.
+// -------------------------------------------------------------------------------------------------
 #define  SSUI_ONEOF_CONTROL_INIT_RUNTIME
 
 // -------------------------------------------------------------------------------------------------
+// The Serial Monitor (serial terminal program) in the Arduino IDE only sends chars when CR entered.
+// The TeraTerm serial terminal program (as an example) sends each character as the user types it.
+// An FSM collecting lines of input from the user, or from a "commands" array, acts differently.
+// -------------------------------------------------------------------------------------------------
+// #define      SSUI_ONEOF_SERIAL_RECEIVES_LINES
+// #define      SSUI_ONEOF_SERIAL_RECEIVES_CHARS
+
+// -------------------------------------------------------------------------------------------------
 // ssUI uses a command FSM to execute arrays of commands; this control includes ssUI's arrays.
-// There is a similar control for arrays of commands by the user: "OPTIN_INCLUDE_CMDS_IN_SSUI_".
+// There is a similar control for arrays of commands by the user: "OPTIN_INCLUDE_CMDS_IN_SSUI_APP".
 // -------------------------------------------------------------------------------------------------
 #define  SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
 

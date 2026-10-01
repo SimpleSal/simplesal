@@ -14,26 +14,33 @@
 // -------------------------------------------------------------------------------------------------
 void        ssUI_Prompt (void);
 
-boolean     ssUI_rootMain (boolean restart_ssUI);
+boolean     ssUI_rootMain (boolean isInit_State);
 boolean     ssUI_CmdsMain (void);
 boolean     ssUI_LoopMain (void);
 boolean     ssUI_MathMain (void);
 boolean     ssUI_EvapiMain (void);
 boolean     ssUI_ssMain (void);
 
-boolean     ssUI_inOp_Line_FromSerial (pAsciiA_t pUserBuff, int userMax_i);
-boolean     ssUI_inOp_Line_FromCmds (pAsciiA_t pUserBuff, int userBuff_MAX_I);
+void        ssUI_inOp_fifo_InitState (void);
 
-boolean     ssUI_inOp_Line_GetParseHandle (void);
+boolean     ssUI_inOp_Line_FromSerial (pAsciiA_t pUserBuff, int userBuff_Max_i);
+boolean     ssUI_inOp_Line_FromCmds (pAsciiA_t pUserBuff, int userBuff_Max_i);
+
+boolean     ssUI_inOp_Line_GetParseHandle (pAsciiA_t pInput);   // if not NULL, input already received
+#define     pInputNull ((pAsciiA_t) NULL)
 
 #define THERES_NO_ACTION (false)                // nothing was output that requires a new prompt from UI
 #define IM_THE_TOWN_CRIER (true)                // something was output that requires a new prompt
 
-boolean     ssUI_BufferOnlyHas_ssui (pAsciiA_t pUserBuff);
-boolean     ssUI_BufferOnlyHas_appui (pAsciiA_t pUserBuff);
+void        App_HeyProcessThis (pAsciiA_t pAscii_After_App);    // ssUI calls when input is "app xxx"
+void        ssUI_HeyProcessThis (pAsciiA_t pAscii_After_ssui);  // App calls when input is "ssui xxx"
 
-boolean     ssUI_BufferStartsWith_echo (pAsciiA_t pUserBuff);
+boolean     ssUI_BufferStartsWith_ssui (pAsciiA_t pUserBuff);
+boolean     ssUI_BufferOnlyHas_ssui (pAsciiA_t pUserBuff);      // assumes starts with ssui, looks for NUL
 boolean     ssUI_BufferStartsWith_app (pAsciiA_t pUserBuff);
+boolean     ssUI_BufferOnlyHas_app (pAsciiA_t pUserBuff);       // assumes starts with app, looks for NUL
+
+boolean     ssUI_BufferStartsWith_echo (pAsciiA_t pUserBuff);   // everything after "echo", maybe NUL
 
 // =================================================================================================
 int         ssUI_tknOp_ParseAllTokens (pAsciiA_t pInput);
@@ -43,12 +50,10 @@ void        ssUI_tknOp_SaveACopy_TermCondCmd (void);
 void        ssUI_tknOp_Restore_TermCondCmd (void);
 
 void        ssUI_tknOp_TokenizeP1 (ssUI_pToken_t pToken);
-// bugbugbug using P1 as master, compare each Ascii character to the character in P2 array
 boolean     ssUI_tknIf_P1eqP2 (ssUI_pToken_t pToken1, ssUI_pToken_t pToken2);
 
 boolean     ssUI_tknIf_P1_eq_pAa (ssUI_pToken_t pToken, pAsciiA_t pAsciiA);
 
-// bugbugbug the Ascii->Token compare, with Ascii as master, flips the order and keeps token as master (does it matter?)
 #define     ssUI_tknIf_pP1_eq_pAa(cmpTo_p,pAsciiA)  (ssUI_tknIf_P1_eq_pAa (cmpTo_p, pAsciiA))
 #define     ssUI_tknIf_pAscii_eq_pP2(pAsciiA,cmpTo_p)  (ssUI_tknIf_P1_eq_pAa (pAsciiA, cmpTo_p))
 

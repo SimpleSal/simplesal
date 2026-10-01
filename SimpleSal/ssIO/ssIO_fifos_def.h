@@ -13,6 +13,13 @@
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
+// ssIO participates in an FSM running serial output through a FIFO, where ssUI is the final emitter.
+// -------------------------------------------------------------------------------------------------
+pVoid_t    mesa_FSM_AsciiEmit_pfifo (void);
+#define    TYPECAST_pfifo_From_void ((ssIO_pFifo_t) mesa_FSM_AsciiEmit_pfifo ())
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
 // Noise about the software style and organization of ssIO with respect to the rest of SimpleSal:
 //    The intention of ssIO is to be independent of the Time, Event, and Agency features of ssTEA.
 //    Independence propagates out to the documentation extrusion style of ssTEA; all documents in
@@ -256,8 +263,7 @@ void    ssIO_fifoOp_Put_LastIn (ssIO_pFifo_t   pTofifo, Bits8_t  Bits8)
             // The byte BEFORE the write_i value will either be overwritten or the data dropped.
             // Writing into the gap makes no sense because the write_i values is not changed, so the
             // the next value incoming will write over the value if room becomes available later.
-            // -------------------------------------------------------------------------------------
-            Serial.write (ssIO_fifoOp_Get_FirstIn (&AsciiEmit_fifo));
+            // ------------------------------------------------------------------------------------
             if (pTofifo->isCircular)
             {
 #ifdef SSIO_ONEOF_FIFO_OVERFLOW_CRUNCH

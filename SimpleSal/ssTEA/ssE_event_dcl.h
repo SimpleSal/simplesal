@@ -105,7 +105,7 @@ typedef struct ssE_AboutEvDesc_s
     ssT_Time_t              OccursAt;           // Time when this event is to occur
     ssT_Time_t              Period;             // period until event recurs after this occurence
     boolean                 recurs;             // [T: OccursAt += period | F: OccursAt untouched]
-    boolean                 recursFromTrue;     // add period to [T: Time occured | F: Time Requested]
+    boolean                 recursFromTrue;     // add period to [T: Time occurred | F: Time Requested]
 
     EvAg_pEvFunc_t          pEvFunc;            // pointer to ssHL code to run when the event occurs
     ssE_EvResult_t          AgencyResult;       // as returned by the Event when last granted Agency
@@ -172,7 +172,7 @@ typedef         ssE_pEventInfoDesc_t   ssE_pEvInfo_t;
 #define         ssE_pEvInfoNull    ((ssE_pEvInfo_t) NULL)
 
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t     ssE_Initialize          (void);
+ss_macSNR_t     ssE_InitState          (void);
 ss_macSNR_t     ssE_InitData_RunTime     (boolean doDeepInit);
 
 // -------------------------------------------------------------------------------------------------

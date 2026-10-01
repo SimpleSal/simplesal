@@ -613,7 +613,7 @@ ss_apiSNR_t ssA_ApifsmOp_validate_SigData (ssTEA_pApiSig_t pApiSig)
         // a valid Time for OccursAt is Valid, nonzero, Positive; assumed to be in the Future.
         // -----------------------------------------------------------------------------------------
         if (
-            (ssT_timeIf_P1hasTUerror (&pApisAboutEvData->OccursAt) != ss_TimeUnit_none)
+            (ssT_timeIf_P1hasTUerror (&pApisAboutEvData->OccursAt) != ss_TimeUnit_error)
             ||
             (ssT_timeif_P1equalsZero (&pApisAboutEvData->OccursAt))
             ||
@@ -634,7 +634,7 @@ ss_apiSNR_t ssA_ApifsmOp_validate_SigData (ssTEA_pApiSig_t pApiSig)
             // a valid Time for Period is Valid, nonzero, Positive; not much else limiting value.
             // -------------------------------------------------------------------------------------
             if (
-                (ssT_timeIf_P1hasTUerror (&pApisAboutEvData->Period) != ss_TimeUnit_none)
+                (ssT_timeIf_P1hasTUerror (&pApisAboutEvData->Period) != ss_TimeUnit_error)
                 ||
                 (ssT_timeif_P1equalsZero (&pApisAboutEvData->Period))
                 ||
@@ -710,7 +710,7 @@ ss_apiSNR_t ssA_ApifsmOp_validate_pEvFunc (ssTEA_pApiSig_t pApiSig)
     {
         if (u32_b & (ThumbBit))
         {
-            msg_ssTEA_Facts ("note: ARM instructions should always align on a 4-byte boundary (Thumb excluded).");
+            msg_ssTEA_Facts ("note: ARM instructions should always align on a 2- or 4-byte boundary (Thumb 2-byte).");
             msg_ssTEA_Facts ("    : the least significant bit(s) in '&code as pointer' may point to Thumb code.");
         }
         if (ssTEA_control.Show_Facts)
@@ -740,8 +740,7 @@ ss_apiSNR_t ssA_ApifsmOp_validate_pEvFunc (ssTEA_pApiSig_t pApiSig)
     // ---------------------------------------------------------------------------------------------
     // -----------------------------------------------------------------------------------------
     // What has actually happened when this message is visible to the User?  The Event function
-    // returned without crashing the processor, these messages were sent, the ssTEA and Host OS
-    // functions have returned Agency to the Host OS, and the serial port has been given Agency.
+    // returned without crashing the processor, messages are sent, the Event is ready to start.
     // The Event has satisfied the Golden Rule of Programming: Don't Cause A Hard Fault.
     // -----------------------------------------------------------------------------------------
     msg_ssTEA_Cause ("--");
@@ -1041,7 +1040,6 @@ ss_apiSNR_t ssA_RunfsmOp_start (ssTEA_pApiSig_t pApiSig)
 
     // note that the ssTEA database knows the time of next occurrence, but user does not.
     // design choice: copy ssTEA's true version into the user's API data structure Event
-    // bugbugbug: when agency structures collapsed to one, need to detect copy A->A crunch.
     ssT_mathOp_P1getsP2 (&pApiSig->ssE_pAboutEv->OccursAt, &pEvInfo->ssE_pAboutEv->OccursAt);
 
     ssA_RunfsmOp_state_Delta (pEvInfo, pApiSig, pEvInfo->ssE_pAboutEv->Runfsm_state, ssA_Runfsm_State_agencying);

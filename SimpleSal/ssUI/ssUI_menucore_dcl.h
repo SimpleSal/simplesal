@@ -11,24 +11,26 @@
 
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t        H_ss                    (int tkn_i, boolean moreInputTkns);
+
 eHandlerResult_t        H_ss_Time               (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_TimeStart          (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_TimeStop           (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_TimeBigBang        (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_TimeStats          (int tkn_i, boolean moreInputTkns);
+
 eHandlerResult_t        H_ss_Agency             (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_AgencyPace         (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_AgencyPeriod       (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_AgencyStart        (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_AgencyStop         (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ss_AgencyStats        (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_MsgSSM             (int tkn_i, boolean moreInputTkns);
+
 eHandlerResult_t        H_ss_RO                 (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_ROs_LED             (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_ROs_Ascii           (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_ROs_Matrix          (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_ROs_Describe        (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ss_ROs_Update          (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ss_ROs_LED            (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ss_ROs_Ascii          (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ss_ROs_Matrix         (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ss_ROs_Describe       (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ss_ROs_Select         (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ss_ROs_Update         (int tkn_i, boolean moreInputTkns);
 
 
 // -------------------------------------------------------------------------------------------------
@@ -58,9 +60,9 @@ eHandlerResult_t        H_ev_Runfsm_pause       (int tkn_i, boolean moreInputTkn
 eHandlerResult_t        H_ev_Runfsm_resume      (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ev_Runfsm_state       (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ev_Runfsm_stats       (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ev_occurs             (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ev_occurs_oper1       (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_ev_occurs_oper2       (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ev_occursat           (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ev_occursat_oper1     (int tkn_i, boolean moreInputTkns);
+eHandlerResult_t        H_ev_occursat_oper2     (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ev_recurs             (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ev_period             (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_ev_period_oper1       (int tkn_i, boolean moreInputTkns);
@@ -78,7 +80,6 @@ eHandlerResult_t        H_cmds_halt             (int tkn_i, boolean moreInputTkn
 
 eHandlerResult_t        H_help                  (int tkn_i, boolean moreInputTkns);
 eHandlerResult_t        H_help_Show_ByTopic     (int tkn_i, boolean moreInputTkns);
-eHandlerResult_t        H_help_Show_ByCommand   (int tkn_i, boolean moreInputTkns);
 
 // The math operations are at the center of all event/loop/other math operations.
 // The specific Lvalue or destination varies, all call "H_math_oper1" to get a result.

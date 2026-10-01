@@ -98,7 +98,7 @@ void  ssTEA_Time_MathZeroAll ()
 
 // -------------------------------------------------------------------------------------------------
 // Loop1 and Loop2 are points in Time when the App has granted Agency in Arduino's "loop" function.
-// Loop1toLoop2 is the computation of the number of micros that occured betweet Loop1 and Loop2.
+// Loop1toLoop2 is the computation of the number of micros that occurred betweet Loop1 and Loop2.
 // This result accounts for all software consuming Time: ssTEA, Events, interrupts, Host, App.
 // -------------------------------------------------------------------------------------------------
 TimeUnitsBig_t      ssT_us_gLoop1toLoop2;
@@ -107,7 +107,7 @@ TimeUnitsBig_t      ssT_ms_gLoop1toLoop2;
 // =================================================================================================
 void ssTEA_Time_MathEntry (void)
 {
-    ssTEA_Time_cts.us_LoopStart_Curr = ssT_rawCt_usNow ();  // access hardware, at a cost bugbugbug
+    ssTEA_Time_cts.us_LoopStart_Curr = ssT_rawCt_usNow ();  // access hardware, at a cost
     ssTEA_Time_cts.ms_LoopStart_Curr = ssT_rawCt_msNow (ssTEA_Time_cts.us_LoopStart_Curr);
 
     ssT_us_gLoop1toLoop2 = ssT_rawCt_SubPastFromNow (ssTEA_Time_cts.us_LoopStart_Curr,
@@ -365,7 +365,7 @@ ReadOnly    ssT_pTime_t ssT_gpTime_100us = &ssT_Time_100us;
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t ssT_Initialize (void)
+ss_macSNR_t ssT_InitState (void)
 {
     ss_macSNR_t  returnSNR;
 
@@ -379,7 +379,7 @@ ss_macSNR_t ssT_Initialize (void)
     }
 
     return (returnSNR);
-}   // ssT_Initialize
+}   // ssT_InitState
 // -------------------------------------------------------------------------------------------------
 // ssTEA is based on the idea that any mesa will have a hardware true-Time counter starting from 0.
 // Time forms the basis for an FSM being able to perform math with Time variables, which enables
@@ -391,7 +391,7 @@ ss_macSNR_t ssT_Initialize (void)
 // The recorded Time for the Big Bang is the completion of the event: Time began or existed, the
 // BigBang began to occur at a specific moment in Time, moments of Time passed, the BigBang ended.
 // App software was then granted Agency, giving it permission to think about the Current Time.
-// bugbugbug note that the first use of "ss time stats" includes the microseconds BEFORE setup runs.
+// Note that the first use of "ss time stats" includes the microseconds BEFORE setup runs.
 // -------------------------------------------------------------------------------------------------
 // A simulated historical record of Time is created by the initialization state of the ssTEA FSM,
 // one instance of information about "the last time ssTEA executed" is ready when loop first runs.
@@ -441,7 +441,7 @@ ss_macSNR_t ssT_TheBigBang (void)
     // The Init state is that all of the numbers, relative to each other, look like a loop completed.
     // The assumption that TheBigBang always correlates to a reset of the HW counter is fundamental.
     // ---------------------------------------------------------------------------------------------
-    ssTEA_Time_cts.us_LoopStart_Last = BigBangEndTime_us;      // bugbugbug
+    ssTEA_Time_cts.us_LoopStart_Last = BigBangEndTime_us;
     ssTEA_Time_cts.us_LoopFinish_Last = BigBangEndTime_us+1;
 
     ssTEA_Time_cts.ms_LoopStart_Last = ssT_rawCt_msNow (ssTEA_Time_cts.us_LoopStart_Last);
@@ -471,13 +471,13 @@ void    ssT_timeOp_Check_MathPolicy (ssT_pTime_t pTime, int EON)
         if (pTime->Valid)
         {
 #ifdef SST_OPTIN_TIMEMATH_OKAY_ANNOUNCE
-            ss_uiOp_qBanner (lfY, "ssT Math Operation: no error in math was signaled", lfY);
+            ss_uiOp_emit_qBanner (lfY, "ssT Math Operation: no error in math was signaled", lfY);
 #endif // SST_OPTIN_TIMEMATH_OKAY_ANNOUNCE
         }
         else
         {
 #ifdef SST_OPTIN_TIMEMATH_FAIL_ANNOUNCE
-            ss_uiOp_qBanner (lfY, "ssT Math Operation: a Time Unit value ERROR in math was signaled", lfY);
+            ss_uiOp_emit_qBanner (lfY, "ssT Math Operation: a Time Unit value ERROR in math was signaled", lfY);
 #endif // SST_OPTIN_TIMEMATH_FAIL_ANNOUNCE
 #ifdef SST_OPTIN_TIMEMATH_FAIL_ZERO_IT
             ssT_mathOp_P1getsZero (pTime);
@@ -487,9 +487,9 @@ void    ssT_timeOp_Check_MathPolicy (ssT_pTime_t pTime, int EON)
     }   // EON range was not exceeded in negative or positive direction
 
 #ifdef SST_OPTIN_TIMEMATH_FAIL_ANNOUNCE
-    ss_uiOp_qBanner (lfY, "ssT Math Operation: a Time Edge ERROR in math was signaled", lfY);
+    ss_uiOp_emit_qBanner (lfY, "ssT Math Operation: a Time Edge ERROR in math was signaled", lfY);
 #endif // SST_OPTIN_TIMEMATH_FAIL_ANNOUNCE
-#ifdef SST_OPTIN_TIMEMATH_FAIL_ZERO_IT      // bugbugbug propagate this action
+#ifdef SST_OPTIN_TIMEMATH_FAIL_ZERO_IT      // fixit: propagate this action
     ssT_mathOp_P1getsZero (pTime);
 #endif // SST_OPTIN_TIMEMATH_FAIL_ZERO_IT
 }   //  ssT_timeOp_Check_MathPolicy
@@ -679,55 +679,55 @@ void  ssT_mathOp_P1getsP1operP2_is_an_arrow (ssT_pTime_t pLvalue, ssT_pTime_t pO
     }
     else
     {
-        ss_uiOp_qBanner (lfY, "subtraction of one Time from another Time is not supported", lfY);
+        ss_uiOp_emit_qBanner (lfY, "subtraction of one Time from another Time is not supported", lfY);
     }
 }   // ssT_mathOp_P1getsP1operP2_is_an_arrow
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
 {
-// bugbugbug    COMPARE_P1andP2 (&mathOpResult, pOperand1, pOperand2);
-// bugbugbug
-// bugbugbug    if (!mathOpResult.Valid)
-// bugbugbug    {   // if result is invalid, Time1 is after Time2 regardless of value of either
-// bugbugbug        DEBUG_IFS_Banner ("  math result not valid: Op1 not before Op2");
-// bugbugbug        return (false);                     // something wrong with Time1/Time2 or result
-// bugbugbug    }   // not valid result
-// bugbugbug
-// bugbugbug    if (pOperand1->Positive)
-// bugbugbug    {
-// bugbugbug        if (!pOperand2->Positive)
-// bugbugbug        {   // operand 2 is negative
-// bugbugbug            DEBUG_IFS_Banner ("  QED: pos Op1 and neg Op2: Op1 after Op2");
-// bugbugbug             // posOp1 follows any negOp2
-// bugbugbug            return (false);                                     // P1 is not before P2
-// bugbugbug        }
-// bugbugbug        DEBUG_IFS_Banner ("  resolved by pos and pos logical");
-// bugbugbug        // pos P1 compared pos P2 with zero result means P1 IS NOT before P2
-// bugbugbug        if (mathOpResult.Zero)        return (false);       // P1 is not before P2
-// bugbugbug        // pos P1 compared pos P2 with positive result means P1 IS NOT before P2
-// bugbugbug        if (mathOpResult.Positive)    return (false);       // P1 is after (more pos than) P2
-// bugbugbug        // pos P1 compared pos P2 with negative result means P1 IS before P2
-// bugbugbug        return (true);                                      // P1 is less positive than P2
-// bugbugbug    }   // operand 1 is positive
-// bugbugbug    else
-// bugbugbug    {   // operand 1 is negative
-// bugbugbug        if (pOperand2->Positive)
-// bugbugbug        {
-// bugbugbug            DEBUG_IFS_Banner ("  QED: neg Op1 with pos Op2: Op1 before Op2");
-// bugbugbug            return (true);                                  // P1 is before P2
-// bugbugbug        }   // Op1 negative, Op2 positive
-// bugbugbug        DEBUG_IFS_Banner ("  resolved by comparing zero/positive");
-// bugbugbug        if (mathOpResult.Zero)        return (false);       // P1 is not before P2
-// bugbugbug        if (mathOpResult.Positive)    return (true);        // P1 is before (more neg than) P2
-// bugbugbug        // neg P1 compared pos P2 with zero result means P1 IS NOT before P2
-// bugbugbug        if (mathOpResult.Zero)        return (false);       // P1 is not before P2
-// bugbugbug        // neg P1 compared pos P2 with positive result means P1 IS NOT before P2
-// bugbugbug        if (mathOpResult.Positive)    return (true);        // P1 is before (less pos than) P2
-// bugbugbug        // pos P1 compared pos P2 with negative result means P1 IS before P2
-// bugbugbug        return (false);                                     // P1 is not before (less neg than) P2
-// bugbugbug    }   // operand 1 is negative
-// bugbugbug
+//  Future:      COMPARE_P1andP2 (&mathOpResult, pOperand1, pOperand2);
+//  Future:
+//  Future:      if (!mathOpResult.Valid)
+//  Future:      {   // if result is invalid, Time1 is after Time2 regardless of value of either
+//  Future:          DEBUG_IFS_Banner ("  math result not valid: Op1 not before Op2");
+//  Future:          return (false);                     // something wrong with Time1/Time2 or result
+//  Future:      }   // not valid result
+//  Future:
+//  Future:      if (pOperand1->Positive)
+//  Future:      {
+//  Future:          if (!pOperand2->Positive)
+//  Future:          {   // operand 2 is negative
+//  Future:              DEBUG_IFS_Banner ("  QED: pos Op1 and neg Op2: Op1 after Op2");
+//  Future:               // posOp1 follows any negOp2
+//  Future:              return (false);                                     // P1 is not before P2
+//  Future:          }
+//  Future:          DEBUG_IFS_Banner ("  resolved by pos and pos logical");
+//  Future:          // pos P1 compared pos P2 with zero result means P1 IS NOT before P2
+//  Future:          if (mathOpResult.Zero)        return (false);       // P1 is not before P2
+//  Future:          // pos P1 compared pos P2 with positive result means P1 IS NOT before P2
+//  Future:          if (mathOpResult.Positive)    return (false);       // P1 is after (more pos than) P2
+//  Future:          // pos P1 compared pos P2 with negative result means P1 IS before P2
+//  Future:          return (true);                                      // P1 is less positive than P2
+//  Future:      }   // operand 1 is positive
+//  Future:      else
+//  Future:      {   // operand 1 is negative
+//  Future:          if (pOperand2->Positive)
+//  Future:          {
+//  Future:              DEBUG_IFS_Banner ("  QED: neg Op1 with pos Op2: Op1 before Op2");
+//  Future:              return (true);                                  // P1 is before P2
+//  Future:          }   // Op1 negative, Op2 positive
+//  Future:          DEBUG_IFS_Banner ("  resolved by comparing zero/positive");
+//  Future:          if (mathOpResult.Zero)        return (false);       // P1 is not before P2
+//  Future:          if (mathOpResult.Positive)    return (true);        // P1 is before (more neg than) P2
+//  Future:          // neg P1 compared pos P2 with zero result means P1 IS NOT before P2
+//  Future:          if (mathOpResult.Zero)        return (false);       // P1 is not before P2
+//  Future:          // neg P1 compared pos P2 with positive result means P1 IS NOT before P2
+//  Future:          if (mathOpResult.Positive)    return (true);        // P1 is before (less pos than) P2
+//  Future:          // pos P1 compared pos P2 with negative result means P1 IS before P2
+//  Future:          return (false);                                     // P1 is not before (less neg than) P2
+//  Future:      }   // operand 1 is negative
+//  Future:
 }   // ssT_mathOp_P1compareP2_WithLogic
 
 #endif  // SST_ONEOF_TIME_IS_AN_ARROW
@@ -739,7 +739,7 @@ void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOper
 // The sole and true specification of ssTEA Time Stamp Notation is here, for any instance or use.
 // If this code does not implement it, the description in "a document" has no meaning or effect.
 //
-// In this API, a string with a proper specification is a valid Time Stamp; when there is any problem
+// In this API, an array with a proper specification is a valid Time Stamp; when there is any problem
 // with the characters used or the value is improper, the result is called an invalid Time Stamp.
 //
 // Given a valid Time Stamp, populate fields of a Time Descriptor with values extracted from the string.
@@ -763,13 +763,13 @@ void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOper
 #define ITSA_NEGATIVE (-1)
 boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
 {
-    ssT_Time_t          workTime;                           // a temporary Time Descriptor
-    AsciiA_t            workTimeStamp[TimeStamp_ALLOC];       // a temporary character buffer
+    ssT_Time_t          workTime;                               // a temporary Time Descriptor
+    AsciiA_t            workTimeStamp[TimeStamp_ALLOC];         // a temporary character buffer
 
     pAsciiA_t           pStartPassHere;
 
     ss_TimeUnit_t       TimeUnitTracker;
-    ss_TimeUnit_t       parsedTimeUnit;
+    ss_TimeUnit_t       TimeUnit_found;
     // TimeUnits are signed numbers; all TimeUnits have the same sign value for each signed number.
     TimeUnitsBig_t      ValueThisTimeUnit = 0;
     // A sum of all the TimeUnit values will be the same sign; if total is zero, Time is zero.
@@ -876,15 +876,30 @@ boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
         {
             if (pass == SEARCH_PASS)
             {
-                parsedTimeUnit = ssT_stampOp_ParseTimeUnit (pAsciiValue);
-                if (parsedTimeUnit != ss_TimeUnit_none)
+                // parse finds and deciphers the precision characters (2) following digits/seperators
+                // Each iteration looks at the value at pAsciiValue and the value at pAsciiValue+1
+                TimeUnit_found = ssT_stampOp_Parse_Precision (pAsciiValue);
+
+                // if the algorithm looking for units can't match non-digit non-seperator? error
+                // if input array has letters not in one two-letter pattern of N patterns? error
+                if (TimeUnit_found == ss_TimeUnit_error)
                 {
-                    // we found a valid one or two-character sequence, need to truncate from Stamp.
+                    return (false);
+                }
+
+                //
+                if (TimeUnit_found != ss_TimeUnit_none)
+                {
+                    // we found a valid two-character sequence of N allowed, truncate from Stamp.
                     // Weird thing: precision tracker names the precision of the first field,
-                    // not the last.  Similar to how "AM" applies to hours not minutes in "12:30AM".
-                    TimeUnitTracker = parsedTimeUnit;
+                    // not the last.  Similar to how "AM" applies to hours not minutes in "12:30 AM".
+                    TimeUnitTracker = TimeUnit_found;
+
+                    // don't fall through, input search done, action taken below to parse more.
+                    // translation: immediately and knowingly fall out of the while (*pAsciiValue)
+                    //    by continuing the while loop.  After while loop exists, pass number is
+                    //    changed by the outer "loop", parse pointer reset to start of truncated.
                     *pAsciiValue = Ascii_NUL;
-                    // don't fall through, input string search done, action taken below for parse
                     continue;
                 }
             }   // pass == SEARCH_PASS
@@ -893,7 +908,7 @@ boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
                 if (Ascii_isDigit (*pAsciiValue))          // decimal integer processing under way
                 {
                     ValueThisTimeUnit *= 10;
-                    // Ascii_lc can't be both IsDigit AND !0-9m so just add the integer
+                    // IsDigit is '0'-'9' so just add the integer
                     ValueThisTimeUnit += Ascii_digit_toInt (*pAsciiValue);
                 }
 
@@ -946,11 +961,12 @@ boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
                             TimeUnitTracker = ss_TimeUnit_pk;
 #endif // SST_OPTIN_TIME_NSECS_TU
                             break;
-                        case ss_TimeUnit_pk        :    // bugbugbug    math command disallows this code
+                        case ss_TimeUnit_pk        :    // math command disallows this code
                             workTime.plancks  = ValueThisTimeUnit;
-                            TimeUnitTracker = ss_TimeUnit_none;
+                            TimeUnitTracker = ss_TimeUnit_error;
                             break;
                         case ss_TimeUnit_EON        :
+                        case ss_TimeUnit_error      :
                         case ss_TimeUnit_none       :
                             break;
                     }   // switch
@@ -965,7 +981,7 @@ boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
         pAsciiValue = pStartPassHere;
     }   // for 2 passes
 
-    if (TimeUnitTracker != ss_TimeUnit_none)
+    if (TimeUnitTracker != ss_TimeUnit_error)
     {
         // workTime.Positive was established by the parser, and will be referred to by AnyTUError?
         workTime.Zero = !(SumOfTimeUnits > 0);
@@ -973,7 +989,7 @@ boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
 
         // The claim is made that the workTime Time variable value is comprised of "coherent TUs".
         // The question is answered by using the metadata without question, but, checking all TUs.
-        if (ssT_timeIf_P1hasTUerror (&workTime) == ss_TimeUnit_none)
+        if (ssT_timeIf_P1hasTUerror (&workTime) == ss_TimeUnit_error)
         {
             ssT_timeOp_Check_MathPolicy (&workTime, EONvalueValid);
             ssT_mathOp_P1getsP2 (pTime, &workTime);
@@ -992,66 +1008,50 @@ boolean ssT_stampOp_AsciiToBinary (pAsciiA_t  pAsciiValue, ssT_pTime_t pTime)
 }   // ssT_stampOp_AsciiToBinary
 // -------------------------------------------------------------------------------------------------
 // This function implements the rules for the "Time Unit" that a "Time Stamp" format may include.
+// The values at p_achar and p_char are unknown.  If value is a seperator or a digit,
 // -------------------------------------------------------------------------------------------------
-ss_TimeUnit_t  ssT_stampOp_ParseTimeUnit (pAscii_t  p_achar)
+ss_TimeUnit_t  ssT_stampOp_Parse_Precision (pAscii_t  p_achar)
 {
-    ss_TimeUnit_t   TimeUnit;          // all paths through must set a TimeUnit before the return
-    boolean         ValidTimeUnit = true;
+    ss_TimeUnit_t   TimeUnit;           // all paths through must set a TimeUnit before the return
 
     Ascii_t     first   = Ascii_toLower (*p_achar);
     Ascii_t     second  = Ascii_toLower (*(p_achar+1));
 
+    if (Ascii_isDigit (first) || ssT_stampOp_IsSeparator (first))
+    {
+        return (ss_TimeUnit_none);
+    }
+
     switch (first)
     {
-        case Ascii_d :
-            TimeUnit = (second == Ascii_y) ? ss_TimeUnit_dy : ss_TimeUnit_none;
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
-            break;
-        case Ascii_h :
-            TimeUnit = (second == Ascii_r) ? ss_TimeUnit_hr : ss_TimeUnit_none;
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
-            break;
+        case Ascii_d : TimeUnit = (second == Ascii_y) ? ss_TimeUnit_dy : ss_TimeUnit_error; break;
+        case Ascii_h : TimeUnit = (second == Ascii_r) ? ss_TimeUnit_hr : ss_TimeUnit_error; break;
         case Ascii_m :
             switch (second)
             {
-                case Ascii_n    :  TimeUnit = ss_TimeUnit_mn;    break;
-                case Ascii_s    :  TimeUnit = ss_TimeUnit_ms;    break;
-                default         :  TimeUnit = ss_TimeUnit_none;  break;
+                case Ascii_n    :  TimeUnit = ss_TimeUnit_mn;       break;
+                case Ascii_s    :  TimeUnit = ss_TimeUnit_ms;       break;
+                default         :  TimeUnit = ss_TimeUnit_error;    break;
             }   // switch on 2nd char
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
             break;
-        case Ascii_s :
-            TimeUnit = (second == Ascii_c) ? ss_TimeUnit_sc : ss_TimeUnit_none;
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
-            break;
-        case Ascii_u :
-            TimeUnit = (second == Ascii_s) ? ss_TimeUnit_us : ss_TimeUnit_none;
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
-            break;
-        case Ascii_n :
-            TimeUnit = (second == Ascii_s) ? ss_TimeUnit_ns : ss_TimeUnit_none;
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
-            break;
-        case Ascii_p :
-            TimeUnit = (second == Ascii_k) ? ss_TimeUnit_pk : ss_TimeUnit_none;
-            ValidTimeUnit = (TimeUnit != ss_TimeUnit_none);
-            break;
-        default :
-            // all mismatches after a matching first are processed above, this is mismatch of first
-            TimeUnit = ss_TimeUnit_none;
-            break;          // first character doesn't match allowed, we're done
+        case Ascii_s : TimeUnit = (second == Ascii_c) ? ss_TimeUnit_sc : ss_TimeUnit_error; break;
+        case Ascii_u : TimeUnit = (second == Ascii_s) ? ss_TimeUnit_us : ss_TimeUnit_error; break;
+        case Ascii_n : TimeUnit = (second == Ascii_s) ? ss_TimeUnit_ns : ss_TimeUnit_error; break;
+        case Ascii_p : TimeUnit = (second == Ascii_k) ? ss_TimeUnit_pk : ss_TimeUnit_error; break;
+        // first character doesn't match allowed, we're done
+        default      : TimeUnit = ss_TimeUnit_error;                                        break;
     }   // switch on 1st char
 
-    if (!ValidTimeUnit)
+    if (TimeUnit == ss_TimeUnit_error)
     {
         ss_uiOp_emit_qAsciiA ("ssT parser of Time Unit found error in Time Unit, defaulting to Day");
         TimeUnit = ss_TimeUnit_dy;
     }
     return (TimeUnit);
-}   // ssT_stampOp_ParseTimeUnit
+}   // ssT_stampOp_Parse_Precision
 // -------------------------------------------------------------------------------------------------
 // this specific definition limits the exact characters that ssT will consider a "separator",
-// during the process of decoding an array of characters that are organized as a "Time Stamp".
+// during the process of decoding an array of Ascii values that are organized as a "Time Stamp".
 // -------------------------------------------------------------------------------------------------
 boolean ssT_stampOp_IsSeparator (Ascii_t Ascii)
 {
@@ -1081,22 +1081,21 @@ boolean ssT_stampOp_IsSeparator (Ascii_t Ascii)
 //                                        <the number of subunits that comprise a unit>?
 // for example, "what is the remainder when I divide 37 hours by 24 hours?". 13 hours.
 // -------------------------------------------------------------------------------------------------
-#define DaysInAllHours(hrCt)          (hrCt / SST_HOURS_PER_DAY)
-#define HoursInAllMins(mnCt)          (mnCt / SST_MINS_PER_HOUR)
-#define MinsInAllSecs(scCt)           (scCt / SST_SECS_PER_MIN)
-#define SecsInAllMsecs(msCt)          (msCt / SST_MSECS_PER_SEC)
-#define MsecsInAllUsecs(usCt)         (usCt / SST_USECS_PER_MSEC)
+// "InCurrent" and "InAll" in the macro names means "how many subunits are the current unit?".
+// -------------------------------------------------------------------------------------------------
+#define DaysInCurrentEON(dyCt)          (dyCt % SST_DAYS_PER_EON)
+#define HoursInCurrentDay(hrCt)         (hrCt % SST_HOURS_PER_DAY)
+#define MinsInCurrentHour(mnCt)         (mnCt % SST_MINS_PER_HOUR)
+#define SecsInCurrentMin(scCt)          (scCt % SST_SECS_PER_MIN)
+#define MsecsInCurrentSec(msCt)         (msCt % SST_MSECS_PER_SEC)
+#define UsecsInCurrentMsec(usCt)        (usCt % SST_USECS_PER_MSEC)
 
 // -------------------------------------------------------------------------------------------------
-// "InCurrent" and "InAll" in the macro names means "how many subunits are the current unit?".
-// If we have enough milliseconds to count 37 hours, we know 24 hours plus 13 hours have occured.
-// -------------------------------------------------------------------------------------------------
-#define DaysInCurrentEON(dyCt)             (dyCt % SST_DAYS_PER_EON)
-#define HoursInCurrentDay(hrCt)            (hrCt % SST_HOURS_PER_DAY)
-#define MinsInCurrentHour(mnCt)            (mnCt % SST_MINS_PER_HOUR)
-#define SecsInCurrentMin(scCt)             (scCt % SST_SECS_PER_MIN)
-#define MsecsInCurrentSec(msCt)            (msCt % SST_MSECS_PER_SEC)
-#define UsecsInCurrentMsec(usCt)           (usCt % SST_USECS_PER_MSEC)
+#define DaysInAllHours(hrCt)            (hrCt / SST_HOURS_PER_DAY)
+#define HoursInAllMins(mnCt)            (mnCt / SST_MINS_PER_HOUR)
+#define MinsInAllSecs(scCt)             (scCt / SST_SECS_PER_MIN)
+#define SecsInAllMsecs(msCt)            (msCt / SST_MSECS_PER_SEC)
+#define MsecsInAllUsecs(usCt)           (usCt / SST_USECS_PER_MSEC)
 
 // -------------------------------------------------------------------------------------------------
 // This is a shortcut method used by Time math.   "TimeConst" is a constant value that can be given
@@ -1106,10 +1105,10 @@ ssT_Time_t QuickTimeForMath;
 
 void    ssT_timeOp_InitQuickTimeForMath   (void)
 {
-    ssT_mathOp_P1getsZero (&QuickTimeForMath);          // bugbugbug runtime/buildtime init
+    ssT_mathOp_P1getsZero (&QuickTimeForMath);          // runtime/buildtime init choices
 }   // ssT_timeOp_InitQuickTimeForMath
 // -------------------------------------------------------------------------------------------------
-// Inter-Agency Gap or IAG is <microseconds that have occured since the last microseconds check>.
+// Inter-Agency Gap or IAG is <microseconds that have occurred since the last microseconds check>.
 // The purpose of this function is to store the IAG (32-bit number of microseconds) in a time Var.
 // In a fully active agencying set of events within a fully active application with no humans,
 // the IAG will be a relatively small number; probably less than 1000us.  If the ssTEA Time is
@@ -1146,7 +1145,7 @@ void    ssT_timeOp_Add_usToTimeCurr (TimeUnitsBig_t us_counter)
 // based on the limitation of the number of milliseconds that can be represented by a 32-bit number:
 // the days field is limited as the milliseconds cannot get big enough to include >49 days in a Time.
 // 49:23:59:59:999:xxx is the maximum: 49 days, 23 hours, 59 minutes, 59 seconds, 999 ms (??? us/ns).
-// This limitation applies to two situations: Time is from 0 and reaches a maximum for 32-bits, and,
+// This limitation applies to two situations: Time is from 0 and reaches a maximum for 32-bit unsigned,
 // the delta in Time between two Times cannot be represented if it is longer than 32-bits can hold.
 // The Time (that is fully and accurately described at the millisecond level) can be defined as an
 //      unsigned 32-bit number in ssHL      "unsigned long int".
@@ -1156,7 +1155,7 @@ void    ssT_timeOp_Add_usToTimeCurr (TimeUnitsBig_t us_counter)
 // proper variable with values only matters when converting milliseconds to/from ssT_Time_t values.
 // A software feature that needs a conversion from ssT_Time_t to milliseconds may be written by you.
 // -------------------------------------------------------------------------------------------------
-void    ssT_timeOp_TimeFromMillis (ssT_pTime_t pTime, TimeUnitsBig_t bigvalue)
+void    ssT_timeOp_TimeFromMillis (TimeUnitsBig_t bigvalue, ssT_pTime_t pTime)
 {
     pTime->Zero = false;
     pTime->Positive = true;
@@ -1169,31 +1168,31 @@ void    ssT_timeOp_TimeFromMillis (ssT_pTime_t pTime, TimeUnitsBig_t bigvalue)
 #endif  // not SST_ONEOF_TIME_NSECS_NOTHING
 #endif // SST_OPTIN_TIME_NSECS_TU
 
-    // how many millis have occured during the current second?
+    // how many millis have occurred during the current second?
     // (what is the remainder when bigvalue is divided by millis per second?)
     pTime->msecs = MsecsInCurrentSec (bigvalue);
-    // how many seconds have occured during all of the milliseconds?
+    // how many seconds have occurred during all of the milliseconds?
     // (what is the quotient when bigvalue is divided by millis per second?)
     // bigvalue as count of millis is transformed to -> count of secs
     bigvalue = SecsInAllMsecs (bigvalue);
-    // how many seconds have occured during the current minute?
+    // how many seconds have occurred during the current minute?
     // (what is the remainder when bigvalue is divided by seconds per minute?)
     pTime->secs = SecsInCurrentMin (bigvalue);
-    // how many minutes have occured during all of the seconds?
+    // how many minutes have occurred during all of the seconds?
     // (what is the quotient when bigvalue is divided by seconds?)
     // bigvalue as count of secs -> count of mins
     bigvalue = MinsInAllSecs (bigvalue);
-    // how many minutes have occured during the current hour?
+    // how many minutes have occurred during the current hour?
     // (what is the remainder when bigvalue is divided by minutes per hour?)
     pTime->mins = MinsInCurrentHour (bigvalue);
-    // how many hours have occured during all of the minutes?
+    // how many hours have occurred during all of the minutes?
     // (what is the quotient when bigvalue is divided by minutes?)
     // big value as count of mins -> count of hours
     bigvalue = HoursInAllMins (bigvalue);
-    // how many hours have occured during the current day
+    // how many hours have occurred during the current day
     // (what is the remainder when bigvalue is divided by hours per day?)
     pTime->hours = HoursInCurrentDay (bigvalue);
-    // how many days have occured during this EON?
+    // how many days have occurred during this EON?
     // (what is the quotient when bigvalue is divided by hours per day?)
     // big value as count of hours -> count of days
     bigvalue = DaysInAllHours (bigvalue);
@@ -1201,6 +1200,30 @@ void    ssT_timeOp_TimeFromMillis (ssT_pTime_t pTime, TimeUnitsBig_t bigvalue)
     pTime->days = bigvalue;
     // The top level, the EON, is always implied in math and comparisons, and has the value zero.
 }   // ssT_timeOp_TimeFromMillis
+// -------------------------------------------------------------------------------------------------
+// arbitrary choice: largest valid millis number [24dy:23hr:59mn:59sc:999ms:999us]: 2,073,600,000.
+// That is 0x7B98A000 in 32-bit hexadecimal representation.  Another full day's worth will not fit
+// when converted from 32-bit unsigned number to 32-bit signed number.  Caller may typecast to int.
+// -------------------------------------------------------------------------------------------------
+TimeUnitsBig_t   ssT_timeOp_MillisFromTime (ssT_pTime_t pTime)
+{
+    TimeUnitsBig_t     total = 0;
+
+    if ( (!pTime->Valid) || (pTime->days >= 25) )
+    {
+        return (0);
+    }
+    total += (pTime->days  * SST_MSECS_PER_DAY);
+    total += (pTime->hours * SST_MSECS_PER_HOUR);
+    total += (pTime->mins  * SST_MSECS_PER_MIN);
+    total += (pTime->secs  * SST_MSECS_PER_SEC);
+    total += pTime->msecs;
+    if (total == 0)
+    {
+        total = 1;          // if all fields are zero, and time has occured, usecs must be nonzero
+    }
+    return (total);
+}   // ssT_timeOp_MillisFromTime
 // =================================================================================================
 #ifdef SST_OPTIN_TIME_NSECS_TU
 // -------------------------------------------------------------------------------------------------
@@ -1245,15 +1268,16 @@ TimeUnitsBig_t  ssT_rawCt_NextPlanck (void)
     Incrementer += 1;
 
 #ifdef SST_ONEOF_TIME_PLANCKS_RANDOM
-#ifdef MESA_OPTIN_RANDOM_NUMBERS
+#define MESA_OPTIN_RANDOM_NUMBERS
+#ifndef MESA_MIN_OPTOUT_RANDOM_NUMBERS
     // Each planck value in Random mode has an incrementing portion and the rest is as selected,
     //   because the incrementing trick is restricted to the least significant 8 bits.
     ThisPlanck |= ( (TimeUnitsBig_t) (mesa_Random_From256_Seq () << 24) );
     ThisPlanck |= ( (TimeUnitsBig_t) (mesa_Random_From256_Seq () << 16) );
     ThisPlanck |= ( (TimeUnitsBig_t) (mesa_Random_From256_Seq () <<  8) );
-#else   // MESA_OPTIN_RANDOM_NUMBERS
-    ThisPlanck |= 0x8675309;            // indicate a build conflict between source wanted/enabled
-#endif  // MESA_OPTIN_RANDOM_NUMBERS
+#else   // MESA_MIN_OPTOUT_RANDOM_NUMBERS
+    ThisPlanck |= 0x8675309;            // asked for random planks, opted out of MIN, this is it.
+#endif  // MESA_MIN_OPTOUT_RANDOM_NUMBERS
 #endif  // SST_ONEOF_TIME_PLANCKS_RANDOM
 
 #ifdef SST_ONEOF_TIME_PLANCKS_ZERO
@@ -1352,7 +1376,7 @@ void ss_uiOp_Show_TimeLegend (void)
     ss_uiOp_emit_newline ();
 }   // ss_uiOp_Show_TimeLegend
 // -------------------------------------------------------------------------------------------------
-// bugbugbug: example of how to make a run-time decision based on a build-time choice with same code
+// This is an example of how to make a run-time decision based on a build-time choice with same code
 // -------------------------------------------------------------------------------------------------
 void ss_uiOp_Show_Time (ssT_pTime_t pTime, boolean AddNewline)
 {
@@ -1365,7 +1389,7 @@ void ss_uiOp_Show_Time (ssT_pTime_t pTime, boolean AddNewline)
     if (!pTime)
     {
         // A NULL pointer is a fatal flaw and so this is just blasted out
-        ss_uiOp_qBanner (lfY, "flaw: null pointer to {ss_uiOp_Show_Time} function", AddNewline);
+        ss_uiOp_emit_qBanner (lfY, "flaw: null pointer to {ss_uiOp_Show_Time} function", AddNewline);
         return;
     }
 #ifdef SST_OPTIN_TIME_DEBUG_ADDRESS
@@ -1501,8 +1525,8 @@ ssT_math_CmpState_t  ssT_timeIf_P1compareP2 (ssT_pTime_t pOperand1, ssT_pTime_t 
 // [.\SimpleSal\ssDocs\swDev\Software Developer Tricks.note]    macros make function calls disappear
 // -------------------------------------------------------------------------------------------------
 #ifdef SST_OPTIN_TIME_DEBUG_IFS
-#define DEBUG_IFS_Banner_lfY(pAA)  ss_uiOp_qBanner (lfN, S(pAA), lfY)
-#define DEBUG_IFS_Banner_lfN(pAA)  ss_uiOp_qBanner (lfN, S(pAA), lfN)
+#define DEBUG_IFS_Banner_lfY(pAA)  ss_uiOp_emit_qBanner (lfN, S(pAA), lfY)
+#define DEBUG_IFS_Banner_lfN(pAA)  ss_uiOp_emit_qBanner (lfN, S(pAA), lfN)
 ReadOnly pAsciiA_t pc_NoItIsNotMsg = S("no it is not");
 ReadOnly pAsciiA_t pc_YesItIsMsg = S("yes it is");
 #else   // not debugging IFS
@@ -1690,7 +1714,7 @@ void  ssT_mathOp_P1getsP1plusP2 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1)
 #ifdef SST_OPTIN_TIME_DEBUG_IFS
     if (pOperand1 != &QuickTimeForMath)
     {
-        ss_uiOp_qBanner (lfY, "Time: P1 gets P1 plus P2:", lfN);
+        ss_uiOp_emit_qBanner (lfY, "Time: P1 gets P1 plus P2:", lfN);
         ss_uiOp_Show_Time (pLvalue, lfY);
 #ifdef SST_OPTIN_TIME_DEBUG_RAWDATA
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw: result  "), pLvalue, 0);
@@ -1743,7 +1767,7 @@ void  ssT_mathOp_P1getsP1minusP2 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1)
 #ifdef SST_OPTIN_TIME_DEBUG_IFS
     if (pOperand1 != &QuickTimeForMath)
     {
-        ss_uiOp_qBanner (lfY, "Time: P1 gets P1 minus P2:", lfN);
+        ss_uiOp_emit_qBanner (lfY, "Time: P1 gets P1 minus P2:", lfN);
         ss_uiOp_Show_Time (pLvalue, lfY);
 #ifdef SST_OPTIN_TIME_DEBUG_RAWDATA
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw:  lvalue result"), pLvalue, 0);
@@ -1777,7 +1801,7 @@ void  ssT_mathOp_P1getsP2minusP3 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ss
 // -------------------------------------------------------------------------------------------------
 ss_TimeUnit_t ssT_timeIf_P1hasTUerror (ssT_pTime_t pTime)
 {
-    if (!pTime->Valid)  { return (ss_TimeUnit_dy); }
+    if (!pTime->Valid)  { return (ss_TimeUnit_error); }
 
     if (pTime->Zero)
     {
@@ -1790,7 +1814,7 @@ ss_TimeUnit_t ssT_timeIf_P1hasTUerror (ssT_pTime_t pTime)
 #ifdef SST_OPTIN_TIME_NSECS_TU
         if (pTime->nsecs != 0)      { return (ss_TimeUnit_ns); }
 #endif // SST_OPTIN_TIME_NSECS_TU
-        return (ss_TimeUnit_none);
+        return (ss_TimeUnit_error);
     }
 
     // The value 0 in any TU is coherent with all other coherent TUs (all neg/pos if nonzero)
@@ -1818,7 +1842,7 @@ ss_TimeUnit_t ssT_timeIf_P1hasTUerror (ssT_pTime_t pTime)
         if (pTime->nsecs > 0)       { return (ss_TimeUnit_ns); }
 #endif // SST_OPTIN_TIME_NSECS_TU
     }
-    return (ss_TimeUnit_none);
+    return (ss_TimeUnit_error);
 }   // ssT_timeIf_P1hasTUerror
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------

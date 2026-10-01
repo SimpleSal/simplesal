@@ -23,7 +23,7 @@
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // The database in ssIO provides a mechanism for switching a MAC between accessing a medium that is
-// operational in a true physical "space" into pretending to operate in a pretend space.  If you are
+// operational in a "physical space" into pretending to operate in a "pretend space".  If you are
 // going to be switching MACs into and out of reality, you need to have a unique name for each MAC.
 // -------------------------------------------------------------------------------------------------
 // The ID consists of a type of MAC (for a medium) defined by ssIO, a "select" of a specific MAC
@@ -53,7 +53,6 @@ typedef unsigned long int MAC_ID_t;
 
 #define MAC_ID_0    ((MAC_ID_t) 0x00)
 #define MAC_ID_1    ((MAC_ID_t) 0x01)
-
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
@@ -108,16 +107,17 @@ typedef unsigned long int MAC_ID_t;
 // -------------------------------------------------------------------------------------------------
 // #define SSIO_OPTIN_DEBUG
 #ifdef SSIO_OPTIN_DEBUG
-// #define SSIO_OPTIN_DEBUG_MAC
+// #define SSIO_OPTIN_DEBUG_DAIO
 // #define SSIO_OPTIN_DEBUG_DB
-
 // #define SSIO_OPTIN_DEBUG_PINS
+// #define SSIO_OPTIN_DEBUG_PINS_DEF
+// #define SSIO_OPTIN_DEBUG_PINS_MODE
+// #define SSIO_OPTIN_DEBUG_PINS_READ
+// #define SSIO_OPTIN_DEBUG_PINS_WRITE
 // #define SSIO_OPTIN_DEBUG_REGS
 // #define SSIO_OPTIN_DEBUG_FIFOS
 // #define SSIO_OPTIN_DEBUG_DMAS
-// #define SSIO_OPTIN_DEBUG_SIGNALS
-// #define SSIO_OPTIN_DEBUG_SENSORS
-#endif  // SSIO_OPTIN_DEBUG
+#endif // SSIO_OPTIN_DEBUG
 
 // -------------------------------------------------------------------------------------------------
 // This model of defining abstractions into and out of the knowledge of the ssHL compiler allows all
@@ -261,7 +261,7 @@ typedef enum MACtype_e
 // "Mapped Pin": managed as a Pin by software, maybe behind a complex device with protocols/drivers.
 // The 8 pins on the original Mr. Blinky are direct and true; LED Matrix pins are mapped and true.
 // -------------------------------------------------------------------------------------------------
-// An ssIO "not True" pin is maintained in RAM memory, and acts/reacts "as if" a Pin access occured.
+// An ssIO "not True" pin is maintained in RAM memory, and acts/reacts "as if" a Pin access occurred.
 //    The RAM memory supports input and output as the carrier of information; it's all the same.
 // -------------------------------------------------------------------------------------------------
 // The UNOR4wifi mesa has an 8x12 (or 12x8) LED Matrix.  8 pixels within the 96 of the LED matrix
@@ -340,7 +340,7 @@ typedef ssIO_pMACDesc_t    ssIO_pMAC_t;
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-void                ssIO_MAC_Initialize (void);
+void                ssIO_MAC_InitState (void);
 
 void                ssIO_MAC_dbOp_Init (void);
 ssIO_pMAC_t         ssIO_MAC_dbOp_Get  (void);
@@ -401,7 +401,7 @@ boolean             ssIO_MAC_Sensor_UseCheckRead    (ssIO_pMAC_t  pMAC);
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-// This should really be in the fsmDemo App source files; included here as an example modification.
+// This should really be in the app-fsmDemo source files; included here as an example modification.
 // A complex project will have a complex definition of all MAC types and addressing mechanisms.
 // -------------------------------------------------------------------------------------------------
 #define     MrB_Mask            MACmedium_Mask

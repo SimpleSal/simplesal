@@ -28,7 +28,6 @@ pCmd_t pcCmdsMENUS[] =
 //    &pcAgency,
 //    &pcPace,
 //    &pcStats,
-//    &pcMsgSet,
 //    &pcLED,
 //    "up",
 //    &pcMath,
@@ -434,7 +433,7 @@ pAscii_t   ssUI_cmdsOp_nextCmdFromLinkActive (int from_pcCmd_i)
     if (gpCmdArrayActive == pCmdArrayLinkNull)
     {
 #ifdef SSUI_OPTIN_DEBUG_CMDS_I
-        ss_uiOp_qBanner (lfY, "next-in-CmdArray finds no Cmd array link active", lfY);
+        ss_uiOp_emit_qBanner (lfY, "next-in-CmdArray finds no Cmd array link active", lfY);
 #endif  // SSUI_OPTIN_DEBUG_CMDS_I
         return (pAsciiNull);
     }
@@ -452,15 +451,15 @@ pAscii_t   ssUI_cmdsOp_nextCmdFromLinkActive (int from_pcCmd_i)
 #ifdef SSUI_OPTIN_DEBUG_CMDS_I
         ss_uiOp_emit_lbld_int ("cmds_i", from_pcCmd_i);
         ss_uiOp_emit_lbld_int ("max_i", gpCmdArrayActive->CmdArray_max_i);
-        ss_uiOp_qBanner (lfY, "get-next-CmdArray finds end of array of Cmds", lfY);
+        ss_uiOp_emit_qBanner (lfY, "get-next-CmdArray finds end of array of Cmds", lfY);
 #endif  // SSUI_OPTIN_DEBUG_CMDS_I
         return (pAsciiNull);
     }
 
     // pCmdArray is an array of pointers to variable-lengthed arrays of Ascii values.  The
     // variable-lengthed arrays are created using the C language syntax for defining a "string".
-    // Return a value that is of the type ssUI uses (pointer to Ascii value)
-    //      by asking the ssHL compiler to typecast ssHL old-style strings as the ssUI type.
+    // Return a value that is of the type ssUI uses (a pointer to one or more Ascii values);
+    //   ask the ssHL compiler to typecast ssHL old-style so-called "string" as the ssUI type.
     // This does not create any code, unless the host language implementation of "string"
     // gets in the way.  If there is a conversion needed, here is where it should occur.
     return ((pAscii_t) gpCmdArrayActive->pCmdArray[from_pcCmd_i]);

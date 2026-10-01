@@ -17,16 +17,16 @@
 // or cannot be converted into a command that was then handled or not handled are defined here.
 // for example when the input Ascii Array has no values at all or all Ascii values are spaces.
 // -------------------------------------------------------------------------------------------------
-typedef enum CmdFsmResult_e
+typedef enum CmdFSM_Result_e
 {
-    eCmdFsm_rNormal,
-    eCmdFsm_rNoInput,
-    eCmdFsm_rNoTokens,
-    eCmdFsm_rNoMatch,
-    eCmdFsm_rByHandler,
-    eCmdFsm_rUnresolved,
-    eCmdFsm_rTableFlaw
-}   eCmdFsmResult_t;
+    eCmdFSM_rNormal,
+    eCmdFSM_rNoInput,
+    eCmdFSM_rNoTokens,
+    eCmdFSM_rNoMatch,
+    eCmdFSM_rByHandler,
+    eCmdFSM_rUnresolved,
+    eCmdFSM_rTableFlaw
+}   eCmdFSM_Result_t;
 
 // -------------------------------------------------------------------------------------------------
 // Each command or parameter in the string table has a corresponding function pointer to a Handler.
@@ -41,22 +41,37 @@ typedef enum HandlerResult_e
     eH_rFlaw
 }   eHandlerResult_t;
 
+// -------------------------------------------------------------------------------------------------
+// A complex C expression but only due to levels of the same idea rather than adding sophistication:
+//
+//    A "function with parameters that returns a result"
+//         is of the type "function returning result"
+//
+//    A variable that is "a pointer to a function with parameters that returns a result"
+//        is of the type "pHandler_t" or "pointer to function returning result".
+// -------------------------------------------------------------------------------------------------
+// It's just a pointer, with strange-looking parenthesis placement to make it a function pointer.
+// The only reference causing the compiler to generate the address is in a table of menu handlers.
+// When the FSM finds the input array of Ascii in an Array of Ascii command/parameter arrays,
+//  the FSM invokes the handler from a parallel array of pointers to functions.
+// -------------------------------------------------------------------------------------------------
 typedef eHandlerResult_t (* pHandler_t) (int  tkn_i, boolean moreInputTkns);
 #define pHNull  ((pHandler_t) NULL)
 
 // -------------------------------------------------------------------------------------------------
-// This is only to create a demonstration of a basic handler that can be used as a reference.
 // The command Handler table entry with no matching string should contain pHNull, not &unAssigned.
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t unAssignedHandler (int tkn_i, boolean moreInputTkns);
 
 // -------------------------------------------------------------------------------------------------
-eCmdFsmResult_t     ssUI_menuOp_CmdHandlerFSM   (void);
+// Command FSM implements ssUI's characters-into-words-into-tokens-into-commands-with-params model.
+// -------------------------------------------------------------------------------------------------
+eCmdFSM_Result_t     ssUI_menuOp_CmdFSM   (void);
 
 boolean             ssUI_menuIf_CmdTknIsCmd      (pAsciiA_t pAscii_Cmd);
 
-void                ssUI_menuOp_Show_Help_CmdsParams        (pAsciiA_t pAscii_Cmd);
-void                ssUI_menuOp_Show_Help_CmdsParamHints    (pAsciiA_t pAscii_Cmd);
+void                ssUI_menuOp_Show_Help_CmdsParams    (pAsciiA_t pAscii_Cmd);
+void                ssUI_menuOp_Show_Help_CmdsHints     (pAsciiA_t pAscii_Cmd);
 
 #endif  // __SSUI_MENU_DCL_H
 

@@ -10,6 +10,76 @@
 #define __SSUI_INPUT_DEF_H
 
 // =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// Input processing is performed asynchronously; the FSM depends on an InitState setting variables.
+// -------------------------------------------------------------------------------------------------
+// The buffer is doubly large for safely catching more than one "command line" arriving in one burst.
+// -------------------------------------------------------------------------------------------------
+#define  INPUT_FIFO_ALLOC       (2 * SSUI_UIBUFFER_ALLOC)
+#define  INPUT_FIFO_MAX_I     (INPUT_FIFO_ALLOC-1)
+
+int         ssUI_gInputCollected_Ct;
+int         ssUI_gInputCollected_i;
+AsciiA_t    ssUI_gCollected[INPUT_FIFO_ALLOC];
+
+// -------------------------------------------------------------------------------------------------
+// ssUI input fifo processing is ready to be granted Agency as often as "loop" is granted Agency.
+// -------------------------------------------------------------------------------------------------
+// Comparing a free-running millisecond counter to a value from the last Time granted Agency, see if
+// enough Time has elapsed for the Host OS serial input device driver to receive some bytes, until
+// enough Time has elapsed to receive bytes, don't spend resources checking for bytes to arrive.
+// Because Agency is deferred until a 1 millisecond boundary occurs: if counter changed, 1ms occurred.
+// -------------------------------------------------------------------------------------------------
+TimeUnitsBig_t      ms_last_AvailCt_check;
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_LINES
+TimeUnitsBig_t      ms_EOL_Timer;
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_LINES
+
+// -------------------------------------------------------------------------------------------------
+// The Ascii receive FSM can be tested and stressed by changing the baud rate to a slow/high rate.
+// -------------------------------------------------------------------------------------------------
+// If life delivers bytes to the serial input device as fast as they can be emitted at this baud,
+// now many bytes is that per millisecond?  The FSM is bounded by Time periods, each period is
+// 1 millisecond long; at each boundary the fifo grants itself Agency to receive bytes into the fifo.
+// -------------------------------------------------------------------------------------------------
+// RS232 uses 10 bits per byte, 38400 bits in 1 second means 3840 10-bit bytes. During each of the
+// 1-millisecond periods in 1 second, the capacity of the medium was 3.8 bytes.  Round result up and
+// check for new bytes every millisecond, and at most the collection will get 3 or 4 bytes added.
+// If no bytes arrive during one millisecond, 3 or 4 BYTE TIME PERIODS have gone by; LINES done.
+// -------------------------------------------------------------------------------------------------
+#define Ascii_Computed_BytesPerMS    (((THIS_BUILDS_BAUD_RATE / 10) + 500) / 1000)
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+void   ssUI_inOp_fifo_InitState (void)
+{
+    // the ssUI input processing FSM doesn't care about switching the Time Initialization occurs
+    ssUI_gInputCollected_Ct  = 0;
+    ssUI_gInputCollected_i   = 0;
+    ms_last_AvailCt_check    = mesa_gCtOf_1msFreeRunning;
+
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_LINES
+    ms_EOL_Timer             = 0;
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_LINES
+
+}   // ssUI_inOp_fifo_InitState
+
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+void   ssUI_inOp_fifo_ReInitState (void)
+{
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_BYTES
+    // Future: this should move collection to start position 0 or make the buffer circular
+    ssUI_gInputCollected_Ct  = 0;
+    ssUI_gInputCollected_i   = 0;
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_BYTES
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_LINES
+    // Everything received when CR entered; source of bytes must be buffering not-yet-emitted
+    ssUI_gInputCollected_Ct  = 0;
+    ssUI_gInputCollected_i   = 0;
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_LINES
+}   // ssUI_inOp_fifo_ReInitState
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
@@ -27,6 +97,7 @@ void ssUI_Prompt (void)
         ss_uiOp_emit_pAsciiA (gpcmdZoneTkns[gcmdZone_stack[cmdZone_i]]->pAsciiA);
         ss_uiOp_emit_1 (menuPromptEncapOff);
     }
+    ss_uiOp_emit_1 (Ascii_Colon);
 }   // ssUI_Prompt
 
 // -------------------------------------------------------------------------------------------------
@@ -41,12 +112,11 @@ void ssUI_inOp_Hold (void)
 }   // ssUI_inOp_Hold
 
 // =================================================================================================
-// =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // Commands are grouped into "cmdZones", or ssUI's menu system is a tree of groups of related
 // functions: "cmds on" and "cmds run" relate to the command.  This is just ssUI's menu implemented.
 // -------------------------------------------------------------------------------------------------
-// The menu FSM is given agency when ssUI's collector returns an input array of characters that have
+// The menu FSM is given agency when ssUI's collector returns an input array of Ascii values that have
 // ALREADY ARRIVED and been collected, either from a serial port or an array of pointers to commands.
 // What does "already arrived" imply?  The input service NEVER BLOCKS waiting for input.  The fact
 // there is input available is not revealed by the input service until a carriage return is collected.
@@ -57,266 +127,286 @@ void ssUI_inOp_Hold (void)
 //     The Arduino loop function calls ssUI_Main, granting Agency and control at the level of ssTEA.
 //     A recurring Time Event calls ssUI_Main, granting Agency and control in the context of ssTEA.
 // -------------------------------------------------------------------------------------------------
+// The Init State of ssUI occurs when ssUI_Main is invoked ONLY THE FIRST TIME ssUI_Main is called.
+// -------------------------------------------------------------------------------------------------
 void ssUI_Main (void)
 {
+    static  boolean  InitStateOccured = false;
+
     boolean emit_prompt = THERES_NO_ACTION;
 
-    // ssTEA_App is comprised of the Apps and the ssUI interface used to manipulate the Apps and ssTEA
-    if (mesa_Ascii_RO_state == mesa_RO_state_SimpleSal)
+    if (InitStateOccured == false)  // variable initialized at build-time, or grouped with init 0
     {
-        // The only benefit from changing to a "Main" for cmds/loops/math etc is this menu trick:
-        // the function prepends the command name "cmds" or "loop" or "math" to any input.
-        switch (gcmdZone_stack[ssUI_control.cmdZone_stack_i])
-        {
-            case ssUI_root  :  emit_prompt = ssUI_rootMain (false);     break;
-            case ssUI_cmds  :  emit_prompt = ssUI_CmdsMain ();          break;
-            case ssUI_loop  :  emit_prompt = ssUI_LoopMain ();          break;
-            case ssUI_math  :  emit_prompt = ssUI_MathMain ();          break;
-            case ssUI_evapi :  emit_prompt = ssUI_EvapiMain ();         break;
-            case ssUI_ss    :  emit_prompt = ssUI_ssMain ();            break;
-            default         :  emit_prompt = IM_THE_TOWN_CRIER;         break;
-        }   // switch
-    }   // grant menu FSM agency
+        ssUI_rootMain (true);       // the only call to rootMain with the value true: Init State
+        InitStateOccured = true;    // continue on to make another call to rootMain NOT in Init State
+    }   // Init State for command zones only the first time called
 
-    //
-    // It is possible that one of the menus above changed the ownership from ssUI to !ssUI.
-    // Returning to ssUI state from !ssUI is when the User of the Interface needs a prompt.
-    //
-    // ssTEA_App is comprised of the Apps and the ssUI used to manipulate the Apps and ssTEA
-    if (mesa_Ascii_RO_state == mesa_RO_state_SimpleSal)
+    // SimpleSal App is comprised of the Apps and the ssUI interface to manipulate the Apps and ssTEA
+    if ((Ascii_ROs == RO_owner_ssUI) || (Ascii_ROs == RO_owner_Anybody))
     {
-        if (emit_prompt == IM_THE_TOWN_CRIER)
+        if ((Ascii_RO_active & RO_active_OneOfUIs_ss))
         {
-            ss_uiOp_emit_newline ();             // make sure to clear the "other's" output
-            ssUI_Prompt ();
-        }   // something moved the cursor from the start of a line with nothing displayed
-    }   //
+            // The only benefit from changing to a "Main" for cmds/loops/math etc is this menu trick:
+            // the function prepends the command name "cmds" or "loop" or "math" to any input.
+            switch (gcmdZone_stack[ssUI_control.cmdZone_stack_i])
+            {
+                case ssUI_root  :  emit_prompt = ssUI_rootMain (false);     break;  // no init
+                case ssUI_cmds  :  emit_prompt = ssUI_CmdsMain ();          break;
+                case ssUI_loop  :  emit_prompt = ssUI_LoopMain ();          break;
+                case ssUI_math  :  emit_prompt = ssUI_MathMain ();          break;
+                case ssUI_evapi :  emit_prompt = ssUI_EvapiMain ();         break;
+                case ssUI_ss    :  emit_prompt = ssUI_ssMain ();            break;
+                default         :  emit_prompt = IM_THE_TOWN_CRIER;         break;
+            }   // switch
+
+            // It is possible that one of the menus above changed the ownership from ssUI to !ssUI.
+            // Returning to ssUI state from !ssUI is when the User of the Interface needs a prompt.
+            // ssTEA_App is comprised of the Apps and the ssUI used to manipulate the Apps and ssTEA
+            if (emit_prompt == IM_THE_TOWN_CRIER)   // when change to App UI, don't prompt ssUI
+            {
+                if ((Ascii_ROs == RO_owner_ssUI) || (Ascii_ROs == RO_owner_Anybody))
+                {
+                    if ((Ascii_RO_active & RO_active_OneOfUIs_ss))
+                    {
+                        ss_uiOp_emit_newline ();             // make sure to clear the "other's" output
+                        ssUI_Prompt ();
+                    }   // ssUI is active and is the focus
+                }   // ssUI is STILL an owner of the UI
+            }   // the menu that executed indicated a prompt was needed
+        }   // ssUI is active and is the focus
+    }   // ssUI is an owner of the UI
 }   // ssUI_Main
 
 // -------------------------------------------------------------------------------------------------
-boolean ssUI_rootMain (boolean restart_ssUI)
+// return true means "a new prompt needs to be emitted by ssUI because some output occurred".
+// -------------------------------------------------------------------------------------------------
+boolean ssUI_rootMain (boolean isInit_State)
 {
-    boolean returnboolean;
-
-    if (restart_ssUI)
+    if (isInit_State)
     {
         ssUI_cmdZone_InitStack ();
+        return (true);
     }
 
-    returnboolean = ssUI_inOp_Line_GetParseHandle ();
-    return (returnboolean);
+    return (ssUI_inOp_Line_GetParseHandle (pInputNull));
 }   // ssUI_rootMain
 // -------------------------------------------------------------------------------------------------
+// Parameter to GetParseHandle of Null pointer tells the function: this is not a command line that
+// can be parsed and handled, so the function will first get input from a source to parse and handle.
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_MathMain (void)
 {
-    return (ssUI_inOp_Line_GetParseHandle ());
+    return (ssUI_inOp_Line_GetParseHandle (pInputNull));
 }   // ssUI_MathMain
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_LoopMain (void)
 {
-    return (ssUI_inOp_Line_GetParseHandle ());
+    return (ssUI_inOp_Line_GetParseHandle (pInputNull));
 }   // ssUI_loopmain
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_CmdsMain (void)
 {
-    return (ssUI_inOp_Line_GetParseHandle ());
+    return (ssUI_inOp_Line_GetParseHandle (pInputNull));
 }   // ssUI_CmdsMain
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_ssMain (void)
 {
-    return (ssUI_inOp_Line_GetParseHandle ());
+    return (ssUI_inOp_Line_GetParseHandle (pInputNull));
 }   // ssUI_ssMain
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_EvapiMain (void)
 {
-    return (ssUI_inOp_Line_GetParseHandle ());
+    return (ssUI_inOp_Line_GetParseHandle (pInputNull));
 }   // ssUI_EvapiMain
 // =================================================================================================
-// =================================================================================================
 // -------------------------------------------------------------------------------------------------
+// The "command line" interface supported by ssUI collects input from a source, parses it, and then
+// handles it (performs the activities the words in the parsed input indicate the user wants done).
 // -------------------------------------------------------------------------------------------------
-// the buffer is doubly large for safely catching invalid input strings exceeding buffers in ssUI.
-// The buffer is allocated by a function on the stack; only exists within the scope of that function.
-// -------------------------------------------------------------------------------------------------
-// input process's userMax_i parameter indicates the service routine the size of the caller's buffer.
-// the service function refuses to receive more and does not manage bursts totaling more than _MAX_I.
-// SimpleSal does not employ advanced ssHL tricks such as having a parameter determine the array size.
-// -------------------------------------------------------------------------------------------------
-#define  INPUT_BUFFER_ALLOC   (2 * SSUI_BUFFER_ALLOC)
-#define  INPUT_BUFFER_MAX_I   (INPUT_BUFFER_ALLOC-1)
-
-// -------------------------------------------------------------------------------------------------
-// =================================================================================================
-// =================================================================================================
-// -------------------------------------------------------------------------------------------------
-
-// =================================================================================================
-// =================================================================================================
-// -------------------------------------------------------------------------------------------------
-// Ascii characters input are put an into a NUL-terminated array of bytes, a legacy ssHL string.
+// Ascii characters input are grouped into a NUL-terminated array of bytes, a legacy ssHL string.
 // The local input buffer is used to store bytes from an independent and asynchronous signaler;
-//    the collection of bytes has no length specification built into the data, except NUL.
+// the collection of bytes are analyzed and transformed into an input sequence in caller's buffer.
 // -------------------------------------------------------------------------------------------------
-// CR is defined as "the Ascii byte value received first when the user presses the <enter> key".
+// One of these two models is used to react to serial data as it arrives:
+//      SSUI_ONEOF_SERIAL_RECEIVES_LINES        Arduino IDE Serial Monitor
+//      SSUI_ONEOF_SERIAL_RECEIVES_BYTES        the fancy terminal emulation software of your choice
+// Dependency: the differences are in behavior between Arduino Serial Monitor and terminal programs.
+// The Arduino IDE requires a timeout to notice when the Arduino IDE has stopped emitting bytes.
+// The Arduino IDE starts emitting when the user presses <enter> then stops without sending the CR.
 // -------------------------------------------------------------------------------------------------
-// #define DEBUG_INPUT
-#ifdef DEBUG_INPUT
-#define InputDebugSignal(x)   mesa_uiOp_emit_1 (x)
-#define InputDebugHex(x)      ss_uiOp_emit_Hex_2 (x)
-#else   // not DEBUG_INPUT
-#define InputDebugSignal(x)
-#define InputDebugHex(x)
-#endif  // DEBUG_INPUT
+// #define DEBUG_BYTE_INPUT
+#ifdef DEBUG_BYTE_INPUT
+#define InputDebugSignal(d,x)   { mesa_uiOp_emit_1 (d); ss_uiOp_emit_Hex_2 (x); mesa_uiOp_emit_1 (d); }
+#else   // not DEBUG_BYTE_INPUT
+#define InputDebugSignal(d,x)
+#endif  // DEBUG_BYTE_INPUT
 
+#define TOO_BIG_FOR_CR_I        (INPUT_FIFO_ALLOC)        // lowest invalid index
 
 // -------------------------------------------------------------------------------------------------
-// This fifo collects bytes in N-byte chunks, without direct attention to their values.  The fifo
-// collection function only collects bytes when given Agency, and then only in a burst.  Agency is
-// granted by one of: a millisecond counter Event using classic Time or an ssTEA-based Time Event.
+// This fifo collects bytes in N-byte chunks, without attention to values as they become available.
+// The fifo only collects bytes when given Agency, and then only collects the bytes that have already
+// been received by the serial byte device (of some form), and then only collects the bytes that
+// there is room for in the fifo (letting serial queue them).  The sequence of bytes resulting from
+// a human/machine emitting bytes varies depending on the behavior of the "terminal" software in use.
+// -------------------------------------------------------------------------------------------------
+// After a burst of bytes has been added by the Collector, the entire collection is searched for the
+// value CR, when a CR is found or deduced, the fifo returns a subset of the collection: "a line".
+// Changed definition: now a line contains all bytes up to, but excluding the CR, and a NUL.
+// -------------------------------------------------------------------------------------------------
 // The discussion below correlates the size of the burst to the rate at which bytes are perceived.
-// -------------------------------------------------------------------------------------------------
-// After a burst of bytes has been collected by the Collector, and the collector sees a CR anywhere
-// within the N bytes collected so far, the fifo returns a subset of the collected bytes: "a line".
-// A line contains all bytes up to and including the CR and a NUL byte, the "count" of bytes in a
-// line includes all bytes before the NUL byte, therefore the minimum length of a line is one (1)
-// and the minimum space required to receive a line is two (2).  The maximum is set by the caller.
-// -------------------------------------------------------------------------------------------------
-// Returned length values: 0 bytes in a line; N bytes (fifo-defined minimum, user-defined maximum).
-// -------------------------------------------------------------------------------------------------
-// A fifo retains data that has not been read (or overwritten by unread incoming bytes).  If a burst
-// of 10 bytes is perceived, stored and the 4th is a CR, "the line" is returned as defined above.
-// The fifo moves the remaining bytes to the front of the buffer, so the next burst will append to
-// any existing bytes.  This potential second line (<bytes0><cr0><bytes1><cr1>) will be seen by the
-// collector the next time it is given Agency and copied caller's buffer as defined above.  Latency.
-// The caller ready for a 2nd line can get it; otherwise it sits until the next collection Agency.
-// -------------------------------------------------------------------------------------------------
-// This implementation of the FSM watches the counter value in the classic Timekeeping mechanism.
-// -------------------------------------------------------------------------------------------------
-// The other implementation of the FSM uses a Time Event collector signaling lines with a Data Event.
-// when collected_ct is zero, the collection is empty.
-// When the next byte is received it is written at collected_ct, then collected_ct is incremented.
-// -------------------------------------------------------------------------------------------------
-AsciiA_t    Collected[INPUT_BUFFER_ALLOC];      //
-int         collected_ct;
-
-TimeUnitsBig_t      ms_last_AvailCt_check;
-
-// -------------------------------------------------------------------------------------------------
-boolean ssUI_inOp_CollectFromSerial_Char (pAscii_t pAsciiA)
-{
-    return (false);     // bugbugbug what was this?
-}   // ssUI_inOp_CollectFromSerial_Char
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_inOp_Line_FromSerial (pAsciiA_t pUserBuff, int userMax_i)
 {
     Ascii_t     aByte;
     int         AvailNow = 0;
+    int         AvailOrig = 0;
     int         i;                          // character buffer manipulation uses indexing a lot
     int         CR_i;                       // if a CR is found, remember where it was found
-    int         moved_ct;                   // character buffer manipulation needs familiar terms
-#ifdef DEBUG_INPUT
-    pAsciiA_t   pUserBuff_Orig = pUserBuff;
-#endif  // DEBUG_INPUT
+    boolean     ms_EOL_Timeout;
 
+#ifdef DEBUG_BYTE_INPUT
+    pAsciiA_t   pUserBuff_Orig = pUserBuff; // pUserBuff moves around, remember the start point
+#endif // DEBUG_BYTE_INPUT
+
+    // ---------------------------------------------------------------------------------------------
+    // Gating using Time is done to reduce the ask of "Available?" more often than necessary.
     // if the ms counter value has not changed since the last call, still in the same millisecond.
     // We are not going to use any more of the resources here until the gate opens at next boundary.
-    if (mesa_gCtOf_1msThis100ms == ms_last_AvailCt_check)
+    // ---------------------------------------------------------------------------------------------
+    if (mesa_gCtOf_1msFreeRunning == ms_last_AvailCt_check)
     {
         return (false);         // too little Time, don't care if CR has been received (latency)
     }
-    // record where we are now in Time so "future we" can see if "past we" waited long enough yet
-    ms_last_AvailCt_check = mesa_gCtOf_1msThis100ms;
+    ms_last_AvailCt_check = mesa_gCtOf_1msFreeRunning;
 
-    // Gating using Time is done to reduce the ask of "Available?" more often than necessary.
-    AvailNow = ss_uiOp_recv_avail_ct ();
+    // ---------------------------------------------------------------------------------------------
+    // The rest of this function assumes that everything being done only occurs once a millisecond.
+    // ---------------------------------------------------------------------------------------------
+    AvailNow = AvailOrig = ss_uiOp_recv_avail_ct ();
 
-    // if nothing is left over from the last collection (post CR), and nothing in this one, done.
-    if ( (AvailNow == 0) && (collected_ct == 0) )
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_LINES
+    if (AvailNow > 0)
     {
-        return (0);
+        ms_EOL_Timer = 10;
+        ms_EOL_Timeout = false;
     }
+    else
+    {   // available now must be 0
+        if (ms_EOL_Timer != 0)
+        {
+            InputDebugSignal ('t', ms_EOL_Timer);
+            ms_EOL_Timer--;
+            ms_EOL_Timeout = (ms_EOL_Timer == 0);       // the only place flag may become True
+        }   // timeout exists
+        else
+        {   // Timer must be 0, align Timeout indicator
+            ms_EOL_Timeout = false;
+//            InputDebugSignal ('T', ms_EOL_Timer);
+        }
+    }   // nothing available
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_LINES
 
-    // the rest of the state table (aside from "exit if collected_ct == 0 and AvailNow == 0")
-    // shows the remaining combinations and the action taken by the collector in each case.
-    //   Available == 0  and  collected_ct is > 0       check for CR;   (no entry into while)
-    //   Available > 0   and  collected_ct is == 0      serial into fifo; check for CR
-    //   Available > 0   and  collected_ct is > 0       serial into fifo; check for CR
-    // transfer available from the Serial device (probably a buffer in memory) to this buffer
+    CR_i = TOO_BIG_FOR_CR_I;
     while (AvailNow > 0)
     {
         aByte = ss_uiOp_recv_1 ();
         AvailNow--;
 
-        InputDebugSignal ('(');
-        InputDebugHex (aByte);
-        InputDebugSignal (')');
-
+        // -----------------------------------------------------------------------------------------
+        // Arduino Serial Monitor does not return until a CR is seen, then it keeps the CR secret.
+        // normal terminal programs sends each character as it is typed (CR is seen and stored)
+        // -----------------------------------------------------------------------------------------
         // store the byte in the buffer first (using count zero-based) then incr count (one-based)
-        Collected[collected_ct] = aByte;        // location[0] = value
-        collected_ct++;                         // count = 1
+        // -----------------------------------------------------------------------------------------
+        ssUI_gCollected[ssUI_gInputCollected_i] = aByte;
+
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_BYTES
+        // BYTES model sees the CR and notes its location; LINES model does not see CR, forces and notes.
+        if (aByte == Ascii_CR)
+        {
+            CR_i = ssUI_gInputCollected_i;      // location of CR in BYTES is detected
+            InputDebugSignal ('!', Ascii_CR);
+        }
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_BYTES
+
+        ssUI_gInputCollected_i++;
+        ssUI_gInputCollected_Ct++;
+
+        InputDebugSignal ('(', aByte);
     }   // while AvailNow > 0
 
-    // check for CR  (may be inefficient in that every collection searches the entire buffer from 0)
-    // count as index so for loop is from 0 to count-1
-    for (i = 0; i < collected_ct; i++)
+    // ---------------------------------------------------------------------------------------------
+    // every byte available have been collected, that is, every byte since the last CR was seen.
+    // if there were no bytes collected, it just means no input was received since the last CR.
+    // ---------------------------------------------------------------------------------------------
+    if (ssUI_gInputCollected_i == 0)
     {
-        if (Collected[i] == Ascii_CR)
+        return (false);
+    }
+
+#ifdef SSUI_ONEOF_SERIAL_RECEIVES_LINES
+    // above, after no data is received during a 1ms period and zero data has been collected
+    // here, after no data is received during a 1ms period and data has been collected
+    if (ms_EOL_Timeout)
+    {
+        // make the result of "CR received after 0-N chars" look like "0-N chars with CR received".
+        // if circular? the location of the CR is not the same as the number of characters collected.
+        // BYTES model sees the CR and notes its location; LINES model does not see CR, forces and notes.
+        ssUI_gCollected[ssUI_gInputCollected_i] = Ascii_CR;
+        CR_i = ssUI_gInputCollected_i;                      // location of CR in LINES is deduced
+        ssUI_gInputCollected_i++;
+        ssUI_gInputCollected_Ct++;                         //
+
+        InputDebugSignal ('!', Ascii_CR);
+    }
+#endif // SSUI_ONEOF_SERIAL_RECEIVES_LINES
+
+    // ---------------------------------------------------------------------------------------------
+    // move collected[X] to userBuff[Y] up to and not including the CR
+    // ---------------------------------------------------------------------------------------------
+    // Note hidden logic: if CR_i is 0, nothing is copied from collected, Buff[0] gets Ascii_NUL.
+    // Most important in addition, true is returned when just carriage return was entered into terminal.
+    // ---------------------------------------------------------------------------------------------
+    if (CR_i < TOO_BIG_FOR_CR_I)
+    {
+        if (CR_i > (userMax_i-1))
         {
-            CR_i = i;
+            CR_i = userMax_i-1;
+        }
+        for (i = 0; i < CR_i; i++)
+        {
+            *pUserBuff = ssUI_gCollected[i];
+            pUserBuff++;                                    // added one
+        }   // for each byte up to and including CR
+        *pUserBuff = Ascii_NUL;                     // <chars><NUL> for any N chars
 
-            // remove collected[N] to userBuff[N]
-            // index into the collection means the for loop index is from 0 to index or "i <= CR_i"
-            // index as index so for loop is from 0 to index
-            for (i = 0; i < CR_i; i++)
-            {
-                *pUserBuff = Collected[i];
-                pUserBuff++;                                    // added one
-                collected_ct--;                                 // removed one
-            }   // for each byte up to and including CR
-            collected_ct--;                 // didn't move the CR to user's buffer
-            *pUserBuff = Ascii_NUL;         // <chars><CR><NUL> for any N chars
+        ssUI_gInputCollected_i = 0;
+        ssUI_gInputCollected_Ct = 0;                         //
 
-            // move any remaining to the start of buffer (characters after <enter> are a new line)
-            if (collected_ct > 0)
-            {
-                moved_ct = 0;
-                CR_i++;                         // character after CR
-                // count as index so while loop is from N to M
-                while (moved_ct < collected_ct)
-                {
-                    Collected[moved_ct] = Collected[CR_i];
-                    moved_ct++;
-                    CR_i++;
-                }  // for each byte after CR to end of collected
-            }   // remaining after line moved out
-
-#ifdef DEBUG_INPUT
-            mesa_uiOp_emit_qAsciiA ("line [");
-            mesa_uiOp_emit_pAsciiA (pUserBuff_Orig);
-            mesa_uiOp_emit_qAsciiA ("]");
-            mesa_uiOp_emit_newline ();
-#endif // DEBUG_INPUT
-            return (true);              // found at least one line in the input stream
-        }   // found CR
-    }   // for loop looking for CR
+#ifdef DEBUG_BYTE_INPUT
+        mesa_uiOp_emit_qAsciiA ("[");
+        mesa_uiOp_emit_pAsciiA (pUserBuff_Orig);
+        mesa_uiOp_emit_qAsciiA ("]");
+        mesa_uiOp_emit_newline ();
+#endif // DEBUG_BYTE_INPUT
+        return (true);              // found at least one "line" in the input stream
+    }   // for
 
     return (false);
 }   // ssUI_inOp_Line_FromSerial
 // -------------------------------------------------------------------------------------------------
-void ssUI_AnnounceFailure (int len, int MAX_I)
+void ssUI_AnnounceFailure (int len, int max_i)
 {
-    // there is serial available, and read in up to <enter>, and length 0, two causes:
-    // too few bytes before <enter> or too many bytes before end of buffer.
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_qAsciiA ("Input ignored: string too short or too long to capture.");
     ss_uiOp_emit_Int_999 (len);
     ss_uiOp_emit_qAsciiA (" bytes input > ");
-    ss_uiOp_emit_Int_999 (MAX_I);
+    ss_uiOp_emit_Int_999 (max_i+1);
     ss_uiOp_emit_qAsciiA (" bytes allowed");
     ss_uiOp_emit_newline ();
 }   // ssUI_AnnounceFailure
@@ -334,12 +424,12 @@ void ssUI_AnnounceFailure (int len, int MAX_I)
 
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-boolean ssUI_inOp_Line_FromCmds (pAsciiA_t pUserBuff, int userBuff_MAX_I)
+boolean ssUI_inOp_Line_FromCmds (pAsciiA_t pUserBuff, int userBuff_max_i)
 {
     pAsciiA_t    pCmdsStringPointer;
     int         length;
 
-    // if next == Null, there are no more pointers in the array of pointers to command strings,
+    // if next == Null, there are no more pointers in the array of pointers to command arrays of Ascii values,
     // OR               the end-of-commands string was found in the command list
     // as with Ascii arrays, the length is not known, instead the end is demarcated with a value.
     pCmdsStringPointer = ssUI_cmdsOp_nextCmdFromLinkActive (ssUI_control.Cmds_i);
@@ -350,88 +440,118 @@ boolean ssUI_inOp_Line_FromCmds (pAsciiA_t pUserBuff, int userBuff_MAX_I)
 
     // the serial inputIfAny function also checks for maximum as the bytes are being stored
     length = ss_uiOp_Count_Aa(pCmdsStringPointer);
-    if (length > userBuff_MAX_I)
+    if (length > userBuff_max_i)        // length may be 0 (first byte is NUL) or > 0 (isn't NUL)
     {
-        ssUI_AnnounceFailure (length, userBuff_MAX_I);
+        ssUI_AnnounceFailure (length, userBuff_max_i);
         return (false);
     }
     else
     {
-        // The pCmdsStringPointer is a pointer to a string, most likely in an array of pointers to strings;
+        // The pCmdsStringPointer is a pointer to an array, most likely in an array of pointers;
         // both or either of the pointer array or the string array(s) may be in non-writable memory.
         // This copy gets the string into writable memory.
         ss_uiOp_Duplicate_Aa (pUserBuff, pCmdsStringPointer);
         return (true);
-    }   // valid length (0->userBuff_MAX_I)
+    }   // valid length (0->userBuff_Max_i)
 }   // ssUI_inOp_Line_FromCmds
 // -------------------------------------------------------------------------------------------------
-// In Arduino IDE, "no characters reported until user hits enter" causes IfAny to be true,
-//        capture into localBuff, SawAnyInput=true and input_len>=0.    bugbugbug
-// In TeraTerm, characters are transmitted before the user hits enter, as they are typed.
-// expression says "if (didn't get a string or did but it has no length) & commands on",
-// Commands mode runs through an array of input strings, unless user input precedes.
+// The ssUI command line interface is implemented, within ssUI Input services, as "the command FSM".
 // -------------------------------------------------------------------------------------------------
-boolean ssUI_inOp_Line_GetParseHandle (void)
+// This is the software path from "command FSM receives a collection of characters" to the "command
+// FSM finds and matches tokens in the commands array" and "command FSM runs the Handler function.
+// -------------------------------------------------------------------------------------------------
+// There are (at least) two (2) input streams available as a source of input stream of characters.
+// 1) through a terminal program such as the Arduino IDE Serial Monitor where users type directly
+// 2) through a terminal program such as TermTerm where users type directly OR files may be emitted.
+// 3) within ssUI, "commands" mode works through an array of input arrays of Ascii values, consuming one at a time.
+// -------------------------------------------------------------------------------------------------
+boolean ssUI_inOp_Line_GetParseHandle (pAsciiA_t pInputFromOutside)
 {
     boolean         SawAnyInput;        // an FSM where an input string goes from "not SawAnyInput" to SawAnyInput
-    eCmdFsmResult_t CmdFsmResult;
+    eCmdFSM_Result_t CmdFSM_Result;
 
     boolean         crunched_semicolon; // an FSM where a crunched semicolon is treated as end-of-line
     int             command_start_i;    // points to first character in the command (line)
     int             command_finish_i;   // points to the NUL character in the command line
     pAsciiA_t       pResultAnnounce;
 
-    AsciiA_t        localBuff[SSUI_BUFFER_ALLOC];
+    AsciiA_t        localBuff[SSUI_UIBUFFER_ALLOC];
+    pAsciiA_t       pInputBuff;
 
-    SawAnyInput = false;
-
-    if (ssUI_inOp_Line_FromSerial (localBuff, SSUI_BUFFER_MAX_I))
+    if (pInputFromOutside != pInputNull)
     {
         SawAnyInput = true;
+        pInputBuff = pInputFromOutside;
     }
     else
     {
-        if (ssUI_control.CmdsAreRunning)
+        SawAnyInput = false;
+        pInputBuff = localBuff;
+
+        // ---------------------------------------------------------------------------------------------
+        // if ssUI is 1) at least a partial owner and 2) currently the focus as a UI, consume input.
+        // When the RO_owner is "anybody" and both UIs are active, a race condition is created.
+        // This comment, with App UI and ssUI reversed, should be placed with other inOp_Line_From calls.
+        // ---------------------------------------------------------------------------------------------
+        if (RO_IS_ONEOF_Ascii_ROs (RO_owner_ssUI, RO_active_OneOfUIs_ss))
         {
-            if (ssUI_inOp_Line_FromCmds (localBuff, SSUI_BUFFER_MAX_I))
+            if (ssUI_inOp_Line_FromSerial (localBuff, SSUI_UIBUFFER_MAX_I))
             {
-                ssUI_control.Cmds_i++;
                 SawAnyInput = true;
-            }
+            }   // let serial input interrupt commands running by asking this first
             else
             {
-                ssUI_control.CmdsAreRunning = false;
-                ss_uiOp_emit_newline ();
-                ss_uiOp_emit_Dash (40);
-                ss_uiOp_emit_qAsciiA ("commands completed");
-                ss_uiOp_emit_newline ();
-                return (IM_THE_TOWN_CRIER);
-            }
-        }   // no entry, just enter, or command on
-    }   // no line collected
+                if (ssUI_control.CmdsAreRunning)
+                {
+                    if (ssUI_inOp_Line_FromCmds (localBuff, SSUI_UIBUFFER_MAX_I))
+                    {
+                        ssUI_control.Cmds_i++;
+                        SawAnyInput = true;
+                    }
+                    else
+                    {
+                        ssUI_control.CmdsAreRunning = false;
+                        ss_uiOp_emit_newline ();
+                        ss_uiOp_emit_Dash (40);
+                        ss_uiOp_emit_qAsciiA ("commands completed");
+                        ss_uiOp_emit_newline ();
+                        return (IM_THE_TOWN_CRIER);
+                    }
+                }   // no entry, just enter, or command on
+            }   // no line collected
+        }   // is ssUI the current owner of the Serial (or cmds processing faking it like Serial)
 
-    // input parse and handle does nothing when nothing is provided to parse and handle
-    if (!SawAnyInput)
-    {
-        return (THERES_NO_ACTION);
-    }   // no input detected or generated...
+        // input parse and handle does nothing when nothing is provided to parse and handle
+        if (!SawAnyInput)
+        {
+            return (THERES_NO_ACTION);
+        }   // no input detected or generated...
+    }   // a caller provided the input to be parsed and handled
+
+//    ss_uiOp_emit_newline ();                      // get parse handle echoes all input
+    ss_uiOp_emit_1 (Ascii_squareLBracket);
+    ss_uiOp_emit_pAsciiA (pInputBuff);
+    ss_uiOp_emit_1 (Ascii_squareRBracket);
+    ss_uiOp_emit_newline ();
 
     // input parse and handle consumes an "echo" line and the UI/parsers never get to see it
-    if (ssUI_BufferStartsWith_echo (localBuff))
+    if (ssUI_BufferStartsWith_echo (pInputBuff))
     {
-        ss_uiOp_pBanner (lfY, localBuff, lfN);
+        ss_uiOp_emit_pBanner (lfY, pInputBuff, lfN);
         return (IM_THE_TOWN_CRIER);
     }   // echo ...
 
-    // input parse and handle gives the input buffer to what it assumes is the App's input handler
-    if (ssUI_BufferStartsWith_app (localBuff))
+    // ssUI and App UI both watch for the other's name in the buffer. If the other's name is seen,
+    // AND in addition, the input consists only of app or ssui, the current UI owner is toggled.
+    // If anything follows the other's name, App_Select_UI only gives the input string to the other.
+    // In any case, the input string is fully consumed and the ssUI assumes a new prompt is needed.
+    if (ssUI_BufferStartsWith_app (pInputBuff))
     {
-        ss_uiOp_emit_newline ();
-        App_HeyProcessThis (localBuff);
+        // The choice of method and implementation of switching between UIs is granted to the App.
+        App_Select_UI (pInputBuff);
 
-        // App input parse and handle consumes an "app" token and the UI/parsers never get to see it.
-        // Different from no input seen or echo seen, assume that the app made UI need a fresh prompt.
-        // Also, if the App changed the owner to ssUI from the App, there needs to be a new prompt.
+        // App UI chooser consumes "app" or "ssui"; current UI/parsers/handlers never see it.
+        // Different from no input seen or echo seen, assume the "other" UI needs a fresh prompt.
         return (IM_THE_TOWN_CRIER);
     }   // app ...
 
@@ -443,11 +563,11 @@ boolean ssUI_inOp_Line_GetParseHandle (void)
     // <abc;def>      "abc"
     command_start_i = 0;
     command_finish_i = 0;
-    while (localBuff[command_start_i] != Ascii_NUL)
+    while (pInputBuff[command_start_i] != Ascii_NUL)
     {
         // skip over any leading spaces, maintain the relationship between first/last,
         // first and last are equal at the start of each loop that "extracts" a valid AsciiA_t.
-        while (localBuff[command_start_i] == Ascii_Space)
+        while (pInputBuff[command_start_i] == Ascii_Space)
         {
             command_finish_i++;
             command_start_i++;
@@ -455,9 +575,9 @@ boolean ssUI_inOp_Line_GetParseHandle (void)
 
         // find the NUL Ascii terminator of the variable-length array of Ascii characters
         while (
-                (localBuff[command_finish_i] != Ascii_NUL)
+                (pInputBuff[command_finish_i] != Ascii_NUL)
              &&
-                (localBuff[command_finish_i] != Ascii_sColon)
+                (pInputBuff[command_finish_i] != Ascii_sColon)
               )
         {
             command_finish_i++;
@@ -467,81 +587,84 @@ boolean ssUI_inOp_Line_GetParseHandle (void)
         // when we find a semi-colon, make it look like an end-of-array for this command.
         // The key point is that "command_finish_i" includes the NUL byte at [command_finish_i]
         crunched_semicolon = false;
-        if (localBuff[command_finish_i] == Ascii_sColon)
+        if (pInputBuff[command_finish_i] == Ascii_sColon)
         {
             crunched_semicolon = true;
-            localBuff[command_finish_i] = Ascii_NUL;
+            pInputBuff[command_finish_i] = Ascii_NUL;
         }
 
-        // in ssUI, commands are executed/processed when strings are matched, during this MenuTick.
+        // in ssUI, commands are executed/processed when arrays of Ascii values are matched, during this MenuTick.
         // CmdMatch processes the string in the buffer with activities, but does not consume the characters.
-        // CmdFsmResult == handled            // command processor ate the input string and took all actions
+        // CmdFSM_Result == handled            // command processor ate the input string and took all actions
         //      length is length of command in buffer, but we processed it as valid or error or defer
-        // CmdFsmResult != handled            //  means "there may be a TimeStamp, there is no command"
+        // CmdFSM_Result != handled            //  means "there may be a TimeStamp, there is no command"
         //      length is length of non-command with at least one character
-        if (ssUI_control.BeVerbose)
+        if (ssUI_control.BeVerbose == YES_BE_VERBOSE)
         {
             ss_uiOp_emit_newline ();
             ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
             ss_uiOp_emit_1 (Ascii_squareLBracket);
-            ss_uiOp_emit_pAsciiA (&localBuff[command_start_i]);
+            ss_uiOp_emit_pAsciiA (&pInputBuff[command_start_i]);
             ss_uiOp_emit_1 (Ascii_squareRBracket);
+            ss_uiOp_emit_newline ();
         }
-        ss_uiOp_emit_newline ();
 
-        gToken_Ct = ssUI_tknOp_ParseAllTokens (&localBuff[command_start_i]);
+        gToken_Ct = ssUI_tknOp_ParseAllTokens (&pInputBuff[command_start_i]);    // establish gToken_Ct
 #ifdef SSUI_OPTIN_DEBUG_TOKENS
-        ss_uiOp_emit_newline ();
         ssUI_tknOp_Show_AllTkns (S("parsed   "));
 #endif  // SSUI_OPTIN_DEBUG_TOKENS
-        gToken_Ct = ssUI_tknOp_Prepend_cmdZone ();
+
+        // if not in the root command zone, prepend the command zone on to the tokens
+        gToken_Ct = ssUI_tknOp_Prepend_cmdZone ();              // if changed, update gToken_Ct
 #ifdef SSUI_OPTIN_DEBUG_TOKENS
-        ssUI_tknOp_Show_AllTkns (S("prepended"));
+        ssUI_tknOp_Show_AllTkns (S("prepended cmd zone"));
 #endif  // SSUI_OPTIN_DEBUG_TOKENS
+
+        // transform correct and error forms of [-=], [=-], [+=], [=+], [-][=][-], [+][=][+]
 #ifdef SSUI_OPTIN_DEBUG_TOKENS
         ssUI_tknOp_Show_AllTkns (S("before fix ="));
 #endif  // SSUI_OPTIN_DEBUG_TOKENS
-        gToken_Ct = ssUI_tknOp_MinusPlus_Fixup (gToken_Ct);             // in gTokens, fix [=-], [=+], [=][-], [=][+]
+        gToken_Ct = ssUI_tknOp_MinusPlus_Fixup (gToken_Ct);     // if changed, update gToken_Ct
 #ifdef SSUI_OPTIN_DEBUG_TOKENS
         ssUI_tknOp_Show_AllTkns (S("after fix  ="));
 #endif  // SSUI_OPTIN_DEBUG_TOKENS
 
-    // bugbugbug   clean up comments    promote the agency transfer to the FSM with tokens ready
+        // =========================================================================================
         if (gToken_Ct > 0)
         {
-            CmdFsmResult = ssUI_menuOp_CmdHandlerFSM ();
+            CmdFSM_Result = ssUI_menuOp_CmdFSM ();
         }
         else
         {
-            CmdFsmResult = eCmdFsm_rNoTokens;
+            CmdFSM_Result = eCmdFSM_rNoTokens;
         }
 
         // ssUI is a UI so explanations of results are important sometimes
-        if (ssUI_control.BeVerbose)
+        if (ssUI_control.BeVerbose == YES_BE_VERBOSE)
         {
-            switch (CmdFsmResult)
+            switch (CmdFSM_Result)
             {
-                case eCmdFsm_rNormal        : pResultAnnounce = pcMsg_CmdFsm_NormalResult;  break;
-                case eCmdFsm_rNoInput       : pResultAnnounce = pcMsg_CmdFsm_FoundNoInput;  break;
-                case eCmdFsm_rNoTokens      : pResultAnnounce = pcMsg_CmdFsm_FoundNoTokens; break;
-                case eCmdFsm_rNoMatch       : pResultAnnounce = pcMsg_CmdFsm_FoundNoMatch;  break;
+                case eCmdFSM_rNormal        : pResultAnnounce = pcMsg_CmdFSM_NormalResult;  break;
+                case eCmdFSM_rNoInput       : pResultAnnounce = pcMsg_CmdFSM_FoundNoInput;  break;
+                case eCmdFSM_rNoTokens      : pResultAnnounce = pcMsg_CmdFSM_FoundNoTokens; break;
+                case eCmdFSM_rNoMatch       : pResultAnnounce = pcMsg_CmdFSM_FoundNoMatch;  break;
                 default                     : pResultAnnounce = pAsciiANull;
             }   // switch
         }       // verbose
         else
         {       // reticent
-            switch (CmdFsmResult)
+            switch (CmdFSM_Result)
             {
-                case eCmdFsm_rByHandler     : pResultAnnounce = pcMsg_CmdFsm_ByHandler;     break;
-                case eCmdFsm_rUnresolved    : pResultAnnounce = pcMsg_CmdFsm_Unresolved;    break;
-                case eCmdFsm_rTableFlaw     : pResultAnnounce = pcMsg_CmdFsm_TableFlaw;     break;
+                case eCmdFSM_rByHandler     : pResultAnnounce = pcMsg_CmdFSM_ByHandler;     break;
+                case eCmdFSM_rUnresolved    : pResultAnnounce = pcMsg_CmdFSM_Unresolved;    break;
+                case eCmdFSM_rTableFlaw     : pResultAnnounce = pcMsg_CmdFSM_TableFlaw;     break;
                 default                     : pResultAnnounce = pAsciiANull;                break;
             }   // switch
         }   // reticent
 
         if (pResultAnnounce)
         {
-            ss_uiOp_pBanner (lfY, pResultAnnounce, lfY);
+            ss_uiOp_emit_pBanner (lfY, pResultAnnounce, lfY);
         }
         // completed the current command (crunched semicolon or end of array), two actions:
         //  if crunched semicolon, the next byte after command_finish_i MAY BE the NUL byte, but
@@ -554,6 +677,20 @@ boolean ssUI_inOp_Line_GetParseHandle (void)
     return (IM_THE_TOWN_CRIER);
 }   // ssUI_inOp_Line_GetParseHandle
 // -------------------------------------------------------------------------------------------------
+// App calls when input is "ssui xxx". The declaration imposed by ssUI is made in "ssUI_input_dcl.h"
+// -------------------------------------------------------------------------------------------------
+void  ssUI_HeyProcessThis (pAsciiA_t pAscii_After_ssUI)
+{
+    if (!ssUI_inOp_Line_GetParseHandle (pAscii_After_ssUI))
+    {
+        ss_uiOp_emit_newline ();
+        ss_uiOp_emit_qAsciiA ("some error found by ssUI");
+        ss_uiOp_emit_newline ();
+        ss_uiOp_emit_pAsciiA (pAscii_After_ssUI);
+        ss_uiOp_emit_newline ();
+    }
+}   // ssUI_HeyProcessThis
+// -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_BufferStartsWith_echo (pAsciiA_t pUserBuff)
 {
@@ -561,48 +698,41 @@ boolean ssUI_BufferStartsWith_echo (pAsciiA_t pUserBuff)
     if (Ascii_toLower (pUserBuff[1]) != Ascii_c)      return (false);
     if (Ascii_toLower (pUserBuff[2]) != Ascii_h)      return (false);
     if (Ascii_toLower (pUserBuff[3]) != Ascii_o)      return (false);
-    // the character after the "echo" must be a space or a NUL-byte
-    if (Ascii_toLower (pUserBuff[4]) == Ascii_NUL)    return (true);
-    if (Ascii_toLower (pUserBuff[4]) == Ascii_Space)  return (true);
-
-    return (false);
+    return (true);
 }   // ssUI_BufferStartsWith_echo
 // -------------------------------------------------------------------------------------------------
-// the collection of characters used to mean "app" just has to be Ascii and contain no token separators.
 // -------------------------------------------------------------------------------------------------
 boolean ssUI_BufferStartsWith_app (pAsciiA_t pUserBuff)
 {
     if (Ascii_toLower (pUserBuff[0]) != Ascii_a)      return (false);
     if (Ascii_toLower (pUserBuff[1]) != Ascii_p)      return (false);
     if (Ascii_toLower (pUserBuff[2]) != Ascii_p)      return (false);
-    // the character after the "echo" must be a space
-    if (Ascii_toLower (pUserBuff[3]) == Ascii_NUL)    return (true);
-    if (Ascii_toLower (pUserBuff[3]) == Ascii_Space)  return (true);
     return (true);
 }   // ssUI_BufferStartsWith_app
 // -------------------------------------------------------------------------------------------------
+// Given a buffer known to contain "app", does the buffer contain any letters after "app"?
 // -------------------------------------------------------------------------------------------------
-boolean ssUI_BufferOnlyHas_appui (pAsciiA_t pUserBuff)
+boolean ssUI_BufferOnlyHas_app (pAsciiA_t pUserBuff)
 {
-    if (Ascii_toLower (pUserBuff[0]) != Ascii_a)      return (false);
-    if (Ascii_toLower (pUserBuff[1]) != Ascii_p)      return (false);
-    if (Ascii_toLower (pUserBuff[2]) != Ascii_p)      return (false);
-    if (Ascii_toLower (pUserBuff[3]) != Ascii_u)      return (false);
-    if (Ascii_toLower (pUserBuff[4]) != Ascii_i)      return (false);
-    // the character after the "app" must be a NUL byte
-    if (Ascii_toLower (pUserBuff[5]) != Ascii_NUL)     return (false);
+    if (Ascii_toLower (pUserBuff[3]) != Ascii_NUL)    return (false);
     return (true);
-}   // ssUI_BufferOnlyHas_appui
+}   // ssUI_BufferOnlyHas_app
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-boolean ssUI_BufferOnlyHas_ssui (pAsciiA_t pUserBuff)
+boolean ssUI_BufferStartsWith_ssui (pAsciiA_t pUserBuff)
 {
     if (Ascii_toLower (pUserBuff[0]) != Ascii_s)      return (false);
     if (Ascii_toLower (pUserBuff[1]) != Ascii_s)      return (false);
     if (Ascii_toLower (pUserBuff[2]) != Ascii_u)      return (false);
     if (Ascii_toLower (pUserBuff[3]) != Ascii_i)      return (false);
-    // the character after the "ssui" must be a NUL byte
-    if (Ascii_toLower (pUserBuff[4]) != Ascii_NUL)     return (false);
+    return (true);
+}   // ssUI_BufferStartsWith_ssui
+// -------------------------------------------------------------------------------------------------
+// Given a buffer known to contain "ssui", does the buffer contain any letters after "ssui"?
+// -------------------------------------------------------------------------------------------------
+boolean ssUI_BufferOnlyHas_ssui (pAsciiA_t pUserBuff)
+{
+    if (Ascii_toLower (pUserBuff[4]) != Ascii_NUL)    return (false);
     return (true);
 }   // ssUI_BufferOnlyHas_ssui
 // =================================================================================================
@@ -661,7 +791,7 @@ void  ssUI_tknOp_MinusPlus_Prepend (Ascii_t thisValue, ssUI_pToken_t pToken)
 // -------------------------------------------------------------------------------------------------
 int ssUI_tknOp_MinusPlus_Fixup (int foundTokenCt)
 {
-
+    // ---------------------------------------------------------------------------------------------
     // TimeStamp conversion allows signed numbers; a timestamp is assembled from user input values:
     // Requirement: see "math timevar=-time" in any form and associate the sign with the timestamp.
     // The - or + is associated with the [time] at human level; the token parser sees separators.
@@ -819,8 +949,8 @@ boolean  ssUI_tknIf_P1eqP2 (ssUI_pToken_t pToken1, ssUI_pToken_t pToken2)
 }   // ssUI_tknIf_P1eqP2
 // -------------------------------------------------------------------------------------------------
 // the current contents of the gTokens array (tokenized input string) point to the input buffer.
-// The tokenized strings must be copied and the token pointers adjusted to the copied version.
-// When the "loop on" command is encountered, the captured tokens and strings are evaluated.
+// The tokenized arrays of Ascii values must be copied and the token pointers adjusted to the copied version.
+// When the "loop on" command is encountered, the captured tokens and arrays of Ascii values are evaluated.
 // -------------------------------------------------------------------------------------------------
 // the problem is basically an array of random pointers to Ascii values that need to be copied.
 // After the values themselves are copied (up to and including the NUL byte), the starting
@@ -892,13 +1022,13 @@ void  ssUI_tknOp_Restore_TermCondCmd (void)
 #endif  // SSUI_OPTIN_DEBUG_TOKENS_LOOP
 }   // ssUI_tknOp_Restore_TermCondCmd
 // -------------------------------------------------------------------------------------------------
-// tokenize a copy of a string, group non-separators together by finding math operations or spaces.
+// tokenize a copy of an array, group non-separators together by finding math operations or spaces.
 // Pointers stored in the caller's token array are pointing to static data in a "local" buffer.
 // -------------------------------------------------------------------------------------------------
 int     ssUI_tknOp_ParseAllTokens (pAsciiA_t pInput)
 {
-    // N token strings, each maximum length (TknMax) with a separator, requires (N * (TknMax + 1)).
-    static      AsciiA_t     inputCopy[SSUI_BUFFER_ALLOC];
+    // N token arrays of Ascii values, each maximum length (TknMax) with a separator, requires (N * (TknMax + 1)).
+    static      AsciiA_t     inputCopy[SSUI_UIBUFFER_ALLOC];
     int         i;
     pAscii_t    p_charInToken;
     pAscii_t    p_copyNullByte;
@@ -912,11 +1042,11 @@ int     ssUI_tknOp_ParseAllTokens (pAsciiA_t pInput)
     }   // for each token pointer in array
     foundTokenCt = 0;
 
-    // because we don't want to input limit strings to RAM locations by tokenizing the user's copy,
+    // because we don't want to input limit arrays of Ascii values to RAM locations by tokenizing the user's copy,
     //   Return pointers to our copy, where chunks of the string have been tokenized in place.
     // The copy string is allocated at compile time and the current value is accessible through
     // the "pointer" field in gTokens[n], but the tokens are only valid until parse occurs again.
-    i = ssUI_AaOp_pP1_gets_pP2maxpadded (inputCopy, pInput, SSUI_BUFFER_ALLOC);
+    i = ssUI_AaOp_pP1_gets_pP2maxpadded (inputCopy, pInput, SSUI_UIBUFFER_ALLOC);
 
 #ifdef SSUI_OPTIN_DEBUG_TOKENS
     ss_uiOp_emit_newline ();
@@ -929,7 +1059,7 @@ int     ssUI_tknOp_ParseAllTokens (pAsciiA_t pInput)
     p_charInToken = p_startThisToken;
 
     // design choice, space characters must envelope characters meant to be considered a token.
-    // this loop is editing the local copy of the input string, not moving strings around.
+    // this loop is editing the local copy of the input string, not moving arrays of Ascii values around.
     while ((p_charInToken < p_copyNullByte) && (foundTokenCt <= SSUI_TOKENS_MAX_I))
     {
         // any spaces before a Token are whitespace and outside our interest.
@@ -947,8 +1077,8 @@ int     ssUI_tknOp_ParseAllTokens (pAsciiA_t pInput)
             p_charInToken++;
         }   // while token
 
-        //bugbugbug  if found all characters in token because found a space, workaround for
-        // input " timea ! =" (maintenanceTask: why not "!="?).
+        // Future: if found all characters in token because found a space, workaround for fixing
+        // Future: input " timea ! =" (maintenanceTask: why not "!="?).
         // Also ignoring the error for "timea !=" as input, the focus here is creating valid tokens.
         if (*(p_charInToken) == Ascii_Space)
         {   // does the current token of any length start with '!'?

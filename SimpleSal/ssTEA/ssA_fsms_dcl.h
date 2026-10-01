@@ -15,7 +15,7 @@
 // -------------------------------------------------------------------------------------------------
 // The interfaces to the ssTEA Agency FSMs are implemented in these API functions, as called by ssA.
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t     ssA_Initialize (void);
+ss_macSNR_t     ssA_InitState (void);
 ss_macSNR_t     ssA_InitData_RunTime (void);
 
 // -------------------------------------------------------------------------------------------------

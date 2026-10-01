@@ -56,11 +56,11 @@ void        ss_uiOp_do_emit_lbld_int (pAsciiA_t pAA_label, unsigned long int Val
 void        ss_uiOp_do_emit_plot_int (pAsciiA_t pAA_label, unsigned long int Value);
 #define     ss_uiOp_plot_int(pAA,V)      ss_uiOp_do_emit_plot_int (S(pAA), V)
 
-void        ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAter);
+void        ss_uiOp_emit_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAter);
 #define     lfN             false
 #define     lfY             true
 
-#define     ss_uiOp_qBanner(xlfB,xpqAA,xlfA)    ss_uiOp_pBanner (xlfB, S(xpqAA), xlfA)
+#define     ss_uiOp_emit_qBanner(xlfB,xpqAA,xlfA)    ss_uiOp_emit_pBanner (xlfB, S(xpqAA), xlfA)
 
 #define OK_to_Blast_Ascii_Live() (                                                      \
                                   (ssTEA_control.Agency_pace == ssTEA_Agency_pace_period) \

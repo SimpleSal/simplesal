@@ -13,7 +13,7 @@
 // -------------------------------------------------------------------------------------------------
 // [.\SimpleSal\ssDocs\swDev\SW Developer Tricks.note]    stored input sequences: CMD arrays
 // -------------------------------------------------------------------------------------------------
-typedef     const char    *pCmd_t;       // pointer to instance in an array of characters
+typedef     const char    *pCmd_t;       // pointer to instance in an array of Ascii values
 typedef     pCmd_t        *pCmdArray_t;  // pointer to instance in an array of pointers
 typedef     pCmdArray_t   *ppCmdArray_t; // pointer to instance in an array of pointers to pointers
 

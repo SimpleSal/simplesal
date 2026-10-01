@@ -39,7 +39,7 @@
 // -------------------------------------------------------------------------------------------------
 // Problem: you have a counter of usecs and you want to know how many whole seconds it contains,
 //      solution: divide and use quotient           in ssHL-language, '/' operator, "divided by"
-// or how many microseconds have occured since the last whole second occured
+// or how many microseconds have occurred since the last whole second occurred
 //      solution: divide and use remainder          in ssHL-language, '%' operator, "modulo"
 // -------------------------------------------------------------------------------------------------
 #define SST_DAYS_PER_EON    (1000)
@@ -63,18 +63,18 @@
 // whose size is smaller than 32 bits, such as a TimeValueSmall possibly.
 // -------------------------------------------------------------------------------------------------
 //  max millis per minute:      60,000 or 0x0000EA60;       (note 16-bit)
-#define MSECS_PER_MIN       ( ((TimeUnitsBig_t) SST_MSECS_PER_SEC) * SST_SECS_PER_MIN)
+#define SST_MSECS_PER_MIN       ( ((TimeUnitsBig_t) SST_MSECS_PER_SEC) * SST_SECS_PER_MIN)
 // max usecs per second:     1,000,000 or 0x000F4240;       (note 20-bit)
-#define USECS_PER_SEC       ( ((TimeUnitsBig_t) SST_MSECS_PER_SEC) * SST_USECS_PER_MSEC)
+#define SST_USECS_PER_SEC       ( ((TimeUnitsBig_t) SST_MSECS_PER_SEC) * SST_USECS_PER_MSEC)
  // max millis per hour:     3,600,000 or 0x0036EE80        (note 22-bit)
-#define MSECS_PER_HOUR      ( ((TimeUnitsBig_t) MSECS_PER_MIN) * SST_MINS_PER_HOUR)
+#define SST_MSECS_PER_HOUR      ( ((TimeUnitsBig_t) SST_MSECS_PER_MIN) * SST_MINS_PER_HOUR)
 // max millis per day:      86,400,000 or 0x05265c00        (note 27-bit)
-#define MSECS_PER_DAY       ( ((TimeUnitsBig_t) MSECS_PER_HOUR) * SST_HOURS_PER_DAY)
+#define SST_MSECS_PER_DAY       ( ((TimeUnitsBig_t) SST_MSECS_PER_HOUR) * SST_HOURS_PER_DAY)
 
 // -------------------------------------------------------------------------------------------------
 // The data structures and relationships between data structures in ssTEA must be established.
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t     ssT_Initialize (void);
+ss_macSNR_t     ssT_InitState (void);
 ss_macSNR_t     ssT_InitData_RunTime (void);
 ss_macSNR_t     ssT_TheBigBang (void);
 
@@ -87,6 +87,13 @@ void            ss_uiOp_Show_Time            (ssT_pTime_t pTime, boolean AddNewl
 void            ss_uiOp_Show_TimeLegend      (void);
 
 boolean         ssT_stampOp_TimeOfBuild_AsciiToTime     (pAsciiA_t pBuff);
+
+void            ssT_timeOp_TimeFromMillis (TimeUnitsBig_t bigvalue, ssT_pTime_t pTime);
+TimeUnitsBig_t  ssT_timeOp_MillisFromTime (ssT_pTime_t pTime);
+
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
 // ssTEA supports the conversion of a series of Ascii characters into an ssTEA Time Variable.
@@ -146,7 +153,7 @@ void  ssT_mathOp_P1getsP1operP2_is_an_arrow (ssT_pTime_t pLvalue, ssT_pTime_t pO
 #ifdef SST_ONEOF_TIME_IS_AN_FSM
 
 void  ssT_mathOp_P1getsP1operP2_as_an_FSM (ssT_pTime_t pLvalue, ssT_pTime_t pOperand, boolean Operation);
-// bugbugbug should compiler not "see" LINE's TUMATHOP_P1andP2 unless both ONEOF_TIME_IS are defined???
+// unresolved mystery: should compiler not "see" LINE's TUMATHOP_P1andP2 unless both ONEOF_TIME_IS are defined???
 #undef  TUMATHOP_P1operP2
 #define TUMATHOP_P1operP2   ssT_mathOp_P1getsP1operP2_as_an_FSM
 
@@ -221,7 +228,7 @@ TimeUnitsSmall_t    ssT_rawCt_NextNsec          (void);
 void            ssT_timeOp_InitQuickTimeForMath (void);
 void            ssT_timeOp_Add_usToTimeCurr     (TimeUnitsBig_t bigvalue);
 
-ss_TimeUnit_t   ssT_stampOp_ParseTimeUnit       (pAsciiA_t  p_achar);
+ss_TimeUnit_t   ssT_stampOp_Parse_Precision     (pAsciiA_t  p_achar);
 boolean         ssT_stampOp_IsSeparator         (Ascii_t Ascii);
 
 void            ssT_timeOp_Check_MathPolicy (ssT_pTime_t pTime, int EON);

@@ -185,7 +185,8 @@ typedef enum ssTEA_state_e
 // -------------------------------------------------------------------------------------------------
 typedef enum TimeUnit_e
 {
-    ss_TimeUnit_none,           // need to be able to say "not defined" (value is zero)
+    ss_TimeUnit_none,           // Before parsing and finding a properly stated value, not an error.
+    ss_TimeUnit_error,          // Need to be able to say "the stated value's definition has errors".
     ss_TimeUnit_EON,            // a Defined Time has an EON value of 0, which means "this EON".
     ss_TimeUnit_dy,             // day:                         N per eon
     ss_TimeUnit_hr,             // hour:                       24 per day
@@ -194,7 +195,7 @@ typedef enum TimeUnit_e
     ss_TimeUnit_ms,             // millisecond:             1,000 per second
     ss_TimeUnit_us,             // microsecond:             1,000 per millisecond
     ss_TimeUnit_ns,             // nanosecond:              1,000 per microsecond
-    ss_TimeUnit_pk              // planck:                  unperceivable
+    ss_TimeUnit_pk              // planck:                  unperceivable therefore uncountable
 } ss_TimeUnit_e;
 
 typedef ss_TimeUnit_e   ss_TimeUnit_t;

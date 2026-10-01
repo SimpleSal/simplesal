@@ -15,19 +15,22 @@
 // ssTEA co-exists with the App but as with any software, ssTEA has a language based on words.
 // The software assumes the reader has full knowledge of the words and the language; the notes
 // associated explain the words and language in a natural human language (American English); the
-// fsmDemo SimpleSal App used to test ssTEA contains complete references to all of the interface.
+// app-fsmDemo SimpleSal App tests ssTEA and contains complete references to all of the interface.
 // -------------------------------------------------------------------------------------------------
-pAscii_t    ssTEA_plbl_StateGood    = S("  result: <as expected>");
-pAscii_t    ssTEA_plbl_StateFail    = S("  result: <not expected>");
+// The apparent duplication of these messages (from ssUI for example) is to eliminate a dependency.
+// -------------------------------------------------------------------------------------------------
+ReadOnly pAscii_t    ssTEA_plbl_StateGood    = S("  result: <as expected>");
+ReadOnly pAscii_t    ssTEA_plbl_StateFail    = S("  result: <not expected>");
 
-pAscii_t    ssTEA_plbl_AgRunfsm     = S(" Agency Run FSM  :");
-pAscii_t    ssTEA_plbl_AgApifsm     = S(" Agency Api FSM  :");
-pAscii_t    ssTEA_plbl_AppApiName   = S("App");
+ReadOnly pAscii_t    ssTEA_plbl_AgRunfsm     = S(" Agency Run FSM  :");
+ReadOnly pAscii_t    ssTEA_plbl_AgApifsm     = S(" Agency Api FSM  :");
 
-pAscii_t    ssTEA_plbl_Carrier      = S("  -- carrier    ");
-pAscii_t    ssTEA_plbl_Signal       = S("     signal --  ");
+ReadOnly pAscii_t    ssTEA_plbl_AppApiName   = S("App");
 
-pAscii_t    ssTEA_plbl_Channel      = S(" -- channel -- ");
+ReadOnly pAscii_t    ssTEA_plbl_Carrier      = S("  -- carrier    ");
+ReadOnly pAscii_t    ssTEA_plbl_Signal       = S("     signal --  ");
+
+ReadOnly pAscii_t    ssTEA_plbl_Channel      = S(" -- channel -- ");
 
 // -------------------------------------------------------------------------------------------------
 // the collection of ssTEA FSMs all have an Init State.  Each is granted Agency, in turn, to start.
@@ -38,13 +41,13 @@ ss_macSNR_t  ssTEA_InitState (void)
 
     msg_ssTEA_Path ();
 
-    signalReturn = ssT_Initialize ();
+    signalReturn = ssT_InitState ();
     if (signalReturn == ss_macSNR_OK)
     {
-        signalReturn = ssE_Initialize ();
+        signalReturn = ssE_InitState ();
         if (signalReturn == ss_macSNR_OK)
         {
-            signalReturn = ssA_Initialize ();
+            signalReturn = ssA_InitState ();
         }
     }   // OK signal
 
@@ -354,22 +357,22 @@ pAscii_t  ss_uiOp_Get_pName_Runfsm_state (ssA_Runfsm_state_t Runfsm_state)
 // -------------------------------------------------------------------------------------------------
 void ss_uiOp_Show_ssAgency_state  (void)
 {
-    ss_uiOp_qBanner (lfY, "Agency Root FSM: ", lfN);
+    ss_uiOp_emit_qBanner (lfY, "Agency Root FSM: ", lfN);
     ss_uiOp_emit_lbld_AsciiA (ss_pState, ss_uiOp_Get_pName_ssState (ssTEA_control.Agency_state));
     ss_uiOp_emit_lbld_AsciiA (ss_pPace, ss_uiOp_Get_pName_ssAgency_pace (ssTEA_control.Agency_pace));
     if (ssTEA_control.Agency_pace == ssTEA_Agency_pace_period)
     {
         ss_uiOp_emit_lbld_int (ss_pPeriod, ssTEA_control.Agency_period);
     }
-    ss_uiOp_qBanner (lfY, "@Time: ", lfN);
+    ss_uiOp_emit_qBanner (lfY, "@Time: ", lfN);
     ss_uiOp_Show_Time (ssT_gpTime_Current, lfY);
 }   // ss_uiOp_Show_ssAgency_state
 // -------------------------------------------------------------------------------------------------
 void ss_uiOp_Show_ssTime_state (void)
 {
-    ss_uiOp_qBanner (lfY, "Time FSM: ", lfN);
+    ss_uiOp_emit_qBanner (lfY, "Time FSM: ", lfN);
     ss_uiOp_emit_lbld_AsciiA (ss_pState, ss_uiOp_Get_pName_ssState (ssTEA_control.Time_state));
-    ss_uiOp_qBanner (lfY, "@Time:", lfN);
+    ss_uiOp_emit_qBanner (lfY, "@Time:", lfN);
     ss_uiOp_Show_Time (ssT_gpTime_Current, lfY);
 }   // ss_uiOp_Show_ssTime_state
 // -------------------------------------------------------------------------------------------------
@@ -388,7 +391,7 @@ void ss_uiOp_Show_ssTimeRatios (void)
     if (ssTEA_Time_cts.us_SampleCt_Loop == 0)  ssTEA_Time_cts.us_SampleCt_Loop++;
     if (ssTEA_Time_cts.us_SampleCt_ssT == 0)   ssTEA_Time_cts.us_SampleCt_ssT++;
 
-    ss_uiOp_qBanner (lfN, "Time analysis since the last 'ss time stats' (us):", lfY);
+    ss_uiOp_emit_qBanner (lfN, "Time analysis since the last 'ss time stats' (us):", lfY);
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_lbld_int ("  Host Time   (outside loop)       ",
                             (ssTEA_Time_cts.us_Total_Host));
@@ -437,7 +440,7 @@ void ss_uiOp_Show_ssTimeRatios (void)
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_lbld_int (
                          "  Seconds since the last 'Time Stats', based on reported Time (sc):",
-                         (lcl_us_ssTimeThisPeriod / USECS_PER_SEC)
+                         (lcl_us_ssTimeThisPeriod / SST_USECS_PER_SEC)
                         );
     ss_uiOp_emit_newline ();
 
@@ -450,7 +453,7 @@ void ss_uiOp_Show_ssTimeRatios (void)
     ssTEA_Time_cts.us_SampleCt_ssT = 0;
 }   // ss_uiOp_Show_ssTimeRatios
 // -------------------------------------------------------------------------------------------------
-// this is at the level of the Agency Api FSM, after a signal transaction has occured.
+// this is at the level of the Agency Api FSM, after a signal transaction has occurred.
 // The state expected is the state of this event's Agency Api FSM.
 // -------------------------------------------------------------------------------------------------
 void ss_uiOp_Show_Apifsm_result (ssTEA_pApiSig_t pApiSig, ssA_Apifsm_state_t ExpectedState, pAsciiA_t pApiSigName)
@@ -462,7 +465,7 @@ void ss_uiOp_Show_Apifsm_result (ssTEA_pApiSig_t pApiSig, ssA_Apifsm_state_t Exp
     ss_uiOp_emit_lbld_AsciiA (ssTEA_plbl_AppApiName, pApiSigName);
     ss_uiOp_emit_lbld_AsciiA (ss_pState, pName_Apifsm_state);
 
-    ss_uiOp_pBanner
+    ss_uiOp_emit_pBanner
       (
         lfN,
         ((pApiSig->Apifsm_state == ExpectedState) ?
@@ -479,7 +482,7 @@ void ss_uiOp_Show_Apifsm_state (ssTEA_pApiSig_t pApiSig, pAsciiA_t pApiSigName)
     ss_uiOp_emit_newline ();
 }   // ss_uiOp_Show_Apifsm_state
 // -------------------------------------------------------------------------------------------------
-// this is at the level of the Agency Run FSM, after a signal transaction has occured.
+// this is at the level of the Agency Run FSM, after a signal transaction has occurred.
 // The state expected is the state of this event's Agency Run FSM.
 // -------------------------------------------------------------------------------------------------
 void ss_uiOp_Show_Runfsm_result (ssTEA_pApiSig_t pApiSig, ssA_Runfsm_state_t ExpectedState, pAsciiA_t pApiSigName)
@@ -490,7 +493,7 @@ void ss_uiOp_Show_Runfsm_result (ssTEA_pApiSig_t pApiSig, ssA_Runfsm_state_t Exp
     ss_uiOp_emit_qAsciiA ("  result of Agency Run FSM signal");
     ss_uiOp_emit_newline ();
 
-    ss_uiOp_pBanner
+    ss_uiOp_emit_pBanner
       (
         lfN,
         ((pApiSig->ssE_pAboutEv->Runfsm_state == ExpectedState) ?
@@ -565,10 +568,10 @@ void ss_uiOp_Show_EventData (ssE_pAboutEv_t ssE_pAboutEv)
     switch (ssE_pAboutEv->Runfsm_EvType)
     {
         case ssE_EvType_Time     :
-            ss_uiOp_emit_qAsciiA ("Occurs@");
+            ss_uiOp_emit_qAsciiA (ss_pOccursAt);
             ss_uiOp_emit_1 (Ascii_Larrow);
             ss_uiOp_Show_Time (&ssE_pAboutEv->OccursAt, lfN);
-            ss_uiOp_emit_1 (Ascii_Rarrow);      // bugbugbug?
+            ss_uiOp_emit_1 (Ascii_Rarrow);
             ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
             ss_uiOp_emit_newline ();
 
@@ -576,23 +579,22 @@ void ss_uiOp_Show_EventData (ssE_pAboutEv_t ssE_pAboutEv)
             ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
             ss_uiOp_emit_qAsciiA ("recurs");
             ss_uiOp_emit_1 (Ascii_Larrow);
-            ss_uiOp_emit_1 ((ssE_pAboutEv->recurs) ? Ascii_y : Ascii_n);
+            ss_uiOp_emit_1 ((ssE_pAboutEv->recurs) ? Ascii__t : Ascii_f);
             ss_uiOp_emit_1 (Ascii_Rarrow);
             ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
-            ss_uiOp_emit_lbld_time ("    period", &ssE_pAboutEv->Period);
+            ss_uiOp_emit_lbld_time ("     period", &ssE_pAboutEv->Period);
             ss_uiOp_emit_lbld_hex (ss_pEvFunc, (unsigned long) ssE_pAboutEv->pEvFunc);
             ss_uiOp_emit_newline ();
             break;
         case ssE_EvType_Data     :
-            ss_uiOp_emit_qAsciiA ("Occurs@<next pace period>");
-            ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
-            ss_uiOp_emit_lbld_hex (ss_pEvFunc, (unsigned long) ssE_pAboutEv->pEvFunc);
-            ss_uiOp_emit_newline ();
-            break;
         case ssE_EvType_Ireq     :
-            ss_uiOp_emit_lbld_hex (ss_pEvFunc, (unsigned long) ssE_pAboutEv->pEvFunc);
+            ss_uiOp_emit_qAsciiA (ss_pOccursAt);
+            ss_uiOp_emit_qAsciiA (
+                    (ssE_pAboutEv->Runfsm_EvType == ssE_EvType_Data) ?
+                           S("<next pace period>") : S("<this pace period>")
+                                 );
             ss_uiOp_emit_Space (ssTEA_standard_fieldgap);
-            ss_uiOp_emit_qAsciiA ("Occurs@<this pace period>");
+            ss_uiOp_emit_lbld_hex (ss_pEvFunc, (unsigned long) ssE_pAboutEv->pEvFunc);
             ss_uiOp_emit_newline ();
             break;
         case ssE_EvType_flaw           :
@@ -633,7 +635,7 @@ pAsciiA_t ss_uiOp_Get_pName_EvType (ssE_EvType_t EvType)
 }   // ss_uiOp_Get_pName_EvType
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-void ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAfter)
+void ss_uiOp_emit_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAfter)
 {
     if (lfBefore)
     {
@@ -651,7 +653,7 @@ void ss_uiOp_pBanner (boolean lfBefore, pAsciiA_t pAsciiA, boolean lfAfter)
     {
         ss_uiOp_emit_newline ();
     }
-}   // ss_uiOp_pBanner
+}   // ss_uiOp_emit_pBanner
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 void ss_uiOp_do_emit_lbld_AsciiA (pAsciiA_t pLabel, pAsciiA_t pValue)

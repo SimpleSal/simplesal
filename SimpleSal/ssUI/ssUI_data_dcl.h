@@ -11,9 +11,7 @@
 
 typedef struct ssUI_controlDesc_s
 {
-    boolean             Ascii_UI_owner;         // when ssUI, access to serial input/output for ssUI
-
-    boolean             BeVerbose;              // extra output during normal operation
+    int                 BeVerbose;              // extra output during normal operation
 
     int                 cmdZone_stack_i;        // the currently active ssUI command menu subsection
 
@@ -43,7 +41,7 @@ typedef ssUI_pcontrolDesc_t   ssUI_pcontrol_t;
 // using this array must be local, with embedded information about the number and size of elements.
 //    int  array[5];   // it is obvious how many elements exist, as is the size of each element.
 //
-// An array containing pointers to arrays of characters is used by the ssUI input parser, varying by
+// An array containing pointers to arrays of Ascii values is used by the ssUI input parser, varying by
 // depending on build options and allowing user additions.  The ssUI parser FSM is built around it.
 // The macros allow the algorithm to use the ssHL loop mechanism "for (i=0; i<= MyArray_MAX_I; i++)".
 // -------------------------------------------------------------------------------------------------
@@ -56,24 +54,21 @@ typedef ssUI_pcontrolDesc_t   ssUI_pcontrol_t;
 // -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
-// to allow the UI to process AsciiCharacter[N] as ssHL strings, allow one extra byte for termination.
+// to allow the UI to process AsciiCharacter[N] as ssHL arrays of Ascii values, allow one extra byte for termination.
 // This means the longest proper ssHL string that can be stored in a buffer of size N bytes is (N-1).
 // Bounds checking on operations across the string's life use MAX_I: index range is 0 to <= MAX_I,
 // or, iteration stops if (index > MAX_I). when there is an exception, there is a comment about it.
 // All buffers within ssUI are this length, except for the serial input buffer itself (below).
 // -------------------------------------------------------------------------------------------------
-#define SSUI_BUFFER_ALLOC             (SSUI_UIBUFFER_ALLOC)
-#define SSUI_BUFFER_MAX_I             (SSUI_BUFFER_ALLOC-1)
 
 // -------------------------------------------------------------------------------------------------
 // The idea of creating tokens or collections of tokens is provided in support of the ssUI Commands
 // feature that allows a looping mechanism with a terminating condition (such as a Time occuring).
-// Strings are tokenized in place, and theoretically there could be one token and the buffer full.
+// arrays of Ascii values are tokenized in place, and theoretically there could be one token and the buffer full.
 // But, place an arbitrary limit of the number of characters in an individual token, someone has to.
 // This is because the feature for looping copies the Command and then continues running Commands;
 // the copied Command is re-evaluated each time the terminated condition needs to be determined.
 // The tokenized result is copied, not the original buffer, as this would require re-tokenizing.
-// the tokenized buffer should be copied and arbitrary limits removed // bugbugbug
 // -------------------------------------------------------------------------------------------------
 #define SSUI_TOKENS_ALLOC           (6)
 #define SSUI_TOKENS_MAX_I           (SSUI_TOKENS_ALLOC-1)
@@ -95,10 +90,12 @@ typedef ssUI_pTokenDesc_t               ssUI_pToken_t;
 
 // -------------------------------------------------------------------------------------------------
 // the UI cmdZones are names for the individual FSMs implementing each cmdZone.
+// -------------------------------------------------------------------------------------------------
 // while "in" a cmdZone, commands and parameters may be stated without the first parameter,
 // which without this feature is always required to be the first parameter (<cmdZone> <action>).
-// the order of enumerations is not relevant, but the order of token arrays with names describing
-// must match and there has to be a token for each cmdZone named (not just each one actually used).
+// With the exception of "ssUI_root", the order of enumerations is not relevant, but the order of
+// token arrays with names describing them must match and there has to be a token for each cmdZone
+// named (not just each one actually used). ssUI_root must be cmd_stack[0], triggera the Init State.
 // -------------------------------------------------------------------------------------------------
 typedef enum ssUI_cmdZone_e
 {

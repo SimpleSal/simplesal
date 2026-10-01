@@ -21,6 +21,7 @@ ReadOnly pAscii_t    ss_pFlaw        = S("flaw");
 ReadOnly pAscii_t    ss_pError       = S("error");
 ReadOnly pAscii_t    ss_pPace        = S("pace");
 ReadOnly pAscii_t    ss_pPlanck      = S("planck");
+ReadOnly pAsciiA_t   ss_pOccursAt    = S("occursat");
 ReadOnly pAscii_t    ss_pPeriod      = S("period");
 ReadOnly pAscii_t    ss_pState       = S("state");
 ReadOnly pAscii_t    ss_pTime        = S("time");

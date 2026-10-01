@@ -20,7 +20,7 @@
 // -------------------------------------------------------------------------------------------------
 // The OPTIN control mechanism to create a resolution for all references is a secret of the uiOps.
 // -------------------------------------------------------------------------------------------------
-#include "ssTEA\ssTEA_uiOps_dcl.h"  // a user may see information from deep within the functionality
+#include "ssTEA\ssTEA_uiOps_dcl.h"  // a user may see information from deep within functionality    /* using ssTEA source files */
 
 // -------------------------------------------------------------------------------------------------
 // The reason that the ssTEA data type declarations are not included here, as all the other includes
@@ -32,12 +32,12 @@
 // are included; referenced in source code or not.  While this works, and proves that the ssTEA data
 // types are only based on fundamental C compiler types, it is too magical for SimpleSal's taste.
 // -------------------------------------------------------------------------------------------------
-#include "ssTEA\ssT_TUmath_dcl.h"   // declaration of time unit math operation within a Time
-#include "ssTEA\ssT_time_dcl.h"     // Time is described by a fancy type nobody every thought of.
-#include "ssTEA\ssE_event_dcl.h"    // Events share commmon characteristics distinct from Agency
-#include "ssTEA\ssA_agency_dcl.h"   // The core functionality of ssTEA's concept of Agency.
-#include "ssTEA\ssTEA_api_dcl.h"    // The API supports App agency; this is the public face.
-#include "ssTEA\ssA_fsms_dcl.h"     // API and Run FSMs interact with the App and also count actions.
+#include "ssTEA\ssT_TUmath_dcl.h"   // declaration of time unit math operation within a Time        /* using ssTEA source files */
+#include "ssTEA\ssT_time_dcl.h"     // Time is described by a fancy type nobody ever thought of.    /* using ssTEA source files */
+#include "ssTEA\ssE_event_dcl.h"    // Events share commmon characteristics distinct from Agency    /* using ssTEA source files */
+#include "ssTEA\ssA_agency_dcl.h"   // The core functionality of ssTEA's concept of Agency.         /* using ssTEA source files */
+#include "ssTEA\ssTEA_api_dcl.h"    // The API supports App agency; this is the public face.        /* using ssTEA source files */
+#include "ssTEA\ssA_fsms_dcl.h"     // API and Run FSMs interact with the App and count actions.    /* using ssTEA source files */
 
 #endif  // SS_OPTIN_INCLUDE_SSTEA
 
@@ -47,16 +47,18 @@
 // The relationships and complexity of ssUI components are described by ssUI software.
 // -------------------------------------------------------------------------------------------------
 #ifdef SS_OPTIN_INCLUDE_SSUI
-#include "ssUI\ssUI_data_dcl.h"
-#include "ssUI\ssUI_input_dcl.h"
-#include "ssUI\ssUI_utils_dcl.h"
-#include "ssUI\ssUI_TUmath_dcl.h"
 
-#include "ssUI\ssUI_evapi_dcl.h"              /* using ssTEA source files */
+#include "ssUI\ssUI_data_dcl.h"                                 /* using ssUI source files */
+#include "ssUI\ssUI_input_dcl.h"                                /* using ssUI source files */
+#include "ssUI\ssUI_utils_dcl.h"                                /* using ssUI source files */
+#include "ssUI\ssUI_TUmath_dcl.h"                               /* using ssUI source files */
 
-#include "ssUI\ssUI_cmds_dcl.h"
-#include "ssUI\ssUI_menu_dcl.h"
-#include "ssUI\ssUI_menucore_dcl.h"
+#include "ssUI\ssUI_evapi_dcl.h"                                /* using ssUI source files */
+
+#include "ssUI\ssUI_cmds_dcl.h"                                 /* using ssUI source files */
+#include "ssUI\ssUI_menu_dcl.h"                                 /* using ssUI source files */
+#include "ssUI\ssUI_menucore_dcl.h"                             /* using ssUI source files */
+
 #endif  // SS_OPTIN_INCLUDE_SSUI          ssTEA requirement met
 
 #endif // __SS_INCLUDE_DCL_H

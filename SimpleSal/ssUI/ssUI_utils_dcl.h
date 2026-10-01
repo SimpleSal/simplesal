@@ -13,10 +13,6 @@
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 
-// assumes the 'c' in question has been validated as a valid (0-9,a-f) hex number all in lowercase
-#define     ssUI_Ascii_chg_hexDigitLcase_ToInt(c) \
-                (Ascii_isDigit(c) ? Ascii_digit_toInt(c) : ((c - Ascii_a) + 10))
-
 #define     ssUI_IntsAbsValue(a)            (((int)a < 0) ? (-((int)a)) : ((int)a))
 
 boolean     ssUI_AaIf_pP1_eq_pP2            (pAsciiA_t pMaster, pAsciiA_t pCompareTo);
@@ -27,6 +23,16 @@ int         ssUI_AaOp_pP1_gets_pP2maxpadded (pAsciiA_t pAsciiTo, pAsciiA_t pAsci
 // this function copies an array of Ascii characters, adjusted to lowercase, returns pointer to Copy
 // -------------------------------------------------------------------------------------------------
 pAsciiA_t    ssUI_AaOp_Copy_gets_pP1_lc  (pAsciiA_t pAsciiA);
+
+// -------------------------------------------------------------------------------------------------
+// Given a pointer to an array of characters in the form ['0', 'x', 'N', 'N', '\0'] where N is a
+// valid hexadecimal digit ('a' to 'f'). The value is evaluated in a lowercase version of the input.
+// Return an 8-bit positive value for any input, set boolean indicating validity of value returned.
+// The ToInt version makes sure the transition from an unsigned int 0-255 into a signed int 0-255.
+// -------------------------------------------------------------------------------------------------
+int     ssUI_Ascii_chg_hexDigitsToInt   (pAsciiA_t pHexAa, boolean *pValidHexNumber);
+
+Bits8_t ssUI_Ascii_chg_hexDigitsToBits8 (pAsciiA_t pHexAa, boolean *pValidHexNumber);
 
 #endif  // __SSUI_UTILS_DCL_H
 

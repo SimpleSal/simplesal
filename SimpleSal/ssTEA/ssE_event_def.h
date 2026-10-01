@@ -20,7 +20,7 @@ ssE_EvInfo_t  ssE_EvInfos[SSE_EVINFO_ALLOC_CT];
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t ssE_Initialize (void)
+ss_macSNR_t ssE_InitState (void)
 {
     ss_macSNR_t  signalReturn;
 
@@ -29,7 +29,7 @@ ss_macSNR_t ssE_Initialize (void)
     signalReturn = ssE_InitData_RunTime (DEEPINIT);
 
     return (signalReturn);
-}   // ssE_Initialize
+}   // ssE_InitState
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 ss_macSNR_t ssE_InitData_RunTime (boolean doDeepInit)
@@ -196,6 +196,7 @@ void ssE_dbOp_Init_One_AboutEv (ssE_pAboutEv_t ssE_pAboutEv, boolean doDeepInit)
     ssE_pAboutEv->recursFromTrue = false;
     ssT_mathOp_P1getsZero (&ssE_pAboutEv->OccursAt);
     ssT_mathOp_P1getsZero (&ssE_pAboutEv->Period);
+    ssE_pAboutEv->App_pEventData = EvEx_App_pEventDataNull;
     if (doDeepInit)
     {
         ssE_pAboutEv->pEvFunc = pEvFuncNull;

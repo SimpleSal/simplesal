@@ -62,14 +62,14 @@ pAsciiA_t  ssUI_AaOp_Copy_gets_pP1_lc (pAsciiA_t pAsciiA)
 {
     // this variable always exist, accessible by name within the function, by pointer elsewhere.
     // the pointer returned points to the lowercase copied, until the next call occurs to lowercase.
-    static AsciiA_t      copy[SSUI_BUFFER_ALLOC];
+    static AsciiA_t     copy[SSUI_UIBUFFER_ALLOC];
     int                 i;
 
     // need a copy because we want to compare lowercased versions for all variable names
     i = 0;
     while (*pAsciiA)
     {
-        if (i == SSUI_BUFFER_MAX_I)       // what happens if MAX_I == 0?  possible, so check.
+        if (i == SSUI_UIBUFFER_MAX_I)       // what happens if MAX_I == 0?  possible, so check.
         {
             break;      // leaving [i] pointing to the last position in the array
         }
@@ -152,40 +152,97 @@ int     ssUI_AaOp_pP1_gets_pP2maxpadded (pAsciiA_t pAsciiA_To, pAsciiA_t pAsciiA
 }   // ssUI_AaOp_pP1_gets_pP2maxpadded
 
 // -------------------------------------------------------------------------------------------------
-Bits8_t ssUI_Ascii_chg_hexDigitsToBits8 (pAsciiA_t pHexAa, boolean *pValidHex8Bits)
+// assumes the 'c' in question has been validated as a valid (0-9, a-f) hex number all in lowercase.
+// Ascii 'a' minus Ascii 'a' has a result of zero, the decimal value for hex 'a' is 10, so add 10.
+// -------------------------------------------------------------------------------------------------
+#define     ssUI_Ascii_chg_hexDigitLC_ToInt(c) \
+                (Ascii_isDigit(c)) ? (Ascii_digit_toInt(c)) : ((c - Ascii_a) + 10)
+
+// -------------------------------------------------------------------------------------------------
+// This function controls the sequence of conversions from Ascii characters describing an N-bit
+// unsigned hexadecimal number into the 32-bit signed value used by the processor for that integer.
+// -------------------------------------------------------------------------------------------------
+// #define DEBUG_HEX_CONVERT
+int ssUI_Ascii_chg_hexDigitsToInt (pAsciiA_t pHexAa, boolean *pValidHexNumber)
 {
-    pAsciiA_t pCopy;
+    pAsciiA_t   pCopy;
+    int         returnValue = 0;
+    boolean     done = false;
 
-    *pValidHex8Bits = false;
+    *pValidHexNumber = false;
 
-    // the copy converts to lowercase into a buffer whose secret pointer we can use only here
+    // this lowercased version only exists in a buffer whose secret pointer we can use only here
     pCopy = ssUI_AaOp_Copy_gets_pP1_lc (pHexAa);
 
-    if ((pCopy[0] != Ascii_0) || (pCopy[1] != 'x'))
+    if (! ( (pCopy[0] == Ascii_0) && (pCopy[1] == 'x') ) )
     {
-        return (0);
-    }   // require hex specification
-
-    if (
-        (Ascii_isHexDigit_LC (pCopy[2]))       // Ascii value folded to lowercase
-       &&
-        (Ascii_isHexDigit_LC (pCopy[3]))       // Ascii value folded to lowercase
-       &&
-        (pCopy[4] == Ascii_NUL)
-       )
-    {   // we know we have <LC hexdigit><LC hexdigit><Ascii_NUL>, we know it will convert to hex.
-        *pValidHex8Bits = true;
-        return          // "0x24": 0x20 + 0x4; as a number with 8 bits
-              (
-                 ((ssUI_Ascii_chg_hexDigitLcase_ToInt (pCopy[2])) << 4)
-                |   // bit-wise OR
-                  (ssUI_Ascii_chg_hexDigitLcase_ToInt (pCopy[3])) // << 0 is inferred
-              );
+        return (returnValue);
     }
 
-    // did not pass the rules of the "if" above, Valid is still false.
-    return (0);
-}   // ssUI_Ascii_chg_hexDigitsToBits8
+    done = false;
+    if (Ascii_isHexDigit_LC (pCopy[2]))                 // Ascii value folded to lowercase
+    {
+        // returnValue << 4  the digit preceding this digit is by definition zero so assumed
+        returnValue += ssUI_Ascii_chg_hexDigitLC_ToInt (pCopy[2]);
+#ifdef DEBUG_HEX_CONVERT
+        ss_uiOp_emit_1 (pCopy[2]);
+#endif // DEBUG_HEX_CONVERT
+    }
+    else
+    {
+        return (returnValue);
+    }
+    if (!done && (Ascii_isHexDigit_LC (pCopy[3])))      // Ascii value folded to lowercase
+    {
+        returnValue <<= 4;
+        returnValue += ssUI_Ascii_chg_hexDigitLC_ToInt (pCopy[3]);
+#ifdef DEBUG_HEX_CONVERT
+        ss_uiOp_emit_1 (pCopy[3]);
+#endif // DEBUG_HEX_CONVERT
+    }
+    else
+    {
+        done = true;
+    }
+    if (!done && (Ascii_isHexDigit_LC (pCopy[4])))      // Ascii value folded to lowercase
+    {
+        returnValue <<= 4;
+        returnValue += ssUI_Ascii_chg_hexDigitLC_ToInt (pCopy[4]);
+#ifdef DEBUG_HEX_CONVERT
+        ss_uiOp_emit_1 (pCopy[4]);
+#endif // DEBUG_HEX_CONVERT
+    }
+    else
+    {
+        done = true;
+    }
+    if (!done && (Ascii_isHexDigit_LC (pCopy[5])))      // Ascii value folded to lowercase
+    {
+        returnValue <<= 4;
+        returnValue += ssUI_Ascii_chg_hexDigitLC_ToInt (pCopy[5]);
+#ifdef DEBUG_HEX_CONVERT
+        ss_uiOp_emit_1 (pCopy[5]);
+#endif // DEBUG_HEX_CONVERT
+        done = true;                    // ignore digits past 4th hex digit after 0x
+    }
+    else
+    {
+        done = true;
+    }
+    if (done)
+    {
+        *pValidHexNumber = true;
+#ifdef DEBUG_HEX_CONVERT
+        ss_uiOp_emit_1 (Ascii_EQ);
+        ss_uiOp_emit_Hex_32bits (returnValue);
+        ss_uiOp_emit_1 ('x');
+        ss_uiOp_emit_Int_999 (returnValue);
+        ss_uiOp_emit_newline ();
+#endif  // DEBUG_HEX_CONVERT
+    }   // require hex specification
+
+    return (returnValue);
+}   // ssUI_Ascii_chg_hexDigitsToInt
 
 #endif  // __SSUI_UTILS_DEF_H
 

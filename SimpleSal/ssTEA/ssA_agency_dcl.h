@@ -26,7 +26,7 @@ void            ssA_EvAg_RootMath_Exit (TimeUnitsBig_t  Assumed_us);
 // -------------------------------------------------------------------------------------------------
 // ssTEA invokes these functions during initialization.
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t     ssA_Initialize (void);
+ss_macSNR_t     ssA_InitState (void);
 ss_macSNR_t     ssA_InitData_RunTime (void);
 
 // -------------------------------------------------------------------------------------------------
@@ -43,15 +43,12 @@ ss_macSNR_t     ssA_InitData_RunTime (void);
 #ifdef SSA_OPTIN_AGENCY_DEBUG
 void            do_ssA_EvOp_Show_EvAg_Time   (pAsciiA_t pDesc, ssT_pTime_t  pTime);
 void            do_ssA_EvOp_Show_EvAg_EvFunc (pAsciiA_t pDesc, EvAg_pEvFunc_t pEvFunc);
-void            do_ssA_EvOp_Show_EvAg_State  (ssE_pAboutEv_t ssE_pAboutEv);
 
 #define ssA_EvOp_Show_EvAg_Time(pAA,pTime)      do_ssA_EvOp_Show_EvAg_Time   (S(pAA), pTime)
 #define ssA_EvOp_Show_EvAg_EvFunc(pAA,pEvFunc)  do_ssA_EvOp_Show_EvAg_EvFunc (S(pAA), pEvFunc)
-#define ssA_EvOp_Show_EvAg_State(ssE_pAboutEv)  do_ssA_EvOp_Show_EvAg_State  (ssE_pAboutEv);
 #else   // not SSA_OPTIN_AGENCY_DEBUG
 #define ssA_EvOp_Show_EvAg_Time(pAA,pTime)
 #define ssA_EvOp_Show_EvAg_EvFunc(pAA,pEvFunc)
-#define ssA_EvOp_Show_EvAg_State(ssE_pAboutEv)
 #endif // SSA_OPTIN_AGENCY_DEBUG
 
 #endif // __SSA_AGENCY_DCL_H

@@ -33,7 +33,7 @@
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-ss_macSNR_t ssA_Initialize (void)
+ss_macSNR_t ssA_InitState (void)
 {
     ss_macSNR_t  signalReturn;
 
@@ -42,13 +42,12 @@ ss_macSNR_t ssA_Initialize (void)
     signalReturn = ssA_InitData_RunTime ();
 
     return (signalReturn);
-}   // ssA_Initialize
+}   // ssA_InitState
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 ss_macSNR_t ssA_InitData_RunTime (void)
 {
     ss_macSNR_t  signalReturn = ss_macSNR_OK;
-// bugbugbug is there really no initialization at run-time init of ssTEA????  Alvik may require
     msg_ssTEA_Path ();
 
     return (signalReturn);
@@ -154,13 +153,13 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
         if (MathSumMillis >= ssTEA_control.Agency_period)
         {
             MathSumMillis = MathSumMillis - ssTEA_control.Agency_period;     // accumulate slew
-#ifdef SSA_OPTIN_SIGNAL_PERIOD
+#ifdef MESA_MIN_OPTOUT_LED              // opted out of mesa_min implementation
             // -------------------------------------------------------------------------------------
-            if (mesa_LED_RO_subState_Is (mesa_RO_substate_pace))
+            if (RO_IS_ONEOF_LED_ROs (RO_owner_ssUI, RO_active_pace))
             {
                 mesa_FSM_LEDflash_Req ();
             }
-#endif  // SSA_OPTIN_SIGNAL_PERIOD
+#endif  //  is MESA_MIN_OPTOUT_LED          // opted out of mesa_min implementation
         }   // completed a period of Time measured in milliseconds
         else
         {   // did not yet complete a period of Time, so therefore
@@ -201,7 +200,6 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             // [.\SimpleSal\ssDocs\ssTEA\EvInfo Data.note]
             // -------------------------------------------------------------------------------------
             ssE_pAboutEv = pEvInfo->ssE_pAboutEv;
-            ssA_EvOp_Show_EvAg_State (ssE_pAboutEv);
 
             // -------------------------------------------------------------------------------------
             // [.\SimpleSal\ssDocs\ssTEA\Agency Root Algorithm.note]
@@ -237,7 +235,6 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
 #ifdef SSTEA_OPTIN_SHOW_CAUSE
                 if (ssTEA_control.Show_Cause)
                 {
-                    ssA_EvOp_Show_EvAg_State (ssE_pAboutEv);
                     ssA_EvOp_Show_EvAg_Time ("pEvFunc cannot be NULL here, deep within ssA", ssT_pTimeNull);
                 }
 #endif  // SSTEA_OPTIN_SHOW_CAUSE
@@ -279,19 +276,19 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             // -------------------------------------------------------------------------------------
             SSA_STATS_RUNFSM_EvEx_Incr (AgencyGranted_ct);
 
-#if SSA_OPTIN_SIGNAL_PERIOD
+#ifdef MESA_MIN_OPTOUT_LED              // opted out of mesa_min implementation
             // -------------------------------------------------------------------------------------
             // this is an example of modifying the core of ssTEA for the benefit of the App: because
             // blinking the LED has nothing to do with ssTEA.  Yet here is Agency Root blinking.
             // -------------------------------------------------------------------------------------
-            if (mesa_LED_RO_subState_Is (mesa_RO_substate_agency))
+            if (RO_IS_ONEOF_LED_ROs (RO_owner_ssUI, RO_active_agency))
             {
                 mesa_FSM_LEDflash_Req ();
             }
-#endif  // SSA_OPTIN_SIGNAL_PERIOD            bugbugbug
+#endif  //  is MESA_MIN_OPTOUT_LED           // opted out of mesa_min implementation
 
             // -------------------------------------------------------------------------------------
-            // Any event occured at the time requested; the event returned a result about itself.
+            // Any event occurred at the time requested; the event returned a result about itself.
             // Any "_notOK_" result returned causes the event's agency to be stopped by design.
             // -------------------------------------------------------------------------------------
             if (InRange_AgencyResultFailures (ssE_pAboutEv->AgencyResult))
@@ -384,9 +381,9 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
                 pEventDesc = S("recurring event new OccursAt");
 #endif // SSA_OPTIN_AGENCY_DEBUG_ACTION
                 SSA_STATS_RUNFSM_EvEx_Incr (Auto_RecurrenceAg_ct);
-            }   // a recurring event occured; Period added to time current for new OccursAt
+            }   // a recurring event occurred; Period added to time current for new OccursAt
             else
-            {   // a not-recurring Time event occured;
+            {   // a not-recurring Time event occurred;
                 // an Event is allowed to change its OccursAt value to any Time after Current Time
                 // -----------------------------------------------------------------------------------------
                 // [.\SimpleSal\ssDocs\ssTEA\Agency Root Algorithm.note]
@@ -455,7 +452,7 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             else
             {
                 if (EvTypeFSM_state == ssE_EvType_Time)
-                {   // all states have occured for this planck, change to state exit Agency Root
+                {   // all states have occurred for this planck, change to state exit Agency Root
                     ssA_EvOp_Show_EvAg_Time ("***Time->Done***", ssT_pTimeNull);
                     break;          // out of while checking each type, the only exit from while (true)
                 }
@@ -624,12 +621,6 @@ void do_ssA_EvOp_Show_EvAg_EvFunc (pAsciiA_t pDesc, EvAg_pEvFunc_t pEvFunc)
     }
     ss_uiOp_emit_newline ();         // whether any other information was displayed or not
 }   // do_ssA_EvOp_Show_EvAg_EvFunc
-// -------------------------------------------------------------------------------------------------
-void do_ssA_EvOp_Show_EvAg_State (ssE_pAboutEv_t ssE_pAboutEv)
-{
-    if (!OK_to_Blast_Ascii_Live ())   return;
-// bugbugbug  what can ssA tell the user about the event? ss_uiOp_Show_RunfsmData (ssE_pAboutEv);
-}   // do_ssA_EvOp_Show_EvAg_State
 #endif // SSA_OPTIN_AGENCY_DEBUG
 
 #endif // __SSA_AGENCY_DEF_H

@@ -31,8 +31,8 @@ ssUI_control_t    ssUI_control
 #ifdef SSUI_ONEOF_CONTROL_INIT_BUILDTIME
 =
 {
- // UI owner,                           verbosity,
-    ssUI_Default_Ascii_RO_state,    ssUI_Default_Verbosity,
+ // verbosity,
+    ssUI_ONEOF_Default_Verbosity,
 
  // cmdZone_stack_i,  CmdsRunning,  Cmds_i,
     0,                false,        0,
@@ -42,6 +42,7 @@ ssUI_control_t    ssUI_control
 }
 #endif // SSUI_ONEOF_CONTROL_INIT_BUILDTIME
 ;
+
 // -------------------------------------------------------------------------------------------------
 // Other than initial values in data structures (method 1), this is where the DefaultOwner
 // definitions FOR THIS BUILD are instantiated at run time (method 2).  The benefit of the definition
@@ -53,9 +54,12 @@ void ssUI_InitState (void)
 {
     msg_ssTEA_Path ();
 
+    ssUI_inOp_fifo_InitState ();
+
 #ifdef SSUI_ONEOF_CONTROL_INIT_RUNTIME
-    ssUI_control.BeVerbose = ssUI_Default_Verbosity;
-    ssUI_cmdZone_InitStack ();
+
+    ssUI_control.BeVerbose = ssUI_ONEOF_Default_Verbosity;
+    ssUI_cmdZone_InitStack ();                              // part of the UI, out to menu root
 
     ssUI_control.Cmds_i = 0;
     ssUI_control.CmdsAreRunning = false;
@@ -64,14 +68,13 @@ void ssUI_InitState (void)
     ssUI_control.LoopOn_i = 0;
     ssUI_control.LoopOff_i = 0;
 
-    // assert LED, Ascii, and Matrix states to be in effect post-Init; not same as run-time init.
-    // The default values are established by the App before including ssUI; correlated to App view.
-    mesa_LED_RO_state         = ssUI_Default_LED_RO_state;
-    mesa_LED_RO_substate      = ssUI_Default_LED_RO_substate;
-    mesa_Ascii_RO_state       = ssUI_Default_Ascii_RO_state;
-    mesa_Ascii_RO_substate    = ssUI_Default_Ascii_RO_substate;
-    mesa_Matrix_RO_state      = ssUI_Default_Matrix_RO_state;
-    mesa_Matrix_RO_substate   = ssUI_Default_Matrix_RO_substate;
+    LED_RO                 = ssUI_ONEOF_Default_LED_RO_owner;
+    LED_RO_active           = ssUI_ONEOF_Default_LED_RO_active;
+    Ascii_ROs               = ssUI_ONEOF_Default_Ascii_RO_owner;
+    Ascii_RO_active         = ssUI_ONEOF_Default_Ascii_RO_active;
+    LED_Matrix_ROs          = ssUI_ONEOF_Default_LED_Matrix_RO_owner;
+    LED_Matrix_RO_active    = ssUI_ONEOF_Default_LED_Matrix_RO_active;
+
 #endif // SSUI_ONEOF_CONTROL_INIT_RUNTIME
 
     // before init or reinit references are made to time variables, fill with proper values.
@@ -82,11 +85,12 @@ void ssUI_InitState (void)
 
 } // ssUI_InitState
 
+// =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // An input string to the UI is received, and tokenized by ssUI into individual tokens in an array;
 //    each element in the gTokens array within range of gToken_Ct points to a proper ssHL string.
 // The pointers of the gTokens array may be changed by ssUI while processing an input string.  This
-//    is both a warning and a suggestion: don't assume anything more than proper ssUI strings and if
+//    is both a warning and a suggestion: don't assume anything more than proper ssUI arrays of Ascii values and if
 //    changes to ssUI to replace user-specific keywords with ssUI-specific keywords are desired: go!
 // -------------------------------------------------------------------------------------------------
 // ssUI token services that parse and modify input values copy the source values into RAM for use.
@@ -105,19 +109,21 @@ int             gToken_i;
 // sequences copied into the gCmdTrmCond buffer when the original Loop command was processed.  This
 // allows the loop to click through all commands and then recall the original terminating condition.
 // -------------------------------------------------------------------------------------------------
-AsciiA_t        gCmdTermCondSaved[SSUI_BUFFER_ALLOC];
+AsciiA_t        gCmdTermCondSaved[SSUI_UIBUFFER_ALLOC];
 ssUI_Token_t    gTknsTermCond[SSUI_TOKENS_ALLOC];
 
 // =================================================================================================
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
+// A definition of the words used to navigate between or even identify sections of the menus: here.
 // -------------------------------------------------------------------------------------------------
 ReadOnly pAsciiA_t  pcSS                = S("ss");
 ssUI_Token_t        gTknSS              = { pcSS       , 2, NoBananas };
-ReadOnly pAsciiA_t  pcssUI              = S("ssUI");
-ssUI_Token_t        gTknssUI            = { pcssUI     , 4, NoBananas };
 ReadOnly pAsciiA_t  pcCmds              = S("cmds");
 ssUI_Token_t        gTknCmds            = { pcCmds     , 4, NoBananas };
+ReadOnly pAsciiA_t  pcssUI              = S("ssui");
+ssUI_Token_t        gTknssUI            = { pcssUI     , 4, NoBananas };
+
 ReadOnly pAsciiA_t  pcEvApi             = S("evapi");
 ssUI_Token_t        gTknEvApi           = { pcEvApi    , 5, NoBananas };
 ReadOnly pAsciiA_t  pcMath              = S("math");
@@ -130,7 +136,9 @@ ReadOnly pAsciiA_t  pcUntil             = S("until");
 ssUI_Token_t        gTknUntil           = { pcUntil    , 5, NoBananas };
 
 // -------------------------------------------------------------------------------------------------
-// this is a database that defines the tokens that are valid for reference by the "command zone"
+// this is a database that defines the tokens that are valid for reference by the "command zone",
+// while in a command zone, the user does not need to type the first parameter, the name of the zone.
+// This is true even though the parsing FSM requires a command and all required parameters.  Wow.
 // -------------------------------------------------------------------------------------------------
 ssUI_pToken_t   gpcmdZoneTkns[] =
     { &gTknssUI, &gTknCmds, &gTknLoop, &gTknMath, &gTknEvApi, &gTknSS };
@@ -149,15 +157,16 @@ ssUI_cmdZone_t gcmdZone_stack[ssUI_CMDZONE_ALLOC];
 // -------------------------------------------------------------------------------------------------
 // within ssUI, cmdZones may be defined; their use allows a shorthand for command entry within a
 // ssUI submenu by prepending (inserting in the front) the current "command zone" submenu names.
-
+// -------------------------------------------------------------------------------------------------
 // careful, cmdZone_stack_i is an array index into array of cmdZones, indicating the current cmdZone
+// -------------------------------------------------------------------------------------------------
 // a stack is a complex data structure best initialized at runtime rather than at build time.
-// The cmdZone stack comes into existence with one item in it; that item does not have to be root.
+// The cmdZone stack comes into existence with one item in it; the root, to trigger an Init State.
 // -------------------------------------------------------------------------------------------------
 void    ssUI_cmdZone_InitStack (void)
 {
     ssUI_control.cmdZone_stack_i = 0;
-    gcmdZone_stack[ssUI_control.cmdZone_stack_i] = ssUI_root;
+    gcmdZone_stack[ssUI_control.cmdZone_stack_i] = ssUI_root;       // ssUI_root triggers Init State
 }   // ssUI_cmdZone_InitStack
 
 // -------------------------------------------------------------------------------------------------
@@ -193,6 +202,10 @@ void  ssUI_cmdZone_StackPop (void)
     }
 }  // ssUI_cmdZone_StackPop
 // =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// The two key concepts behind the ssTEA software development context are: Agency for Events; Time.
+// This is a general-use non-specific Time variable available while any FSM is operating: remember
+// a Time, use in Time math operations, or communicate information between the User and the FSM.
 // -------------------------------------------------------------------------------------------------
          ssT_Time_t         ssUI_gTimeA;
 ReadOnly ssT_pTime_t        ssUI_gpTimeA         = &ssUI_gTimeA;
@@ -379,8 +392,9 @@ ReadOnly pAsciiA_t  pcCompIsNEQ         = S("NEQ");
 ReadOnly pAsciiA_t  pcCompIsBefore      = S("Before");
 ReadOnly pAsciiA_t  pcCompIsEQBefore    = S("EQBefore");
 
+
 // -------------------------------------------------------------------------------------------------
-// The token parser returns an array of pointers to null-terminated ssHL strings, each with a length.
+// The token parser returns an array of pointers to null-terminated ssHL arrays of Ascii values, each with a length.
 // The Token parser always works on the gTokens array, which can be indexed in source with these.
 // -------------------------------------------------------------------------------------------------
 #define ssUI_tkn1st_i           (0)
@@ -395,9 +409,7 @@ ReadOnly pAsciiA_t pTkn_i_name[] = { S("1st"), S("2nd"), S("3rd"), S("4th"), S("
 #endif  // BLD_DEBUG_CMDHANDLER
 
 // -------------------------------------------------------------------------------------------------
-// each pcMsg strings is the contents of a message carried in a signal to the user; Ascii characters.
-// -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
+// each pcMsg arrays of Ascii values is the contents of a message carried in a signal to the user; Ascii characters.
 // -------------------------------------------------------------------------------------------------
 ReadOnly pAsciiA_t  pcOpAssign              = S("=");
 ssUI_Token_t        gTknOpAssign            = { pcOpAssign       , 1, NoBananas };
@@ -460,8 +472,8 @@ ReadOnly pAsciiA_t  pcResume                = S("resume");
 ssUI_Token_t        gTknResume              = { pcResume         , 6, NoBananas };
 ReadOnly pAsciiA_t  pcPause                 = S("pause");
 ssUI_Token_t        gTknPause               = { pcPause          , 5, NoBananas };
-ReadOnly pAsciiA_t  pcOccurs                = S("occurs");
-ssUI_Token_t        gTknOccurs              = { pcOccurs         , 6, NoBananas };
+ReadOnly pAsciiA_t  pcOccursAt              = S("occursat");
+ssUI_Token_t        gTknOccursAt            = { pcOccursAt       , 8, NoBananas };
 ReadOnly pAsciiA_t  pcRecurs                = S("recurs");
 ssUI_Token_t        gTknRecurs              = { pcRecurs        , 6, NoBananas };
 ReadOnly pAsciiA_t  pcState                 = S("state");
@@ -481,21 +493,6 @@ ssUI_Token_t        gTknStopped             = { pcStopped       , 7, NoBananas }
 ReadOnly pAsciiA_t  pcAgencying             = S("agencying");
 ssUI_Token_t        gTknAgencying           = { pcAgencying     , 9, NoBananas };
 
-ReadOnly pAsciiA_t  pcRO                    = S("ro");
-ReadOnly pAsciiA_t  pcApp                   = S("app");
-ReadOnly pAsciiA_t  pcfsmDemo               = S("fsmdemo");
-ReadOnly pAsciiA_t  pcLED                   = S("led");
-ReadOnly pAsciiA_t  pcAscii                 = S("ascii");
-ReadOnly pAsciiA_t  pcMatrix                = S("matrix");
-ReadOnly pAsciiA_t  pcClassic               = S("classic");
-ReadOnly pAsciiA_t  pcDelay                 = S("delay");
-ReadOnly pAsciiA_t  pcPace                  = S("pace");
-ReadOnly pAsciiA_t  pcAgency                = S("agency");
-ReadOnly pAsciiA_t  pcGroup0                = S("group0");
-ReadOnly pAsciiA_t  pcGroup1                = S("group1");
-ReadOnly pAsciiA_t  pcShape0                = S("shape0");
-ReadOnly pAsciiA_t  pcShape1                = S("shape1");
-
 ReadOnly pAsciiA_t  pcTime                  = S("time");
 ssUI_Token_t        gTknTime                = { pcTime          , 4, NoBananas };
 ReadOnly pAsciiA_t  pcEvent                 = S("event");
@@ -510,10 +507,6 @@ ReadOnly pAsciiA_t  pcUnits                 = S("units");
 ssUI_Token_t        gTknUnits               = { pcUnits         , 5, NoBananas };
 ReadOnly pAsciiA_t  pcStats                 = S("stats");
 ssUI_Token_t        gTknStats               = { pcStats         , 5, NoBananas };
-ReadOnly pAsciiA_t  pcMsgSet                = S("msgset");
-ssUI_Token_t        gTknMsgSet              = { pcMsgSet        , 6, NoBananas };
-ReadOnly pAsciiA_t  pcBigBang               = S("bigbang");
-ssUI_Token_t        gTknBigBang             = { pcBigBang       , 7, NoBananas };
 
 ReadOnly pAsciiA_t  pcApifsm                = S("apifsm");
 ssUI_Token_t        gTknApifsm              = { pcApifsm        , 6, NoBananas };
@@ -525,12 +518,6 @@ ssUI_Token_t        gTknMillis              = { pcMillis        , 6, NoBananas }
 
 ReadOnly pAsciiA_t  pcHelpTime              = S("(TimeStamp | timevar)");
 ssUI_Token_t        gTknHelpTime            = { pcHelpTime      ,22, NoBananas };
-ReadOnly pAsciiA_t  pcHelpSetSignal         = S("signal(s)");
-ssUI_Token_t        gTknHelpMsgSetSignal    = { pcHelpSetSignal , 9, NoBananas };
-ReadOnly pAsciiA_t  pcHelpSetSensor         = S("sensor(s)");
-ssUI_Token_t        gTknHelpMsgSetSensor    = { pcHelpSetSensor , 9, NoBananas };
-ReadOnly pAsciiA_t  pcHelpSetMsg            = S("message(s)");
-ssUI_Token_t        gTknHelpMsgSetMsg       = { pcHelpSetMsg    ,10, NoBananas };
 
 ReadOnly pAsciiA_t  pcMsg_VarnameHelp               = S("time variable names (may be used as Lvalue, Operand1 or Operand2)");
 ReadOnly pAsciiA_t  pcMsg_AgApifsm_ErrorApiNotOn    = S("Agency Api FSM not On for this event.");
@@ -539,9 +526,11 @@ ReadOnly pAsciiA_t  pcMsg_AgApiSignalError          = S("!@#$%^&* Agency Api fai
 ReadOnly pAsciiA_t  pcMsg_AgApiSignalSuccess        = S("........ Agency Api success");
 ReadOnly pAsciiA_t  pcMsg_ArrowsReqDir              = S(">>to>>");
 ReadOnly pAsciiA_t  pcMsg_ArrowsRespDir             = S("<<to<<");
-ReadOnly pAsciiA_t  pcMsg_AgApiReqError             = S("<error in request data>");
 ReadOnly pAsciiA_t  pcMsg_apiSignalOp_Worked        = S(", Api signal success.");
 ReadOnly pAsciiA_t  pcMsg_apiSignalOp_Failed        = S(", Api signal failure.");
+#ifdef SSTEA_OPTIN_SHOW_CAUSE
+ReadOnly pAsciiA_t  pcMsg_AgApiReqError             = S("<error in request data>");
+#endif  // SSTEA_OPTIN_SHOW_CAUSE
 
 ReadOnly pAsciiA_t  pcMsg_plbl_TimeVariable         = S(" Time variable   :");
 
@@ -567,13 +556,13 @@ ReadOnly pAsciiA_t  pcEvApiNamelbl_Name             = S("name");
 ReadOnly pAsciiA_t  pcEvApiNameLbl_ssDB             = S("ssDB");
 ReadOnly pAsciiA_t  pcEvApiNameLbl_App              = S("App");
 
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_NormalResult       = S("normal command FSM result");
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_FoundNoInput       = S("no input received by command FSM");
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_FoundNoTokens      = S("no tokens found in input received");
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_FoundNoMatch       = S("no match found in tokens parsed");
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_ByHandler          = S("a problem is reported by command handler");
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_Unresolved         = S("parameter not expected by command handler");
-ReadOnly pAsciiA_t  pcMsg_CmdFsm_TableFlaw          = S("FSM reported problem with table(s)");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_NormalResult       = S("normal command FSM result");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_FoundNoInput       = S("no input received by command FSM");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_FoundNoTokens      = S("no tokens found in input received");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_FoundNoMatch       = S("no match found in tokens parsed");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_ByHandler          = S("a problem is reported by command handler");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_Unresolved         = S("parameter not expected by command handler");
+ReadOnly pAsciiA_t  pcMsg_CmdFSM_TableFlaw          = S("FSM reported problem with table(s)");
 
 ReadOnly pAsciiA_t  pcMsg_MillisRangeError_T1toT2   = S("  ssTEA # of milliseconds from T1 to T2 must be an integer > 0");
 
@@ -585,6 +574,47 @@ ReadOnly pAsciiA_t  pcMsg_NoStartWhileRunning       = S("  ssTEA can't start Tim
 ReadOnly pAsciiA_t  pcMsg_NoStopWhileNotRunning     = S("  ssTEA can't stop Time or Agency while Time or Agency is stopped");
 
 ReadOnly pAsciiA_t  pcMsg_FSMStats_ReqFailed = S("FSM stats are in the build but request failed");
+
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// The Resource Ownership (RO) FSM is manageable at run-time using menu commands such as
+//    ss ro ascii owner ssui     ss ro ascii active classic
+// -------------------------------------------------------------------------------------------------
+// This is a translation point between human character input and the number system used by software.
+// -------------------------------------------------------------------------------------------------
+// valid after "ss" is "ro" to manage resource management ownership and owner's participation
+ReadOnly pAsciiA_t  pcRO                    = S("ro");
+
+// valid after "ro" is one of led/ascii/matrix.  These names are blank-padded for the RO description
+ReadOnly pAsciiA_t  pcLED                   = S("led");
+ReadOnly pAsciiA_t  pcAscii                 = S("ascii");
+ReadOnly pAsciiA_t  pcMatrix                = S("matrix");
+
+ReadOnly pAsciiA_t  pcLED_pretty            = S("led   ");
+ReadOnly pAsciiA_t  pcAscii_pretty          = S("ascii ");
+ReadOnly pAsciiA_t  pcMatrix_pretty         = S("matrix");
+
+// valid after "led/ascii/matrix" is "owner" or "active"
+
+// valid after "owner" is app/ssui/anybody/nobody; valid after "active" is list below
+ReadOnly pAsciiA_t  pcHelpOwnerActive       = S("owner | active ");
+
+ReadOnly pAsciiA_t  pcOwner                 = S("owner");
+ReadOnly pAsciiA_t  pcApp                   = S("app");
+ReadOnly pAsciiA_t  pcAnybody               = S("anybody");
+ReadOnly pAsciiA_t  pcNobody                = S("nobody");
+// there is only one true "pcssUI", elsewhere
+
+// valid after "active" is "classic", "pace", "group0", etc.  Completely invented and abstracted.
+ReadOnly pAsciiA_t  pcActive                = S("active");
+ReadOnly pAsciiA_t  pcClassic               = S("classic");
+ReadOnly pAsciiA_t  pcDelay                 = S("delay");
+ReadOnly pAsciiA_t  pcPace                  = S("pace");
+ReadOnly pAsciiA_t  pcAgency                = S("agency");
+ReadOnly pAsciiA_t  pcGroup0                = S("group0");
+ReadOnly pAsciiA_t  pcGroup1                = S("group1");
+ReadOnly pAsciiA_t  pcShape0                = S("shape0");
+ReadOnly pAsciiA_t  pcShape1                = S("shape1");
 
 #endif  // __SSUI_DATA_DEF_H
 

@@ -65,8 +65,8 @@ eHandlerResult_t H_ss_TimeStart (int tkn_i, boolean moreInputTkns)
             break;
         case ssTEA_state_running :
             ss_uiOp_Show_ssTime_state ();
-            ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
-            ss_uiOp_pBanner (lfN, pcMsg_NoStartWhileRunning, lfY);
+            ss_uiOp_emit_pBanner (lfY, pcMsg_NotAllowed, lfY);
+            ss_uiOp_emit_pBanner (lfN, pcMsg_NoStartWhileRunning, lfY);
         case ssTEA_state_error   :
         case ssTEA_state_flaw    :
         default               :
@@ -87,8 +87,8 @@ eHandlerResult_t H_ss_TimeStop (int tkn_i, boolean moreInputTkns)
             break;
         case ssTEA_state_running :
             ss_uiOp_Show_ssAgency_state ();
-            ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
-            ss_uiOp_pBanner (lfN, pcMsg_NoTimeStopAgencyIsRunning, lfY);
+            ss_uiOp_emit_pBanner (lfY, pcMsg_NotAllowed, lfY);
+            ss_uiOp_emit_pBanner (lfN, pcMsg_NoTimeStopAgencyIsRunning, lfY);
         case ssTEA_state_error   :
         case ssTEA_state_flaw    :
         default               :
@@ -101,8 +101,8 @@ eHandlerResult_t H_ss_TimeStop (int tkn_i, boolean moreInputTkns)
             break;
         case ssTEA_state_stopped :
             ss_uiOp_Show_ssTime_state ();
-            ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
-            ss_uiOp_pBanner (lfN, pcMsg_NoStopWhileNotRunning, lfY);
+            ss_uiOp_emit_pBanner (lfY, pcMsg_NotAllowed, lfY);
+            ss_uiOp_emit_pBanner (lfN, pcMsg_NoStopWhileNotRunning, lfY);
         case ssTEA_state_error   :
         case ssTEA_state_flaw    :
         default               :
@@ -114,18 +114,6 @@ eHandlerResult_t H_ss_TimeStop (int tkn_i, boolean moreInputTkns)
     ss_uiOp_Show_ssTime_state ();
     return (eH_rHandled);
 }   // H_ss_TimeStop
-// -------------------------------------------------------------------------------------------------
-eHandlerResult_t H_ss_TimeBigBang (int tkn_i, boolean moreInputTkns)
-{
-    msg_ssTEA_Path ();
-
-    // bugbugbug action missing
-    ss_uiOp_emit_qAsciiA ("<success>");
-    ss_uiOp_emit_newline ();
-
-    // repeat command to execute big bang
-    return (eH_rHandled);
-}   // H_ss_TimeBigBang
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t H_ss_TimeStats (int tkn_i, boolean moreInputTkns)
 {
@@ -155,8 +143,8 @@ eHandlerResult_t H_ss_AgencyStart (int tkn_i, boolean moreInputTkns)
     if (ssTEA_control.Time_state == ssTEA_state_stopped)
     {
         ss_uiOp_Show_ssTime_state ();
-        ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
-        ss_uiOp_pBanner (lfN, pcMsg_NoAgencyWithoutTime, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_NotAllowed, lfY);
+        ss_uiOp_emit_pBanner (lfN, pcMsg_NoAgencyWithoutTime, lfY);
         return (eH_rError);
     }   // must have Time to Agency
 
@@ -166,8 +154,8 @@ eHandlerResult_t H_ss_AgencyStart (int tkn_i, boolean moreInputTkns)
             break;
         case ssTEA_state_running :
             ss_uiOp_Show_ssAgency_state ();
-            ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
-            ss_uiOp_pBanner (lfN, pcMsg_NoStartWhileRunning, lfY);
+            ss_uiOp_emit_pBanner (lfY, pcMsg_NotAllowed, lfY);
+            ss_uiOp_emit_pBanner (lfN, pcMsg_NoStartWhileRunning, lfY);
         case ssTEA_state_error   :
         case ssTEA_state_flaw    :
         default               :
@@ -189,8 +177,8 @@ eHandlerResult_t H_ss_AgencyStop (int tkn_i, boolean moreInputTkns)
             break;
         case ssTEA_state_stopped :
             ss_uiOp_Show_ssAgency_state ();
-            ss_uiOp_pBanner (lfY, pcMsg_NotAllowed, lfY);
-            ss_uiOp_pBanner (lfN, pcMsg_NoStopWhileNotRunning, lfY);
+            ss_uiOp_emit_pBanner (lfY, pcMsg_NotAllowed, lfY);
+            ss_uiOp_emit_pBanner (lfN, pcMsg_NoStopWhileNotRunning, lfY);
         case ssTEA_state_error   :
         case ssTEA_state_flaw    :
         default               :
@@ -245,7 +233,7 @@ eHandlerResult_t H_ss_AgencyPeriod (int tkn_i, boolean moreInputTkns)
         }
         else
         {
-            ss_uiOp_pBanner (lfN, pcMsg_MillisRangeError_T1toT2, lfY);
+            ss_uiOp_emit_pBanner (lfN, pcMsg_MillisRangeError_T1toT2, lfY);
             return (eH_rError);
         }
         source_i++;
@@ -257,7 +245,7 @@ eHandlerResult_t H_ss_AgencyPeriod (int tkn_i, boolean moreInputTkns)
 
     if (sum == 0)
     {
-        ss_uiOp_pBanner (lfN, pcMsg_MillisRangeError_T1toT2, lfY);
+        ss_uiOp_emit_pBanner (lfN, pcMsg_MillisRangeError_T1toT2, lfY);
         return (eH_rError);
     }
 
@@ -291,7 +279,7 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
         {
             continue;
         }
-        if (pEvApi->pssTEA_ApiSig->Apifsm_state == ssA_Apifsm_state_off)
+        if (pEvApi->ssTEA_pApiSig->Apifsm_state == ssA_Apifsm_state_off)
         {
             continue;
         }
@@ -307,23 +295,23 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
         // the API signal returns a pointer to the statistics maintained by ssTEA in ssTEA's data
         if (ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgApifsm_Stats))
         {
-            if (pEvApi->pssTEA_ApiSig->pApiSigData != pApiSigDataNull)
+            if (pEvApi->ssTEA_pApiSig->pApiSigData != pApiSigDataNull)
             {
                 ssA_statOp_Apifsm_P1getsP2
                     (
                         &ThisEv_All_Stats.Apifsm,
-                        (ssA_pApifsm_Stats_t) pEvApi->pssTEA_ApiSig->pApiSigData
+                        (ssA_pApifsm_Stats_t) pEvApi->ssTEA_pApiSig->pApiSigData
                     );
                 ssA_statOp_Apifsm_Show (&ThisEv_All_Stats.Apifsm);
             }
             else
             {
                 // This is a build choice, statistics must be included
-                ss_uiOp_pBanner (lfY, pcMsg_FSMStats_ReqFailed, lfY);
+                ss_uiOp_emit_pBanner (lfY, pcMsg_FSMStats_ReqFailed, lfY);
             }
         }   // Api signal for ApiFsm stats
 #else   // not SSA_OPTIN_STATS_APIFSM
-        ss_uiOp_pBanner (lfY, pcMsg_ApiFSMStats_NotBuilt, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_ApiFSMStats_NotBuilt, lfY);
 #endif  // SSA_OPTIN_STATS_APIFSM
 
 #ifdef SSA_OPTIN_STATS_RUNFSM
@@ -334,23 +322,23 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
         // the API returns a pointer to the statistics maintained by ssTEA in ssTEA's data
         if (ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgRunfsm_Stats))
         {
-            if (pEvApi->pssTEA_ApiSig->pApiSigData != pApiSigDataNull)
+            if (pEvApi->ssTEA_pApiSig->pApiSigData != pApiSigDataNull)
             {
                 ssA_statOp_Runfsm_P1getsP2
                     (
                         &ThisEv_All_Stats.Runfsm,
-                        (ssA_pRunfsm_Stats_t) pEvApi->pssTEA_ApiSig->pApiSigData
+                        (ssA_pRunfsm_Stats_t) pEvApi->ssTEA_pApiSig->pApiSigData
                     );
                 ssA_statOp_Runfsm_Show (&ThisEv_All_Stats.Runfsm);
             }   // params pointer is non-NULL
             else
             {
                 // This is a build choice, statistics must be included
-                ss_uiOp_pBanner (lfY, pcMsg_FSMStats_ReqFailed, lfY);
+                ss_uiOp_emit_pBanner (lfY, pcMsg_FSMStats_ReqFailed, lfY);
             }
         }   // if Runfsm stats signal worked
 #else   // not SSA_OPTIN_STATS_RUNFSM
-         ss_uiOp_pBanner (lfY, pcMsg_RunFSMStats_NotBuilt, lfY);
+         ss_uiOp_emit_pBanner (lfY, pcMsg_RunFSMStats_NotBuilt, lfY);
 #endif  // SSA_OPTIN_STATS_RUNFSM
 
         // NOTE that this function's function is to total the stats of all event APIs and show that.
@@ -367,7 +355,7 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
 
 #ifdef SSA_OPTIN_STATS_APIFSM
     // present the totals computed in the same format that an individual event would see it formatted
-    ss_uiOp_qBanner  (lfY, "Statistics across all Api FSMs", lfY);
+    ss_uiOp_emit_qBanner  (lfY, "Statistics across all Api FSMs", lfY);
     ss_uiOp_emit_qAsciiA ("----  evapi<all>");
     ss_uiOp_emit_qAsciiA ("    (nonzero stats only)");
     ss_uiOp_emit_newline ();
@@ -375,7 +363,7 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
 #endif  // SSA_OPTIN_STATS_APIFSM
 
 #ifdef SSA_OPTIN_STATS_RUNFSM
-    ss_uiOp_qBanner  (lfY, "Statistics across all Run FSMs", lfY);
+    ss_uiOp_emit_qBanner  (lfY, "Statistics across all Run FSMs", lfY);
     ss_uiOp_emit_qAsciiA ("----  evapi<all>");
     ss_uiOp_emit_qAsciiA ("    (nonzero stats only)");
     ss_uiOp_emit_newline ();
@@ -385,327 +373,355 @@ eHandlerResult_t H_ss_AgencyStats (int tkn_i, boolean moreInputTkns)
 #endif  // SSA_OPTIN_STATS_FSM
     return (eH_rHandled);
 }   // H_ss_AgencyStats
-// -------------------------------------------------------------------------------------------------
-// Readers are encouraged to avoid the Messaging Signal Sensor Message ssUI subsystem, it's a mess.
-// -------------------------------------------------------------------------------------------------
-eHandlerResult_t H_ss_MsgSSM (int tkn_i, boolean moreInputTkns)
-{
-    boolean         IsNamedMsgSet;
-
-    msg_ssTEA_Path ();
-
-    IsNamedMsgSet = false;
-
-    switch (tkn_i)
-    {
-        case ssUI_tkn2nd_i :
-
-            if (!moreInputTkns)
-            {
-                break;                      // out of the switch, find nothing set, show help msg
-            }   // if no more input follows command
-
-            return (eH_rDefer);
-        case ssUI_tkn3rd_i :
-            // the token "any" in the 3rd token is used to indicate "set all fields to 'Any'".
-            if (ssUI_tknIf_sP1_eq_pAA (gTknAny, gTokens[ssUI_tkn3rd_i].pAsciiA))
-            {
-                IsNamedMsgSet = true;
-                break;                      // out of the switch, find everything set, do it
-            }   // matched Any
-            // the token "normal" in the 3rd token is used to indicate "set all to defaults".
-            if (ssUI_tknIf_sP1_eq_pAA (gTknNormal, gTokens[ssUI_tkn3rd_i].pAsciiA))
-            {
-                IsNamedMsgSet = true;
-                break;                      // out of the switch, find everything set, do it
-            }   // matched normal
-            // the token "normal" in the 3rd token is used to indicate "set all to none".
-            if (ssUI_tknIf_sP1_eq_pAA (gTknNone, gTokens[ssUI_tkn3rd_i].pAsciiA))
-            {
-                IsNamedMsgSet = true;
-                break;                      // out of the switch, find everything set, do it
-            }   // matched none
-
-            //  check for signalers/sensors/messages not being set correctly, given 5 tokens.
-            if (!moreInputTkns)
-            {   // no more input tokens
-                if (!IsNamedMsgSet)
-                {
-                    return (eH_rError);         // must specify 3 fields if not named
-                }
-                else
-                {
-                    return (eH_rHandled);       // somebody matched a name and set all fields
-                }
-            }   // no more input tokens
-            else
-            {   // more input tokens
-                if (IsNamedMsgSet)
-                {
-                    return (eH_rError);         // extra params after a name not allowed
-                }
-                else
-                {
-                    return (eH_rDefer);         // not named and there are more, defer for now
-                }
-            }   // more input tokens
-            break;
-        case ssUI_tkn4th_i :
-            if (moreInputTkns)
-            {
-                return (eH_rDefer);
-            }
-            break;
-        case ssUI_tkn5th_i :
-            if (moreInputTkns)
-            {
-                return (eH_rDefer);
-            }
-            break;
-        // this handler does not know to do with token 1, the parent command for this command parameter
-        case ssUI_Cmd_tkn_i :
-        default:
-            return (eH_rError);
-    }   // switch
-
-    return (eH_rHandled);
-}   // H_ss_MsgSSM
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-// Resource Ownership (RO) has a state (app or fsmDemo) and fsmDemo has substates (see definition).
-// The LED and the Ascii resources use the same menu FSM for managing information about ownership.
-// This set of menus is merely an editing mechanism for the data the Resource uses to decide to act.
+// Resources are "owned by" owners (therefore, RO), with an Owner state (app | ssui) and substates.
+// This set of menus is an editing mechanism for the data that Resources Users check for permission.
 // -------------------------------------------------------------------------------------------------
-// The use of a global (but local to this FSM only) pointer variable is the FSM's memory-over-time.
+// The control variables are local to this FSM only but also end up exposed in the global name space.
+// The memory-over-time remembers a decision made (owner or active) while handling remaining tokens.
 // -------------------------------------------------------------------------------------------------
-RO_state_t      *pRO_state;
-RO_substate_t   *pRO_substate;
-pAscii_t         pDesc;
+// "ssui"  the name of the owner of a resource when only ssUI is actively using the resource
+// "app"   the name of the owner of a resource when only the App is actively using the resource
+// -------------------------------------------------------------------------------------------------
+RO_owner_t         *pRO_ownedBy;
+RO_substate_t      *pRO_active;
+pAscii_t            pRO_desc;
 
+boolean             TargetIsOwner;
+
+void    ROs_Describe_OwnerActive (void);        // in this FSM global variables are signal carrier
+// -------------------------------------------------------------------------------------------------
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 eHandlerResult_t  H_ss_RO (int tkn_i, boolean moreInputTkns)
 {
+    // Init State of this FSM occurs when the tokens processed to this point are "ss" and "ro".
+    pRO_ownedBy = pRO_ownerNULL;
+    pRO_active = pRO_activeNull;
+    pRO_desc = pAsciiNull;
+    TargetIsOwner = false;
+
     if (!moreInputTkns)
     {
-        pRO_state = &mesa_LED_RO_state;
-        pRO_substate = &mesa_LED_RO_substate;
-        pDesc = pcLED;
-        H_ss_ROs_Describe (tkn_i, moreInputTkns);
-
-        pRO_state = &mesa_Ascii_RO_state;
-        pRO_substate = &mesa_Ascii_RO_substate;
-        pDesc = pcAscii;
-        H_ss_ROs_Describe (tkn_i, moreInputTkns);
-
-        pRO_state = &mesa_Matrix_RO_state;
-        pRO_substate = &mesa_Matrix_RO_substate;
-        pDesc = pcMatrix;
-        H_ss_ROs_Describe (tkn_i, moreInputTkns);
+        H_ss_ROs_LED (ssUI_tkn2nd_i, false);
+        H_ss_ROs_Ascii (ssUI_tkn2nd_i, false);
+        H_ss_ROs_Matrix (ssUI_tkn2nd_i, false);
 
         return (eH_rHandled);
     }
 
-    pRO_state = pRO_stateNull;
-    pRO_substate = pRO_substateNull;
-    pDesc = pAsciiNull;
     return (eH_rDefer);
 }   // H_ss_RO
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t  H_ss_ROs_LED (int tkn_i, boolean moreInputTkns)
 {
-    pRO_state = &mesa_LED_RO_state;
-    pRO_substate = &mesa_LED_RO_substate;
-    pDesc = pcLED;
+    // create a memory of the owner/active relationship we are talking about.
+    // references are made as subsequent tokens are parsed, or, if not more tokens, show state
+    pRO_ownedBy = &LED_RO;
+    pRO_active = &LED_RO_active;
+    pRO_desc = pcLED_pretty;
+
     if (!moreInputTkns)
     {
-        H_ss_ROs_Describe (tkn_i, moreInputTkns);
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
         return (eH_rHandled);
     }
+
     return (eH_rDefer);
 }   // H_ss_ROs_LED
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t  H_ss_ROs_Ascii (int tkn_i, boolean moreInputTkns)
 {
-    pRO_state = &mesa_Ascii_RO_state;
-    pRO_substate = &mesa_Ascii_RO_substate;
-    pDesc = pcAscii;
+    // create a memory of which of the managed owner/active relations ships we are talking about
+    pRO_ownedBy = &Ascii_ROs;
+    pRO_active = &Ascii_RO_active;
+    pRO_desc = pcAscii_pretty;
+
     if (!moreInputTkns)
     {
-        H_ss_ROs_Describe (tkn_i, moreInputTkns);
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
         return (eH_rHandled);
     }
+
     return (eH_rDefer);
 }   // H_ss_ROs_Ascii
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t  H_ss_ROs_Matrix (int tkn_i, boolean moreInputTkns)
 {
-    pRO_state = &mesa_Matrix_RO_state;
-    pRO_substate = &mesa_Matrix_RO_substate;
-    pDesc = pcMatrix;
+    // create a memory of which of the managed owner/active relations ships we are talking about
+    pRO_ownedBy = &LED_Matrix_ROs;
+    pRO_active = &LED_Matrix_RO_active;
+    pRO_desc = pcMatrix_pretty;
+
     if (!moreInputTkns)
     {
-        H_ss_ROs_Describe (tkn_i, moreInputTkns);
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
         return (eH_rHandled);
     }
+
     return (eH_rDefer);
 }   // H_ss_ROs_Matrix
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t H_ss_ROs_Describe (int tkn_i, boolean moreInputTkns)
+void ROs_Describe_OwnerActive (void)
 {
     msg_ssTEA_Path ();
 
-    if (*pRO_state == mesa_RO_state_App)
+    switch (*pRO_ownedBy)
     {
-        ss_uiOp_emit_qAsciiA ("App owns ");
-        ss_uiOp_emit_pAsciiA (pDesc);
-        ss_uiOp_emit_newline ();
-        return (eH_rHandled);
-    }
-    ss_uiOp_emit_qAsciiA ("SimpleSal owns ");
-    ss_uiOp_emit_pAsciiA (pDesc);
-    ss_uiOp_emit_qAsciiA (", active substates [");
 
-    if ((pRO_state == &mesa_LED_RO_state) || (pRO_state == &mesa_Ascii_RO_state))
+        case RO_owner_Anybody :    ss_uiOp_emit_qAsciiA ("anybody owns   ");    break;
+        case RO_owner_App     :    ss_uiOp_emit_qAsciiA ("only app owns  ");    break;
+        case RO_owner_ssUI    :    ss_uiOp_emit_qAsciiA ("only ssui owns ");    break;
+        case RO_owner_Nobody  :    ss_uiOp_emit_qAsciiA ("nobody owns    ");    break;
+    }   // switch
+    ss_uiOp_emit_pAsciiA (pRO_desc);
+    ss_uiOp_emit_qAsciiA ("  [");
+
+    if ((pRO_ownedBy == &LED_RO) || (pRO_ownedBy == &Ascii_ROs))
     {
-        if (*pRO_substate & mesa_RO_substate_delay)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcDelay);
-        }   // not done until all have been considered
-        if (*pRO_substate & mesa_RO_substate_classic)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcClassic);
-        }   // not done until all have been considered
-        if (*pRO_substate & mesa_RO_substate_pace)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcPace);
-        }   // not done until all have been considered
-        if (*pRO_substate & mesa_RO_substate_agency)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcAgency);
-        }   // not done until all have been considered
+        // not done until all have been considered
+        if (*pRO_active & RO_active_classic)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcClassic);      }
+        if (*pRO_active & RO_active_delay)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcDelay);        }
+        if (*pRO_active & RO_active_pace)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcPace);         }
+        if (*pRO_active & RO_active_agency)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcAgency);       }
+        if (*pRO_active & RO_active_OneOfUIs_ss)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcssUI);         }
+        if (*pRO_active & RO_active_OneOfUIs_App)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcApp);          }
     }   // LED and Ascii
 
-    if (pRO_state == &mesa_Matrix_RO_state)
+    if (pRO_ownedBy == &LED_Matrix_ROs)
     {
-        if (*pRO_substate & mesa_RO_substate_group0)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcGroup0);
-        }   // not done until all have been considered
-        if (*pRO_substate & mesa_RO_substate_group1)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcGroup1);
-        }   // not done until all have been considered
-        if (*pRO_substate & mesa_RO_substate_shape0)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcShape0);
-        }   // not done until all have been considered
-        if (*pRO_substate & mesa_RO_substate_shape1)
-        {
-            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcShape1);
-        }   // not done until all have been considered
+        // not done until all have been considered
+        if (*pRO_active & RO_active_group0)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcGroup0);      }
+        if (*pRO_active & RO_active_group1)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcGroup1);      }
+        if (*pRO_active & RO_active_shape0)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcShape0);      }
+        if (*pRO_active & RO_active_shape1)
+        {            ss_uiOp_emit_lbld_AsciiA (pcNoLabelThanks, pcShape1);      }
     }   // Resource LED has groups/shapes
+
     ss_uiOp_emit_qAsciiA ("]");
     ss_uiOp_emit_newline ();
-    return (eH_rHandled);
-}   // H_ss_ROs_Describe
+}   // ROs_Describe_OwnerActive
+// -------------------------------------------------------------------------------------------------
+eHandlerResult_t H_ss_ROs_Select (int tkn_i, boolean moreInputTkns)
+{
+    eHandlerResult_t    result = eH_rHandled;
+    boolean             validSelect = false;
+
+    msg_ssTEA_Path ();
+
+    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcActive))
+    {
+        TargetIsOwner = false;              // in this FSM global variables are signal carrier
+        validSelect = true;
+    }
+
+    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcOwner))
+    {
+        TargetIsOwner = true;               // in this FSM global variables are signal carrier
+        validSelect = true;
+    }
+
+    if (validSelect)
+    {
+        if (moreInputTkns)
+        {
+            result = eH_rDefer;             // remaining tokens specific to the Select token
+        }
+        else    // ss ro resource owner <app | ssui>   is a call for help
+        {
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
+        }
+    }   // "active" or "owner" as part of "ss ro resource active" or "ss ro resource owner"
+    else
+    {
+        result = eH_rError;
+    }   // not "active" and not "owner"
+
+    return (result);
+}   // H_ss_ROs_Select
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t H_ss_ROs_Update (int tkn_i, boolean moreInputTkns)
 {
     msg_ssTEA_Path ();
 
+    // ---------------------------------------------------------------------------------------------
+    // There must have been a valid token before this one selecting whether the operation is Update
+    // is of the owner settings or the active settings for the resource named in an earlier token.
+    // ---------------------------------------------------------------------------------------------
+    if (TargetIsOwner)
+    {
+        if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcApp))
+            *pRO_ownedBy = RO_owner_App;
+        else
+            if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcssUI))
+                *pRO_ownedBy = RO_owner_ssUI;
+            else
+                if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcAnybody))
+                    *pRO_ownedBy = RO_owner_Anybody;
+                else
+                    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcNobody))
+                        *pRO_ownedBy = RO_owner_Nobody;
+                    else
+                        return (eH_rError);
+
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
+        return (eH_rHandled);
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // The remaining functionality in this software pertains to !TargetIsOwner, target is "active".
+    // ---------------------------------------------------------------------------------------------
     if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcApp))
     {
-        *pRO_state = mesa_RO_state_App;
+        *pRO_active = (*pRO_active & RO_active_OneOfUIs_App) ?
+                            *pRO_active & ~RO_active_OneOfUIs_App :
+                            *pRO_active | RO_active_OneOfUIs_App;
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
         return (eH_rHandled);
     }   // done as soon as anything matches something
-    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcfsmDemo))
+
+    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcssUI))
     {
-        *pRO_state = mesa_RO_state_SimpleSal;
+        *pRO_active = (*pRO_active & RO_active_OneOfUIs_ss) ?
+                            *pRO_active & ~RO_active_OneOfUIs_ss :
+                            *pRO_active | RO_active_OneOfUIs_ss;
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
+        return (eH_rHandled);
+    }   // done as soon as anything matches something
+
+    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcAll))
+    {
+        *pRO_ownedBy = RO_owner_Anybody;
+        *pRO_active = RO_active_all;
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
         return (eH_rHandled);
     }   // done as soon as anything matches something
 
     if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcNone))
     {
-        *pRO_state = mesa_RO_state_SimpleSal;
-        *pRO_substate = mesa_RO_substate_none;
-        return (eH_rHandled);
-    }   // done as soon as anything matches something
-    if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcAll))
-    {
-        *pRO_state = mesa_RO_state_SimpleSal;
-        *pRO_substate = mesa_RO_substate_all;
+        *pRO_ownedBy = RO_owner_Nobody;
+        *pRO_active = RO_active_none;
+        ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
         return (eH_rHandled);
     }   // done as soon as anything matches something
 
-    if ((pRO_state == &mesa_LED_RO_state) || (pRO_state == &mesa_Ascii_RO_state))
+    if ((pRO_ownedBy == &LED_RO) || (pRO_ownedBy == &Ascii_ROs))
     {
-        if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcDelay))
-        {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_delay) ?
-                                *pRO_substate & ~mesa_RO_substate_delay :
-                                *pRO_substate | mesa_RO_substate_delay;
-
-            return (eH_rHandled);
-        }   // done as soon as anything matches something
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcClassic))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_classic) ?
-                                *pRO_substate & ~mesa_RO_substate_classic :
-                                *pRO_substate | mesa_RO_substate_classic;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_classic) ?
+                                *pRO_active & ~RO_active_classic :
+                                *pRO_active | RO_active_classic;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
+
+        if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcDelay))
+        {
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_delay) ?
+                                *pRO_active & ~RO_active_delay :
+                                *pRO_active | RO_active_delay;
+
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
+            return (eH_rHandled);
+        }   // done as soon as anything matches something
+
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcPace))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_pace) ?
-                                *pRO_substate & ~mesa_RO_substate_pace :
-                                *pRO_substate | mesa_RO_substate_pace;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_pace) ?
+                                *pRO_active & ~RO_active_pace :
+                                *pRO_active | RO_active_pace;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
+
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcAgency))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_agency) ?
-                                *pRO_substate & ~mesa_RO_substate_agency :
-                                *pRO_substate | mesa_RO_substate_agency;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_agency) ?
+                                *pRO_active & ~RO_active_agency :
+                                *pRO_active | RO_active_agency;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
+            return (eH_rHandled);
+        }   // done as soon as anything matches something
+
+        if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcssUI))
+        {
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_OneOfUIs_ss) ?
+                                *pRO_active & ~RO_active_OneOfUIs_ss :
+                                *pRO_active | RO_active_OneOfUIs_ss;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
+            return (eH_rHandled);
+        }   // done as soon as anything matches something
+
+        if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcApp))
+        {
+            *pRO_ownedBy = RO_owner_App;
+            *pRO_active = (*pRO_active & RO_active_OneOfUIs_App) ?
+                                *pRO_active & ~RO_active_OneOfUIs_App :
+                                *pRO_active | RO_active_OneOfUIs_App;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
     }
-    if (pRO_state == &mesa_Matrix_RO_state)
+
+    if (pRO_ownedBy == &LED_Matrix_ROs)
     {
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcGroup0))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_group0) ?
-                                *pRO_substate & ~mesa_RO_substate_group0 :
-                                *pRO_substate | mesa_RO_substate_group0;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_group0) ?
+                                *pRO_active & ~RO_active_group0 :
+                                *pRO_active | RO_active_group0;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
+
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcGroup1))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_group1) ?
-                                *pRO_substate & ~mesa_RO_substate_group1 :
-                                *pRO_substate | mesa_RO_substate_group1;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_group1) ?
+                                *pRO_active & ~RO_active_group1 :
+                                *pRO_active | RO_active_group1;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
+
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcShape0))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_shape0) ?
-                                *pRO_substate & ~mesa_RO_substate_shape0 :
-                                *pRO_substate | mesa_RO_substate_shape0;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_shape0) ?
+                                *pRO_active & ~RO_active_shape0 :
+                                *pRO_active | RO_active_shape0;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
+
         if (ssUI_AaIf_pP1_eq_pP2 (gTokens[tkn_i].pAsciiA, pcShape1))
         {
-            *pRO_state = mesa_RO_state_SimpleSal;
-            *pRO_substate = (*pRO_substate & mesa_RO_substate_shape1) ?
-                                *pRO_substate & ~mesa_RO_substate_shape1 :
-                                *pRO_substate | mesa_RO_substate_shape1;
+            *pRO_ownedBy = RO_owner_ssUI;
+            *pRO_active = (*pRO_active & RO_active_shape1) ?
+                                *pRO_active & ~RO_active_shape1 :
+                                *pRO_active | RO_active_shape1;
+            ROs_Describe_OwnerActive ();       // in this FSM global variables are signal carrier
             return (eH_rHandled);
         }   // done as soon as anything matches something
+
     }   // Resource Matrix has groups/shapes
 
     return (eH_rError);
@@ -806,7 +822,7 @@ eHandlerResult_t  H_ev_apivar (int tkn_i, boolean moreInputTkns)
 //  tokens expected in order are <evapi> [<* or EvApiName> [params]]
 //
 //     IF the 2nd token (1st parameter to evapi) is not present,
-//          - ssUI will change the current section of the menu subtree tree before this parse level.
+//          - ssUI will change the current section of the menu subtree tree to the evapi CmdZone.
 //
 //     IF the 2nd token is '*'
 //          -- there may be a 3rd token   (called the "subcommand")
@@ -924,7 +940,7 @@ eHandlerResult_t RunThis_ev_subcmd (ev_subcmd_handler_t pEv_HandlerFunc, boolean
             return (FuncReturn);
         }   // exact match to eH_rError returned
 
-        // keep going, don't return error code until final (bugbugbug)
+        // keep going, don't return error code until final
     }   // for
 
     return (FuncReturn);
@@ -1038,7 +1054,7 @@ eHandlerResult_t ev_subcmd_access_unlock (ssUI_db_pEvApi_t pEvApi, boolean moreI
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_apifsm (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1064,7 +1080,7 @@ eHandlerResult_t ev_subcmd_apifsm (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_apifsm_on (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1073,27 +1089,27 @@ eHandlerResult_t ev_subcmd_apifsm_on (ssUI_db_pEvApi_t pEvApi, boolean moreInput
         return (eH_rHandled);
     }
 
-    ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_OnReq, lfY);
+    ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_OnReq, lfY);
     if (pApiSig->Apifsm_state != ssA_Apifsm_state_off)
     {
-        ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOff, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOff, lfY);
         return (eH_rError);
     }
 
 #ifdef SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-    // ssE will write the ssE true data pointer into pEvApi->pssTEA_ApiSig->ssE_pAboutEv
+    // ssE will write the ssE true data pointer into pEvApi->ssTEA_pApiSig->ssE_pAboutEv
 #ifdef SSE_OPTIN_ABOUTEV_DEBUG
-    ssE_EvDB_Show_ssE_pAboutEv (S("ApiSig->ssE_pAboutEv *before* ssE allocates in Api FSM On : "), pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+    ssE_EvDB_Show_ssE_pAboutEv (S("ApiSig->ssE_pAboutEv *before* ssE allocates in Api FSM On : "), pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
 #endif  // SSE_OPTIN_ABOUTEV_DEBUG
 // -- within ifdef/else/endif
 
 #else   // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
 
 // -- within ifdef/else/endif
-        // ssE will use the pointer in pEvApi->pssTEA_ApiSig->ssE_pAboutEv to communicate with the App
-    pEvApi->pssTEA_ApiSig->ssE_pAboutEv = AboutEvDB_dbOp_Get ();      // pointer to our copy
+        // ssE will use the pointer in pEvApi->ssTEA_pApiSig->ssE_pAboutEv to communicate with the App
+    pEvApi->ssTEA_pApiSig->ssE_pAboutEv = AboutEvDB_dbOp_Get ();      // pointer to our copy
 #ifdef SSE_OPTIN_ABOUTEV_DEBUG
-    ssE_EvDB_Show_ssE_pAboutEv (S("ApiSig->ssE_pAboutEv Get *before* Api FSM On : "), pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+    ssE_EvDB_Show_ssE_pAboutEv (S("ApiSig->ssE_pAboutEv Get *before* Api FSM On : "), pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
 #endif  // SSE_OPTIN_ABOUTEV_DEBUG
 
 #endif  // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
@@ -1105,27 +1121,27 @@ eHandlerResult_t ev_subcmd_apifsm_on (ssUI_db_pEvApi_t pEvApi, boolean moreInput
 #ifdef SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
         // ssE owns the data and the pointer in the signal to the data
 #else   // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-        // ssE will use the pointer in pEvApi->pssTEA_ApiSig->ssE_pAboutEv to communicate with the App
+        // ssE will use the pointer in pEvApi->ssTEA_pApiSig->ssE_pAboutEv to communicate with the App
         // The Put routine returns a proper NULL pointer so the user of the DB doesn't have to know
-        pEvApi->pssTEA_ApiSig->ssE_pAboutEv = AboutEvDB_dbOp_Put (pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+        pEvApi->ssTEA_pApiSig->ssE_pAboutEv = AboutEvDB_dbOp_Put (pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
 #endif  // SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
         return (eH_rError);
     }
 
 #ifdef SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-    // ssE wrote the pointer into pEvApi->pssTEA_ApiSig->ssE_pAboutEv
+    // ssE wrote the pointer into pEvApi->ssTEA_pApiSig->ssE_pAboutEv
 #else   // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-    // ssE used the pointer in pEvApi->pssTEA_ApiSig->ssE_pAboutEv
+    // ssE used the pointer in pEvApi->ssTEA_pApiSig->ssE_pAboutEv
 #endif  // SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
 #ifdef SSE_OPTIN_ABOUTEV_DEBUG
-    ssE_EvDB_Show_ssE_pAboutEv (S("ApiSig->ssE_pAboutEv after ApiFSM On : "), pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+    ssE_EvDB_Show_ssE_pAboutEv (S("ApiSig->ssE_pAboutEv after ApiFSM On : "), pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
 #endif  // SSE_OPTIN_ABOUTEV_DEBUG
 
     // see the EvApi typedef. The reason the function pointer in the About Event is set from a
     // variable in the ssUI EvApi is that ssUI abstracts more than a typical App would need to.
     // This is a result of the design of ssUI supporting N Events inherently for the App to use,
     // the pointer must be initialized in the EvApi by the App before the Agency Api FSM is ON.
-    pEvApi->pssTEA_ApiSig->ssE_pAboutEv->pEvFunc = pEvApi->pEvFuncToUse;
+    pEvApi->ssTEA_pApiSig->ssE_pAboutEv->pEvFunc = pEvApi->pEvFuncToUse;
 
     if (ssTEA_control.Show_Cause)
     {
@@ -1139,7 +1155,7 @@ eHandlerResult_t ev_subcmd_apifsm_on (ssUI_db_pEvApi_t pEvApi, boolean moreInput
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_apifsm_off (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1148,10 +1164,10 @@ eHandlerResult_t ev_subcmd_apifsm_off (ssUI_db_pEvApi_t pEvApi, boolean moreInpu
         return (eH_rHandled);
     }
 
-    ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_OffReq, lfY);
+    ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_OffReq, lfY);
     if (pApiSig->Apifsm_state == ssA_Apifsm_state_off)
     {
-        ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
         return (eH_rError);
     }
 
@@ -1164,9 +1180,9 @@ eHandlerResult_t ev_subcmd_apifsm_off (ssUI_db_pEvApi_t pEvApi, boolean moreInpu
 #ifdef SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
         // ssE owns the data and the pointer in the signal to the data
 #else   // not SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
-        // ssE will use the pointer in pEvApi->pssTEA_ApiSig->ssE_pAboutEv to communicate with the App
+        // ssE will use the pointer in pEvApi->ssTEA_pApiSig->ssE_pAboutEv to communicate with the App
         // The Put routine returns a proper NULL pointer so the user of the DB doesn't have to know
-        pEvApi->pssTEA_ApiSig->ssE_pAboutEv = AboutEvDB_dbOp_Put (pEvApi->pssTEA_ApiSig->ssE_pAboutEv);
+        pEvApi->ssTEA_pApiSig->ssE_pAboutEv = AboutEvDB_dbOp_Put (pEvApi->ssTEA_pApiSig->ssE_pAboutEv);
 #endif  // SSE_OPTIN_ABOUTEVDB_TRUSTED_APP
 
     pApiSig->Apifsm_state = ssA_Apifsm_state_off;
@@ -1182,7 +1198,7 @@ eHandlerResult_t ev_subcmd_apifsm_off (ssUI_db_pEvApi_t pEvApi, boolean moreInpu
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_apifsm_run (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1191,10 +1207,10 @@ eHandlerResult_t ev_subcmd_apifsm_run (ssUI_db_pEvApi_t pEvApi, boolean moreInpu
         return (eH_rHandled);
     }
 
-    ss_uiOp_pBanner (lfN, pcMsg_AgApifsm_RunReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgApifsm_RunReq, lfY);
     if (pApiSig->Apifsm_state == ssA_Apifsm_state_off)
     {
-        ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
         return (eH_rError);
     }
 
@@ -1214,7 +1230,7 @@ eHandlerResult_t ev_subcmd_apifsm_run (ssUI_db_pEvApi_t pEvApi, boolean moreInpu
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_apifsm_reset (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1223,10 +1239,10 @@ eHandlerResult_t ev_subcmd_apifsm_reset (ssUI_db_pEvApi_t pEvApi, boolean moreIn
         return (eH_rHandled);
     }
 
-    ss_uiOp_pBanner (lfN, pcMsg_AgApifsm_ResetReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgApifsm_ResetReq, lfY);
     if (pApiSig->Apifsm_state == ssA_Apifsm_state_off)
     {
-        ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
         return (eH_rError);
     }
 
@@ -1245,7 +1261,7 @@ eHandlerResult_t ev_subcmd_apifsm_reset (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_apifsm_validate (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1260,10 +1276,10 @@ eHandlerResult_t ev_subcmd_apifsm_validate (ssUI_db_pEvApi_t pEvApi, boolean mor
     // Which is a way to say when the Event pointed to is called, it may note the Null Event Agency
     // pointer parameter as a signal that the function was called to implement the "init" state.
     // ---------------------------------------------------------------------------------------------
-    ss_uiOp_pBanner (lfN, pcMsg_AgApifsm_ValidateReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgApifsm_ValidateReq, lfY);
     if (pApiSig->Apifsm_state == ssA_Apifsm_state_off)
     {
-        ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
         return (eH_rError);
     }
 
@@ -1291,7 +1307,7 @@ void    draw_label (pAsciiA_t pDescription, pAsciiA_t pEvApiName)
     ss_uiOp_emit_lbld_AsciiA (pcEvApiNameLbl_EvApi, pEvApiName);
     ss_uiOp_emit_Dash (25);
     ss_uiOp_emit_newline ();
-    ss_uiOp_pBanner (lfN, pDescription, lfN);
+    ss_uiOp_emit_pBanner (lfN, pDescription, lfN);
     ss_uiOp_emit_Space (2);
     ss_uiOp_emit_lbld_AsciiA (pcEvApiNameLbl_EvApi, pEvApiName);
     ss_uiOp_emit_Dash (25);
@@ -1300,7 +1316,7 @@ void    draw_label (pAsciiA_t pDescription, pAsciiA_t pEvApiName)
 
 eHandlerResult_t ev_subcmd_apifsm_state (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1310,7 +1326,7 @@ eHandlerResult_t ev_subcmd_apifsm_state (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     }
 
     // Agency Api FSM state is always a valid point of information to access or display or act on.
-    ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_StateReq, lfY);
+    ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_StateReq, lfY);
 
     // actual purpose of this command handler and the parameters that got us here
     draw_label (pcMsg_CurrentViewData, pApiSigName (pEvApi));
@@ -1342,7 +1358,7 @@ eHandlerResult_t ev_subcmd_apifsm_stats (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 {
 #ifdef SSA_OPTIN_STATS_FSM
 #ifdef SSA_OPTIN_STATS_APIFSM
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
     ssA_pApifsm_Stats_t pStats;
 
     msg_ssTEA_Path ();
@@ -1352,10 +1368,10 @@ eHandlerResult_t ev_subcmd_apifsm_stats (ssUI_db_pEvApi_t pEvApi, boolean moreIn
         return (eH_rHandled);
     }
 
-    ss_uiOp_pBanner (lfN, pcMsg_AgApifsm_statsReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgApifsm_statsReq, lfY);
     if (pApiSig->Apifsm_state == ssA_Apifsm_state_off)
     {
-        ss_uiOp_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
+        ss_uiOp_emit_pBanner (lfY, pcMsg_AgApifsm_ErrorApiNotOn, lfY);
         return (eH_rError);
     }
 
@@ -1391,7 +1407,6 @@ eHandlerResult_t ev_subcmd_runfsm (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
     {
         ss_uiOp_emit_newline ();
         ss_uiOp_emit_lbld_AsciiA (pcEvApiNameLbl_EvApi, pApiSigName (pEvApi));
-        // bugbugbug
         ss_uiOp_emit_newline ();
         return (eH_rHandled);
     }   // no more tokens
@@ -1402,7 +1417,7 @@ eHandlerResult_t ev_subcmd_runfsm (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_runfsm_start (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1414,7 +1429,7 @@ eHandlerResult_t ev_subcmd_runfsm_start (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     {
         return (eH_rHandled);
     }
-    ss_uiOp_pBanner (lfN, pcMsg_AgRunfsm_StartReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgRunfsm_StartReq, lfY);
 
     // actual purpose of this command handler and the parameters that got us here
     if (!ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgRunfsm_Start))
@@ -1429,7 +1444,7 @@ eHandlerResult_t ev_subcmd_runfsm_start (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_runfsm_stop (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1441,7 +1456,7 @@ eHandlerResult_t ev_subcmd_runfsm_stop (ssUI_db_pEvApi_t pEvApi, boolean moreInp
     {
         return (eH_rHandled);
     }
-    ss_uiOp_pBanner (lfN, pcMsg_AgRunfsm_StopReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgRunfsm_StopReq, lfY);
 
     // actual purpose of this command handler and the parameters that got us here
     if (!ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgRunfsm_Stop))
@@ -1455,7 +1470,7 @@ eHandlerResult_t ev_subcmd_runfsm_stop (ssUI_db_pEvApi_t pEvApi, boolean moreInp
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_runfsm_pause (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1467,7 +1482,7 @@ eHandlerResult_t ev_subcmd_runfsm_pause (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     {
         return (eH_rHandled);
     }
-    ss_uiOp_pBanner (lfN, pcMsg_AgRunfsm_PauseReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgRunfsm_PauseReq, lfY);
 
     // actual purpose of this command handler and the parameters that got us here
     if (!ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgRunfsm_Pause))
@@ -1481,7 +1496,7 @@ eHandlerResult_t ev_subcmd_runfsm_pause (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_runfsm_resume (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1493,7 +1508,7 @@ eHandlerResult_t ev_subcmd_runfsm_resume (ssUI_db_pEvApi_t pEvApi, boolean moreI
     {
         return (eH_rHandled);
     }
-    ss_uiOp_pBanner (lfN, pcMsg_AgRunfsm_ResumeReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgRunfsm_ResumeReq, lfY);
 
     // actual purpose of this command handler and the parameters that got us here
     if (!ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgRunfsm_Resume))
@@ -1508,7 +1523,7 @@ eHandlerResult_t ev_subcmd_runfsm_resume (ssUI_db_pEvApi_t pEvApi, boolean moreI
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_runfsm_state (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1521,7 +1536,7 @@ eHandlerResult_t ev_subcmd_runfsm_state (ssUI_db_pEvApi_t pEvApi, boolean moreIn
         return (eH_rHandled);
     }
     // "not off" state is always a valid point of information to access or display or act on
-    ss_uiOp_pBanner (lfY, pcMsg_AgRunfsm_StateReq, lfY);
+    ss_uiOp_emit_pBanner (lfY, pcMsg_AgRunfsm_StateReq, lfY);
 
     draw_label (pcMsg_CurrentViewData, pApiSigName (pEvApi));
     ss_uiOp_Show_Runfsm_state (pApiSig, pApiSigName (pEvApi));
@@ -1548,7 +1563,7 @@ eHandlerResult_t ev_subcmd_runfsm_stats (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 {
 #ifdef  SSA_OPTIN_STATS_FSM
 #ifdef  SSA_OPTIN_STATS_RUNFSM
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
     ssA_pRunfsm_Stats_t pStats;
 
     msg_ssTEA_Path ();
@@ -1561,13 +1576,13 @@ eHandlerResult_t ev_subcmd_runfsm_stats (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     {
         return (eH_rHandled);
     }
-    ss_uiOp_pBanner (lfN, pcMsg_AgRunfsm_StatsReq, lfY);
+    ss_uiOp_emit_pBanner (lfN, pcMsg_AgRunfsm_StatsReq, lfY);
 
     // actual purpose of this command handler and the parameters that got us here
     pApiSig->pApiSigData = pApiSigDataNull;
     if (!ssUI_apiSignalOp_Emit (pEvApi, ss_ApiSigMsgValue_AgRunfsm_Stats))
     {
-        ss_uiOp_qBanner  (lfY, "signal failed requesting Runfsm stats update", lfY);
+        ss_uiOp_emit_qBanner  (lfY, "signal failed requesting Runfsm stats update", lfY);
         return (eH_rError);
     }
 
@@ -1584,9 +1599,9 @@ eHandlerResult_t ev_subcmd_runfsm_stats (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     return (eH_rHandled);
 }   // ev_subcmd_runfsm_stats
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t ev_subcmd_occurs (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
+eHandlerResult_t ev_subcmd_occursat (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1599,10 +1614,10 @@ eHandlerResult_t ev_subcmd_occurs (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
     {
         ss_uiOp_emit_newline ();
         ss_uiOp_emit_lbld_AsciiA (pcEvApiNameLbl_EvApi, pApiSigName (pEvApi));
-        ss_uiOp_emit_qAsciiA ("Occurs@");
+        ss_uiOp_emit_qAsciiA (pcOccursAt);
         ss_uiOp_Show_Time (&pApiSig->ssE_pAboutEv->OccursAt, lfY);
         return (eH_rHandled);
-    }
+    }   // only occursat token
 
     // actual purpose of this command handler and the parameters that got us here
     // This sets up the Lvalue for the Time operand and Time Math when next token parsed.
@@ -1629,12 +1644,12 @@ eHandlerResult_t ev_subcmd_occurs (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
         // name not found?
         return (eH_rError);
     }
-}   // ev_subcmd_occurs
+}   // ev_subcmd_occursat
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t ev_subcmd_occurs_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
+eHandlerResult_t ev_subcmd_occursat_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
     eHandlerResult_t    result;
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1643,7 +1658,7 @@ eHandlerResult_t ev_subcmd_occurs_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     if (result == eH_rHandled)
     {
         ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1>) is copied to OccursAt");
+        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1>) is copied to occursat");
 #ifdef SSUI_OPTIN_DEBUG_SHOW_PTR_VALUES
         ssUI_dbOp_Show_EvApi_pointers (pEvApi);
 #endif  // SSUI_OPTIN_DEBUG_SHOW_PTR_VALUES
@@ -1655,7 +1670,7 @@ eHandlerResult_t ev_subcmd_occurs_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     }   // math_oper1 handled
 
     return (result);
-}   // ev_subcmd_occurs_oper1
+}   // ev_subcmd_occursat_oper1
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_op_math (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
@@ -1669,10 +1684,10 @@ eHandlerResult_t ev_subcmd_op_math (ssUI_db_pEvApi_t pEvApi, boolean moreInputTk
     return (result);
 }   // H_ev_subcmd_op_math
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t ev_subcmd_occurs_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
+eHandlerResult_t ev_subcmd_occursat_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
     eHandlerResult_t    result;
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
     result = H_math_op_math (ssUI_tkn6th_i, moreInputTkns);
@@ -1680,7 +1695,7 @@ eHandlerResult_t ev_subcmd_occurs_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     if (result == eH_rHandled)
     {
         ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1><operator><operand2>) is copied to 'occursAt''");
+        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1><operator><operand2>) is copied to occursat");
 
         ssT_mathOp_P1getsP2
         (
@@ -1689,11 +1704,11 @@ eHandlerResult_t ev_subcmd_occurs_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
         );
     }
     return (result);
-}   // H_ev_subcmd_occurs_oper2
+}   // H_ev_subcmd_occursat_oper2
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_period (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1741,7 +1756,7 @@ eHandlerResult_t ev_subcmd_period (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
 eHandlerResult_t ev_subcmd_period_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
     eHandlerResult_t    result;
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1750,7 +1765,7 @@ eHandlerResult_t ev_subcmd_period_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     if (result == eH_rHandled)
     {
         ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1>) is copied to Period");
+        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1>) is copied to period");
         ssT_mathOp_P1getsP2
           (
             &pApiSig->ssE_pAboutEv->Period,
@@ -1763,7 +1778,7 @@ eHandlerResult_t ev_subcmd_period_oper1 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 eHandlerResult_t ev_subcmd_period_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
     eHandlerResult_t    result;
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1772,7 +1787,7 @@ eHandlerResult_t ev_subcmd_period_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
     if (result == eH_rHandled)
     {
         ss_uiOp_emit_newline ();
-        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1><operator><operand2>) is copied to 'Period''");
+        ss_uiOp_emit_qAsciiA ("math result (Lvalue=<operand1><operator><operand2>) is copied to period");
 
         ssT_mathOp_P1getsP2
         (
@@ -1785,7 +1800,7 @@ eHandlerResult_t ev_subcmd_period_oper2 (ssUI_db_pEvApi_t pEvApi, boolean moreIn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_recurs (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
@@ -1809,13 +1824,13 @@ eHandlerResult_t ev_subcmd_recurs (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkn
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_recurs_on (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
     // actual purpose of this command handler and the parameters that got us here
     pApiSig->ssE_pAboutEv->recurs = true;
-    pApiSig->ssE_pAboutEv->recursFromTrue = true;             // bugbugbug  same thing as precision
+    pApiSig->ssE_pAboutEv->recursFromTrue = true;         // is this the same thing as precision?
 
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_lbld_AsciiA (pcEvApiNameLbl_EvApi, pApiSigName (pEvApi));
@@ -1826,13 +1841,13 @@ eHandlerResult_t ev_subcmd_recurs_on (ssUI_db_pEvApi_t pEvApi, boolean moreInput
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t ev_subcmd_recurs_off (ssUI_db_pEvApi_t pEvApi, boolean moreInputTkns)
 {
-    ssTEA_pApiSig_t     pApiSig     = pEvApi->pssTEA_ApiSig;
+    ssTEA_pApiSig_t     pApiSig     = pEvApi->ssTEA_pApiSig;
 
     msg_ssTEA_Path ();
 
     // actual purpose of this command handler and the parameters that got us here
     pApiSig->ssE_pAboutEv->recurs = false;
-    pApiSig->ssE_pAboutEv->recursFromTrue = false;            // bugbugbug  same thing as precision
+    pApiSig->ssE_pAboutEv->recursFromTrue = false;      // is this the same thing as precision?
 
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_lbld_AsciiA (pcEvApiNameLbl_EvApi, pApiSigName (pEvApi));
@@ -1995,23 +2010,23 @@ eHandlerResult_t H_ev_recurs_off  (int tkn_i, boolean moreInputTkns)
     return (RunThis_ev_subcmd (&ev_subcmd_recurs_off, moreInputTkns));
 }   // H_ev_recurs_off
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t  H_ev_occurs (int tkn_i, boolean moreInputTkns)
+eHandlerResult_t  H_ev_occursat (int tkn_i, boolean moreInputTkns)
 {
     msg_ssTEA_Path ();
-    return (RunThis_ev_subcmd (&ev_subcmd_occurs, moreInputTkns));
-}   // H_ev_occurs
+    return (RunThis_ev_subcmd (&ev_subcmd_occursat, moreInputTkns));
+}   // H_ev_occursat
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t  H_ev_occurs_oper1 (int tkn_i, boolean moreInputTkns)
+eHandlerResult_t  H_ev_occursat_oper1 (int tkn_i, boolean moreInputTkns)
 {
     msg_ssTEA_Path ();
-    return (RunThis_ev_subcmd (&ev_subcmd_occurs_oper1, moreInputTkns));
-}   // H_ev_occurs_oper1
+    return (RunThis_ev_subcmd (&ev_subcmd_occursat_oper1, moreInputTkns));
+}   // H_ev_occursat_oper1
 // -------------------------------------------------------------------------------------------------
-eHandlerResult_t  H_ev_occurs_oper2 (int tkn_i, boolean moreInputTkns)
+eHandlerResult_t  H_ev_occursat_oper2 (int tkn_i, boolean moreInputTkns)
 {
     msg_ssTEA_Path ();
-    return (RunThis_ev_subcmd (&ev_subcmd_occurs_oper2, moreInputTkns));
-}   // H_ev_occurs_oper2
+    return (RunThis_ev_subcmd (&ev_subcmd_occursat_oper2, moreInputTkns));
+}   // H_ev_occursat_oper2
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t  H_ev_period (int tkn_i, boolean moreInputTkns)
 {
@@ -2072,7 +2087,7 @@ pAsciiA_t get_CompOp_pDesc (ssUI_math_CompOps_t CompareOperOrResult)
 
 #define TERMCOND_DEBUG
 #ifdef TERMCOND_DEBUG
-#define TermCondError_Announce(xstr) ss_uiOp_qBanner  (lfN, xstr, lfY)
+#define TermCondError_Announce(xstr) ss_uiOp_emit_qBanner  (lfN, xstr, lfY)
 #else
 #define TermCondError_Announce(xstr)
 #endif
@@ -2342,11 +2357,11 @@ eHandlerResult_t  H_help_Show_ByTopic (int tkn_i, boolean moreInputTkns)
     {
         if (!moreInputTkns)
         {
-            ssUI_menuOp_Show_Help_CmdsParamHints (pcOpAstrsk);
+            ssUI_menuOp_Show_Help_CmdsHints (pcOpAstrsk);
         }
         else
         {
-            ssUI_menuOp_Show_Help_CmdsParamHints (gTokens[tkn_i+1].pAsciiA);
+            ssUI_menuOp_Show_Help_CmdsHints (gTokens[tkn_i+1].pAsciiA);
         }
         return (eH_rHandled);
     }   // "params"
@@ -2362,15 +2377,6 @@ eHandlerResult_t  H_help_Show_ByTopic (int tkn_i, boolean moreInputTkns)
     ss_uiOp_emit_newline ();
     return (eH_rHandled);
 }   // H_help_Show_ByTopic
-// -------------------------------------------------------------------------------------------------
-eHandlerResult_t  H_help_Show_ByCommand (int tkn_i, boolean moreInputTkns)
-{
-    msg_ssTEA_Path ();
-
-// bugbugbug something missing here
-
-    return (eH_rHandled);
-}   // H_help_Show_ByCommand
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // The math parsing Handler FSM accepts any values for each token, using wildcards in command table.
@@ -2557,7 +2563,7 @@ eHandlerResult_t  H_math_oper2 (int tkn_i, boolean moreInputTkns)
 
     if (gpLive_MO->pOperand2 == ssT_gpTime_Ephemeral)
     {
-        if ( !( ssT_stampOp_AsciiToBinary (gTokens[tkn_i].pAsciiA, gpLive_MO->pOperand2)) )
+        if ( !(ssT_stampOp_AsciiToBinary (gTokens[tkn_i].pAsciiA, gpLive_MO->pOperand2)) )
         {
             ss_uiOp_emit_newline ();
             ss_uiOp_emit_qAsciiA ("Operand2 TimeStamp must be well-formed");
@@ -2850,7 +2856,7 @@ eHandlerResult_t  H_loop_while (int tkn_i, boolean moreInputTkns)
 
     if (!moreInputTkns)
     {
-        // display while as Lvalue   bugbugbug
+        // Future: display while as Lvalue
         return (eH_rHandled);
     }
 
@@ -2891,7 +2897,7 @@ eHandlerResult_t  H_loop_until (int tkn_i, boolean moreInputTkns)
 
     if (!moreInputTkns)
     {
-        // display until as Lvalue   bugbugbug
+        // Future: display until as Lvalue
         return (eH_rHandled);
     }
 
