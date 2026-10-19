@@ -5,32 +5,24 @@
 
 TruSoft Computing LLC
 
-   S~S  SimpleSal documents: metadata linking external information systems to repo changes
+   S~S FIXITs metadata: Known, admitted, accepted, and never-solved problems with this version.
 
 =====================
 
-   S~S FIXITs philosophy: each is a petroglyph, carved into rock, in the desert, pointing to water
+  SimpleSal, as a collection of software, is initially released without any known problems of any kind.
 
 ------------------------------------------
 
-    The software developer's brain should not, in fact can not, contain all history and explanations.
+    Broken in this version              nothing
 
-    The software source files should not, in fact can not, contain all history and explanations.
+    Missing from this version           nothing
 
-    Source control mechanisms should not, in fact can not, contain all history and explanations.
+    Broken Fixed in this version        nothing
 
-    This file is the index relating a software change to an identifier useful in all databases.
-
-------------------------------------------
-
-    The SimpleSal template document FIXIT contains the organization's FIXIT conventions.
-
-    This document describes the current state of the known FIXITS in the template documents.
+    Missing Added in this version       nothing
 
 ------------------------------------------
 
 =====================
 
  Copyright (c) 2026  TruSoft Computing LLC.  All Rights Reserved.
-
-

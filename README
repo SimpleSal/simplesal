@@ -1,4 +1,5 @@
-   This file thinks it is:  README in the SimpleSal/simplesal repo root   
+
+   This file thinks it is:  README in the SimpleSal/simplesal repo root
 
 =====================
 
@@ -32,7 +33,7 @@ TruSoft Computing LLC
  interrupt circuitry between the device and the processor, no interrupt controller to satisfy.
 
  There is a virtual interrupt controller (VIC), within the SimpleSal software, constructed from
- self-contained software.  The VIC ACTS LiKE an interrupt controller (e.g., dispatch handlers
+ self-contained software.  The VIC ACTS LIKE an interrupt controller (e.g., dispatch handlers
  based on masks and enables); when it is, at a Time chosen by the developer, granted Agency.
 
 ------------------------------------------
@@ -89,8 +90,11 @@ TruSoft Computing LLC
 
     The SimpleSal three-legged stool is built from:
 
-    1) the published software in the repo:
-        GitHub username SimpleSal, simplesal repository, branch main-simplesal
+    1) the published software in the repo published by GitHub username SimpleSal:
+        simplesal repository, branch main-simplesal
+        app-time repository, branch main-app-time
+        app-events repository, branch main-app-events
+        app-fsmDemo repository, branch main-app-fsmDemo
 
     2) the information within the published software about how to make use of SimpleSal software:
         \SimpleSal\ssDocs\Find and Open Documents.html          <web browser viewable>
@@ -154,7 +158,7 @@ TruSoft Computing LLC
 
     The signals are "about" the managed object's data so they are called "metadata":
         1) version control (RELEASE, CHANGELOG);
-        2) licensing (LiCENSE, COPYiNG);
+        2) licensing (LICENSE, COPYING);
         3) README.
 
     README is the window or lens through which the other files make sense.  At some point back
@@ -222,6 +226,9 @@ TruSoft Computing LLC
       A repository-to-instance transfer may include the SimpleSal repo metadata files in the
       App directory, depending upon the method of distribution of the SimpleSal repo contents.
 
+      It is more common for repos to have more than just the \App directory as part of the
+      repo's managed blob, with individual member files of the managed blob with the metatdata.
+
   The SimpleSal App references the version of SimpleSal indicated by the software build.
 
       This means the include path used by the software build determines where rr\SimpleSal lives.
@@ -249,9 +256,13 @@ TruSoft Computing LLC
 
     the ssUI subdirectory contains the menu system that displays Time and Event information.
 
-    the ssDocs subdirectory contains documentation, each file is pointed to by source code files.
+    the ssDocs subdirectory contains documentation, bi-directionaly linked to source code files.
 
     the ssIO subdirectory is independent of ssTEA and implements the virtualization of hardware.
+
+  There is a range of methods of specifying the 5-15 control values that define the version of
+  ssTEA being built with the SimpleSal App.  Values may be stated directly in the App, or provided
+  to the build as a file or collection of files that have been established as valid for use.
 
 ------------------------------------------
 
@@ -262,19 +273,20 @@ TruSoft Computing LLC
 ------------------------------------------
 
   C language software at a "fundamental Kernighan and Ritchie C level" is also called "K and R C".
-    The primary higher-level concept used from K&R C by SimpleSal is pointers to software.
+    The primary higher-level concept used from K&R C by SimpleSal is pointers to software and data.
     The actual use of a code-space pointer is not as important as the concept of a pointer to code.
 
     Any software known to the compiler by name can be referenced by name, to get the pointer value.
     Operating systems are not interested in the name of an interrupt handler, just a pointer to it.
+    Embedded device driver software allocates memory in a variety of ways; data pointers are common.
 
   C software survives because it is compilable into processor-level instructions and capabilities;
-    material within the documentation maps C algorithms to the resulting ARM assembly language.
+    material within the documentation maps C algorithms to the resulting processor machine language.
     What some viewers may find particularly interesting is how code pointers work in ARM processors.
 
   SimpleSal is also going to be integrated into other languages and Hosts; we must begin at simple
     if we want to extend support to higher-level languages (HLLs); they each have methods to access
-    C-based software from the HLL; within constraints imposed by their own architecture.
+    C-based software from the HLL; within constraints imposed by their own context and architecture.
 
     Because TSC LLC knows that higher-level languages eventually execute the same 50 instructions in
     the processor, the task of extending support to a higher-level language is a function of demand.

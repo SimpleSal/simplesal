@@ -1,28 +1,37 @@
 
    This file thinks it is:  FUTURES in the SimpleSal/simplesal repo root
 
+   This file is expected to unique to the repository as it is metadata about the Managed Blob
+
+------------------------------------------
+
 =====================
 
-    TruSoft Computing LLC
+TruSoft Computing LLC
 
  S~S  FUTURES metadata: "SimpleSal Time and Event Management" software.
 
 =====================
 
-   S~S  Features, fixes, changes on the list of things we'd like to do or talk someone into doing:
+ S~S  Features, fixes, changes on the list of things we'd like to do:
 
 ------------------------------------------
 
-   A release is planned implementing changes required to transition from Development to Production.
-   TSC LLC calls the transition, big 'D' Development to big 'P' Production, "publishing software".
+  SimpleSal as a collection of software is missing many features because "done" is better than "perfect".
 
-   Another way to view the transition is as the accumulation of all modifications to move the content
-   from version "0.9_" to "1.0a", where '_' is the last release candidate before "it" is "done".
+  * completion of SSIO for more complex devices such as DMA engines or networking MACs
 
-   Always in the plan:
-    * formalize and make canonical all metadata files across all SimpleSal ecosystem releases
-    * remove all demo and debug configuration hacks present in the software to support videos
-    * incorporate "soft open" feedback from experienced GitHub users and Arduino users
+  * a continuously growing collection of simple SimpleSal Apps demonstrating embedded software concepts
+
+    * implementations of SimpleSal Apps within the context of a Linux or MicroPython environment
+
+    * plotter: given signal inputs as Data Events, emit strings to drive Arduino Plotter
+
+    * multiple MACs communicating with each other on the same Mesa or a different Mesa
+
+    * Agency based on Time is dependent on the Source of Time, whether that is a chip counter, or,
+
+        a text file with Time values to feed to Events that make the Events think Time is passing.
 
 ------------------------------------------
 

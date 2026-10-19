@@ -1,6 +1,10 @@
 
    This file thinks it is:  RELEASE in the SimpleSal/simplesal  repo root
 
+   TSC LLC adopts the long-time convention that software is published as a "release" of the
+   content to someone else, and so descriptions of the contents being published are described
+   as "release notes".  The "future someone else" is usually the same person as the publisher.
+
 ------------------------------------------
 
 =====================
@@ -15,32 +19,45 @@ TruSoft Computing LLC
 
 ------------------------------------------
 
- GitHub username            SimpleSal
+ GitHub username                SimpleSal
 
-   repository               simplesal
+   repository                   simplesal
 
-     branch                 main-simplsal
+     branch                     main-simplesal
 
-       label on branch      release-260327
+       label on branch          publish-261016
 
- Date of Publishment        March 27, 2026
+ Date of Publishment            October 16, 2026
 
- TSC LLC Version identifier 260327
+ TSC LLC Version identifier     261016
 
- Human version identifier   v0.9f
-
-------------------------------------------
-
-   The "app-events" SimpleSal App identified errors in ssTEA software; fixed in this version.
-
-   A release is planned implementing changes required to transition from Development to Production.
-   TSC LLC calls the transition, big 'D' Development to big 'P' Production, "publishing software".
-
-   This collection of changes is within the scope of the transition.
+ Human version identifier       v1.0.0
 
 ------------------------------------------
 
-    FIXIT    F03B033   Cleaner runtime messages during Event data validation, API signal exchange.
+    SimpleSal Soft Open publishment
+
+  This publishment implements the changes required to transition from the state of
+      big 'D', "Developing software" to the state of big 'P', "Publishing software".
+
+  Published software is coherent within the managed object or Blob.  Coherence means
+  the contents of the Blob in all forms (source files, algorithms, help documents)
+  relate to this instance of the software being published, using the same concepts.
+
+------------------------------------------
+
+  Why is the human version is "v1.0.0"?  Modern conventions call for this form. Also, a reason is:
+
+    While not the first commit to the repository, this publishment is the first to be made public.
+
+  SimpleSal Apps published to their repo will declare the TSC LLC or Human version they require.
+     TSC LLC philosophy has a rule against publishing with not-yet-published "v0.x" software.
+
+  The completion of development to v1.0.0 included several SimpleSal Apps, and more important,
+     keeping them current with the SimpleSal software version.  All part of a major publishment.
+
+  The collection of software and documents within SimpleSal, and a collection of SimpleSal Apps
+  that make use of the software, are considered to be coherent.  A collection worthy of support.
 
 ------------------------------------------
 
