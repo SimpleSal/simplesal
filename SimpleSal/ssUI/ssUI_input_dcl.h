@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_input_dcl.h     data type, prototype declarations: prompts, menus, Ascii device streams.
  *
@@ -10,8 +9,7 @@
 #define __SSUI_INPUT_DCL_H
 
 // =================================================================================================
-// =================================================================================================
-// -------------------------------------------------------------------------------------------------
+
 void        ssUI_Prompt (void);
 
 boolean     ssUI_rootMain (boolean isInit_State);

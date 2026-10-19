@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_menu_dcl.h      data type, prototype declarations: command and parameter handlers for UI
  *
@@ -9,6 +8,7 @@
 #ifndef __SSUI_MENU_DCL_H
 #define __SSUI_MENU_DCL_H
 
+// =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // The command handler FSM searches the Command:parameter(s) Ascii array:  On finding a match in a
 // position in the table, the FSM calls the Handler function in the function pointer table.

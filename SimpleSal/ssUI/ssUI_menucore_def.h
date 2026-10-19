@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_menucore_def.h  software and data definitions of command and parameter handlers for the UI
  *
@@ -9,6 +8,7 @@
 #ifndef __SSUI_MENUCORE_DEF_H
 #define __SSUI_MENUCORE_DEF_H
 
+// =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // These static and global variables are used by FSMs in menus and cmdZones.
 // -------------------------------------------------------------------------------------------------
@@ -28,6 +28,7 @@ boolean     gClearPending = false;
 // The menu core FSM does not participate in resource sharing; it assumes it has ownership of Ascii.
 // Resource sharing management (set/clear/show/etc) is supported by the menu core as an abstraction.
 // -------------------------------------------------------------------------------------------------
+
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 eHandlerResult_t H_ss    (int tkn_i, boolean moreInputTkns)
@@ -2090,7 +2091,7 @@ pAsciiA_t get_CompOp_pDesc (ssUI_math_CompOps_t CompareOperOrResult)
 #define TermCondError_Announce(xstr) ss_uiOp_emit_qBanner  (lfN, xstr, lfY)
 #else
 #define TermCondError_Announce(xstr)
-#endif
+#endif  // TERMCOND_DEBUG
 // -------------------------------------------------------------------------------------------------
 
 boolean H_loop_IsThisTermCondition (void)

@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_evapi_def.h     data and software definitions: Event API allocation and manipulation.
  *
@@ -19,9 +18,10 @@
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // Event descriptors are used to exchange information with the API, ssTEA/E services may write them.
-// Users enter arrays of Ascii values that are names of eventApi data structures, this maps names to ssHL variables,
-// the mapping is from the user saying "evapiN" resulting in a mapping to "evapi[N]", using LookupWiths.
+// Users enter arrays of Ascii values that are names of eventApi data structures, this allows mapping
+// Ascii names to ssHL variables, the user saying "evapiN" is mapped to "evapi[N]", using LookupWiths.
 // -------------------------------------------------------------------------------------------------
+
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // Allocation of event and API data structures is the job of the App.  ssUI uses an array of

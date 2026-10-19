@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssA_agency_def.h     data and software definitions:  ssTEA subcomponent Agency
  *
@@ -82,13 +81,13 @@ void ssA_EvAg_RootMath_Exit (TimeUnitsBig_t  Assumed_us)
         ssTEA_Time_cts.us_RootFinish_Curr = ssT_rawCt_usNow ();
         x = ssT_rawCt_SubPastFromNow (ssTEA_Time_cts.us_RootFinish_Curr,  ssTEA_Time_cts.us_RootStart_Curr);
         ssTEA_Time_cts.us_Total_ssT += x;
-#ifdef SST_OPTIN_TIME_DEBUG_SST_SUM
+#ifdef SST_OPTIN_DEBUG_TIME_SST_SUM
         if (x > 1000)
         {
             ss_uiOp_emit_Hex_32bits (ssTEA_Time_cts.us_Total_ssT);
             ss_uiOp_emit_newline ();
         }
-#endif  // SST_OPTIN_TIME_DEBUG_SST_SUM
+#endif  // SST_OPTIN_DEBUG_TIME_SST_SUM
     }
     ssTEA_Time_cts.us_SampleCt_ssT++;
 
@@ -153,13 +152,13 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
         if (MathSumMillis >= ssTEA_control.Agency_period)
         {
             MathSumMillis = MathSumMillis - ssTEA_control.Agency_period;     // accumulate slew
-#ifdef MESA_MIN_OPTOUT_LED              // opted out of mesa_min implementation
+#ifdef MESA_MIN_OPTOUT_LED              // opted out of mesas_min implementation
             // -------------------------------------------------------------------------------------
             if (RO_IS_ONEOF_LED_ROs (RO_owner_ssUI, RO_active_pace))
             {
                 mesa_FSM_LEDflash_Req ();
             }
-#endif  //  is MESA_MIN_OPTOUT_LED          // opted out of mesa_min implementation
+#endif  //  is MESA_MIN_OPTOUT_LED          // opted out of mesas_min implementation
         }   // completed a period of Time measured in milliseconds
         else
         {   // did not yet complete a period of Time, so therefore
@@ -276,7 +275,7 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             // -------------------------------------------------------------------------------------
             SSA_STATS_RUNFSM_EvEx_Incr (AgencyGranted_ct);
 
-#ifdef MESA_MIN_OPTOUT_LED              // opted out of mesa_min implementation
+#ifdef MESA_MIN_OPTOUT_LED              // opted out of mesas_min implementation
             // -------------------------------------------------------------------------------------
             // this is an example of modifying the core of ssTEA for the benefit of the App: because
             // blinking the LED has nothing to do with ssTEA.  Yet here is Agency Root blinking.
@@ -285,7 +284,7 @@ void ssTEA_Agency_Root (TimeUnitsBig_t MicrosSinceLast, TimeUnitsBig_t MillisSin
             {
                 mesa_FSM_LEDflash_Req ();
             }
-#endif  //  is MESA_MIN_OPTOUT_LED           // opted out of mesa_min implementation
+#endif  //  is MESA_MIN_OPTOUT_LED           // opted out of mesas_min implementation
 
             // -------------------------------------------------------------------------------------
             // Any event occurred at the time requested; the event returned a result about itself.
@@ -524,9 +523,11 @@ ssE_pEvInfo_t ssA_EvAg_AgencyNext (ssE_pEvInfo_t pEvInfo, ssE_EvType_t  eventTyp
                     else
                     {   // Active, Running, Event type matches requested, Agencying: got one!
 #ifdef SSA_OPTIN_AGENCY_DEBUG_SEQUENCE
-                        ss_uiOp_emit_qAsciiA ("R|");
+                        ss_uiOp_emit_1 (Ascii_r);
+                        ss_uiOp_emit_1 (Ascii_Vertical);              // look different than any prompt
                         ss_uiOp_emit_pAsciiA (ss_uiOp_Get_pName_EvType (pEvInfo->ssE_pAboutEv->Runfsm_EvType));
-                        ss_uiOp_emit_qAsciiA ("|A");
+                        ss_uiOp_emit_1 (Ascii_Vertical);              // look different than any prompt
+                        ss_uiOp_emit_1 (Ascii_a);
                         ss_uiOp_emit_newline ();
 #endif  // SSA_OPTIN_AGENCY_DEBUG_SEQUENCE
                         working_lcl_i++;                // start next search with this

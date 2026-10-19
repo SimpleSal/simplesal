@@ -1,21 +1,22 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
- * mesas_min_dcl.start          ssTEA and SimpleSal build choices and allocation choices are possible.
- *                              This SimpleSal file becomes "mesas_min_dcl.h" in a new App project.
- *                              The App project file's revision over Time is under control of the App.
+ * mesas_min_dcl.start        ssTEA, ssUI, and SimpleSal Apps depend upon Time and like Serial Ascii.
+ *
+ * The App version of this file, "mesas_min_dcl.h", will change over Time under control of the App.
+ * SimpleSal suggests the App version exist outside the SimpleSal repo managed object (.\SimpleSal\).
+ * The contents of this file can of course be edited into any App file, the ownership is the App's.
  *
  * The LED, Ascii, and Random functionality in this default/minimum implementation is declared here.
  * The declaration of functionality (prototypes) is the same whether the App or Mesa provides code.
  **************************************************************************************************/
 #ifndef __MESAS_MIN_DCL_H
 #define __MESAS_MIN_DCL_H
+
 // =================================================================================================
 // SimpleSal's suggestion: name EVERY mesa declare/define file pair with a specific mesa reference.
 // otherwise, the "mesa*.h" you have may or may not match the mesa you are targeting in the build.
-// The "mesas*.start" files reside in the SimpleSal directory; copy up and rename to "mesas*.h".
 // =================================================================================================
 
 // =================================================================================================
@@ -24,10 +25,6 @@
 // LED, the Serial device, or the LED Matrix, are shared because intermixed signals ruin the signals.
 // Either ssUI or the App UI may be the owner when the software is ready to signal, only the owner
 // will use the resource.  In this way, chatty service calls to ssTEA by the App are muted, or not.
-// ------------------------------------------------------------------------------------------------
-// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the meaning of the term "mesa"
-// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the configuration of 1-N mesas
-// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the idea of byte and bit order
 // ------------------------------------------------------------------------------------------------
 // before asking ssUI to emit statistics to Serial, the App gives ownership to ssUI and then asks.
 // This can be by changing the ownership from App to ssUI, or to Anybody. On return, change it back.
@@ -54,7 +51,7 @@ typedef RO_substate_t      *pRO_active_t;
 // -----------------------------------------------------------------------------------------------
 // SimpleSal uses psuedo-random numbers for simple purposes; this implementation uses sequences
 // created out in the interwebs and copied here by a process that promised some number of numbers.
-// The selection of building the "mesa_min" version or the App's version doesn't change the API.
+// The selection of building the "mesas_min" version or the App's version doesn't change the API.
 // -----------------------------------------------------------------------------------------------
 #ifdef MESA_OPTIN_RANDOM_NUMBERS
 
@@ -76,8 +73,6 @@ mesa_Random_t   mesa_Random_From1000_Seq (void);
 #endif  // MESA_OPTIN_RANDOM_NUMBERS
 
 // =================================================================================================
-// -----------------------------------------------------------------------------------------------
-// [.\SimpleSal\ssDocs\mesa\Mesa Configuration Basics.note] describes the Ascii UI device this mesa
 // -----------------------------------------------------------------------------------------------
 typedef     unsigned char       Bits8_t;
 typedef     Bits8_t            *pBits8_t;
@@ -133,6 +128,7 @@ typedef     Ascii_t        *pAscii_t;           // pointing to a value of that s
 
 typedef     Ascii_t         AsciiA_t;           // the first of N Ascii_t values, N is > 0
 typedef     AsciiA_t       *pAsciiA_t;          // pointing to the first of N Ascii_t values
+#define     pAsciiANull     ((pAsciiA_t) NULL)
 
 #define     Ascii_NUL       ((Ascii_t) ('\0'))
 #define     Ascii_BS        ((Ascii_t) ('\b'))
@@ -228,8 +224,6 @@ typedef     AsciiA_t       *pAsciiA_t;          // pointing to the first of N As
 #define     Ascii_digit_toInt(c)    (Ascii_isDigit(c) ? (c - Ascii_0) : (0))
 
 #define     S(inquotesAsciiArray)   ((pAsciiA_t) inquotesAsciiArray)
-#define     pAsciiANull             ((pAsciiA_t) NULL)
-#define     pAAN                    (pAsciiANull)
 
 void        mesa_uiOp_emit_pAsciiA              (pAsciiA_t pAsciiA);
 #define     mesa_uiOp_emit_qAsciiA(InQuotes)    mesa_uiOp_emit_pAsciiA ((pAsciiA_t) (InQuotes))

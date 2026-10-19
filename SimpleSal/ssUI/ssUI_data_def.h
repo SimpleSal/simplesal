@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_data_def.h        data and software definitions:  data definitions for the UI
  *
@@ -25,7 +24,8 @@
 // The focus control values are selected to create the Init state for the Ascii/LED ownership FSMs.
 // The same is true for the CmdZone and loop control values, they are private to ssUI so not shared.
 // -------------------------------------------------------------------------------------------------
-// [.\SimpleSal\ssDocs\ssUI\UI Considerations for ssUI.note]     select the method of initialization
+// [.\SimpleSal\ssDocs\ssUI\UI Considerations for ssUI.note]            select initialization method
+// [.\SimpleSal\ssDocs\ssTEA\ssTEA Initialization Build or Run.note]    select initialization method
 // -------------------------------------------------------------------------------------------------
 ssUI_control_t    ssUI_control
 #ifdef SSUI_ONEOF_CONTROL_INIT_BUILDTIME
@@ -68,7 +68,7 @@ void ssUI_InitState (void)
     ssUI_control.LoopOn_i = 0;
     ssUI_control.LoopOff_i = 0;
 
-    LED_RO                 = ssUI_ONEOF_Default_LED_RO_owner;
+    LED_RO                  = ssUI_ONEOF_Default_LED_RO_owner;
     LED_RO_active           = ssUI_ONEOF_Default_LED_RO_active;
     Ascii_ROs               = ssUI_ONEOF_Default_Ascii_RO_owner;
     Ascii_RO_active         = ssUI_ONEOF_Default_Ascii_RO_active;
@@ -312,8 +312,8 @@ ssUI_Token_t        gTknTimeEphemeral   = { pcTimeEphemeral, 13, NoBananas };
 // -------------------------------------------------------------------------------------------------
 typedef struct ssUI_TimeVarDesc_s
 {
-    ssUI_Token_t       VarToken;
-    ssT_pTime_t        pCodesName;
+    ssUI_Token_t       VarToken;                    // App user view of variable
+    ssT_pTime_t        pCodesName;                  // code's view of variable
 }   ssUI_TimeVarDesc_t,  *ssUI_pTimeVarDesc_t;
 
 typedef ssUI_TimeVarDesc_t     ssUI_TimeVar_t;
@@ -321,28 +321,28 @@ typedef ssUI_pTimeVarDesc_t    ssUI_pTimeVar_t;
 
 ssUI_TimeVar_t  ssUI_TimeVars[] =
 {   // this token                       refers to this Time Variable
-    {  gTknTimeCurr                     , ssT_gpTime_Current      },
-    {  gTknTimeBuilt                    , ssT_gpTime_Built        },
-    {  gTknTimeBigBang                  , ssT_gpTime_BigBang      },
-    {  gTknTimeEphemeral                , ssT_gpTime_Ephemeral    },
-    {  gTknWhile                        , ssUI_gpTime_While       },
-    {  gTknUntil                        , ssUI_gpTime_Until       },
-    {  gTknTimeA                        , ssUI_gpTimeA            },
-    {  gTknTimeB                        , ssUI_gpTimeB            },
-    {  gTknTimeC                        , ssUI_gpTimeC            },
-    {  gTknTimeD                        , ssUI_gpTimeD            },
-    {  gTknTimeE                        , ssUI_gpTimeE            },
-    {  gTknTimeF                        , ssUI_gpTimeF            },
-    {  ssUI_db_tknTimeVarNames_alloc[0] , &ssUI_db_timeVars_alloc[0]  },
-    {  ssUI_db_tknTimeVarNames_alloc[1] , &ssUI_db_timeVars_alloc[1]  },
-    {  ssUI_db_tknTimeVarNames_alloc[2] , &ssUI_db_timeVars_alloc[2]  },
-    {  ssUI_db_tknTimeVarNames_alloc[3] , &ssUI_db_timeVars_alloc[3]  },
-    {  ssUI_db_tknTimeVarNames_alloc[4] , &ssUI_db_timeVars_alloc[4]  },
-    {  ssUI_db_tknTimeVarNames_alloc[5] , &ssUI_db_timeVars_alloc[5]  },
-    {  ssUI_db_tknTimeVarNames_alloc[6] , &ssUI_db_timeVars_alloc[6]  },
-    {  ssUI_db_tknTimeVarNames_alloc[7] , &ssUI_db_timeVars_alloc[7]  },
-    {  ssUI_db_tknTimeVarNames_alloc[8] , &ssUI_db_timeVars_alloc[8]  },
-    {  ssUI_db_tknTimeVarNames_alloc[9] , &ssUI_db_timeVars_alloc[9]  }
+    {  gTknTimeCurr                     , ssT_gpTime_Current            },
+    {  gTknTimeBuilt                    , ssT_gpTime_Built              },
+    {  gTknTimeBigBang                  , ssT_gpTime_BigBang            },
+    {  gTknTimeEphemeral                , ssT_gpTime_Ephemeral          },
+    {  gTknWhile                        , ssUI_gpTime_While             },
+    {  gTknUntil                        , ssUI_gpTime_Until             },
+    {  gTknTimeA                        , ssUI_gpTimeA                  },
+    {  gTknTimeB                        , ssUI_gpTimeB                  },
+    {  gTknTimeC                        , ssUI_gpTimeC                  },
+    {  gTknTimeD                        , ssUI_gpTimeD                  },
+    {  gTknTimeE                        , ssUI_gpTimeE                  },
+    {  gTknTimeF                        , ssUI_gpTimeF                  },
+    {  ssUI_db_tknTimeVarNames_alloc[0] , &ssUI_db_timeVars_alloc[0]    },
+    {  ssUI_db_tknTimeVarNames_alloc[1] , &ssUI_db_timeVars_alloc[1]    },
+    {  ssUI_db_tknTimeVarNames_alloc[2] , &ssUI_db_timeVars_alloc[2]    },
+    {  ssUI_db_tknTimeVarNames_alloc[3] , &ssUI_db_timeVars_alloc[3]    },
+    {  ssUI_db_tknTimeVarNames_alloc[4] , &ssUI_db_timeVars_alloc[4]    },
+    {  ssUI_db_tknTimeVarNames_alloc[5] , &ssUI_db_timeVars_alloc[5]    },
+    {  ssUI_db_tknTimeVarNames_alloc[6] , &ssUI_db_timeVars_alloc[6]    },
+    {  ssUI_db_tknTimeVarNames_alloc[7] , &ssUI_db_timeVars_alloc[7]    },
+    {  ssUI_db_tknTimeVarNames_alloc[8] , &ssUI_db_timeVars_alloc[8]    },
+    {  ssUI_db_tknTimeVarNames_alloc[9] , &ssUI_db_timeVars_alloc[9]    }
 };
 #define TimeVar_TUPLE_CT    (ComputeArray_CT (ssUI_TimeVars, sizeof (ssUI_TimeVar_t)))
 #define TimeVar_TUPLE_MAX_I (TimeVar_TUPLE_CT-1)
@@ -392,10 +392,10 @@ ReadOnly pAsciiA_t  pcCompIsNEQ         = S("NEQ");
 ReadOnly pAsciiA_t  pcCompIsBefore      = S("Before");
 ReadOnly pAsciiA_t  pcCompIsEQBefore    = S("EQBefore");
 
-
 // -------------------------------------------------------------------------------------------------
-// The token parser returns an array of pointers to null-terminated ssHL arrays of Ascii values, each with a length.
-// The Token parser always works on the gTokens array, which can be indexed in source with these.
+// The Token parser creates the gTokens array contents, which can be indexed in software with these.
+// The token parser creates an array of pointers to tokens, each token has multiple attributes; the
+// most important is the pointer to a null-terminated sequence of Ascii values. found by the parser.
 // -------------------------------------------------------------------------------------------------
 #define ssUI_tkn1st_i           (0)
 #define ssUI_tkn2nd_i           (1)

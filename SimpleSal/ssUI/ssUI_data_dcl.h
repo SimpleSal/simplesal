@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_data_dcl.h      data type, prototype declarations: co-existence with SimpleSal's UI.
  *
@@ -9,6 +8,9 @@
 #ifndef __SSUI_DATA_DCL_H
 #define __SSUI_DATA_DCL_H
 
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------
 typedef struct ssUI_controlDesc_s
 {
     int                 BeVerbose;              // extra output during normal operation
@@ -29,11 +31,9 @@ typedef ssUI_pcontrolDesc_t   ssUI_pcontrol_t;
 
 // -------------------------------------------------------------------------------------------------
 // The mesa Resource Owner and RO FSMs
+// -------------------------------------------------------------------------------------------------
 #define     ssUI_isNot_owner    (false)
 #define     ssUI_is_owner       (true)
-
-// -------------------------------------------------------------------------------------------------
-// -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
 // ssHL compile-time algorithm to compute the number of elements in an instantiated/allocated array.
@@ -83,7 +83,7 @@ typedef struct ssUI_TokenDesc_s
 }   ssUI_TokenDesc_t, *ssUI_pTokenDesc_t;
 
 typedef ssUI_TokenDesc_t         ssUI_Token_t;
-typedef ssUI_pTokenDesc_t               ssUI_pToken_t;
+typedef ssUI_pTokenDesc_t        ssUI_pToken_t;
 
 #define pTokenNull              ((ssUI_pToken_t) NULL)
 #define NoBananas               (0)

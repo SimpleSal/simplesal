@@ -1,11 +1,12 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |   All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |   All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
- * ss_configuration.start   ssTEA and SimpleSal build choices and allocation choices are possible.
- *                          This SimpleSal file becomes "ss_configuration.h" in a new App project.
- *                          The App project file's revision over Time is under control of the App.
+ * ss_configuration.start   Fundamental build and allocation choices are defined in source files.
+ *
+ * The App version of this file, "ss_configuration.h", may change over Time under control of the App.
+ * SimpleSal suggests the App version exist outside the SimpleSal repo managed object (.\SimpleSal\).
+ * The contents of this file can of course be edited into any App file, the ownership is the App's.
  *
  **************************************************************************************************/
 #ifndef __SS_CONFIGURATION_H
@@ -200,15 +201,18 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // #define      SSE_OPTIN_ABOUTEVDB_DEBUG
 
 // ------------------------------------------------------------------------------------------------
-// [.\SimpleSal\ssDocs\swDev\FSMs- Init FSM Memory States.note]     select the initialization method
+// [.\SimpleSal\ssDocs\swDev\FSMs- Init FSM Memory States.note]        select initialization method
+// [.\SimpleSal\ssDocs\ssTEA\ssTEA Initialization Build or Run.note]   select initialization method
 // ------------------------------------------------------------------------------------------------
 // #define      SSTEA_ONEOF_CONTROL_INIT_RUNTIME
 // #define      SSTEA_ONEOF_CONTROL_INIT_BUILDTIME
 
 // ------------------------------------------------------------------------------------------------
+// Futures: the structure-fields of a Time variable may be compressed into a single 32-bit value.
+// Keeping the TU order, a bit value of <dayN><hrB><minA> can be compared to <dayN+1><hrY><minX>
 // A compressed Time value will shorten the comparison of two Times, but requires bit manipulation.
 // ------------------------------------------------------------------------------------------------
-// #define     SST_OPTIN_TIME_COMPRESSED_TUS    // Agency uses generated compressed values
+//  Future:  // #define     SST_OPTIN_TIME_COMPRESSED_TUS    // Agency uses generated compressed values
 
 // #define      SST_OPTIN_TIME_NSECS_TU        // creates a field, value defined by one algorithm
 #ifdef SST_OPTIN_TIME_NSECS_TU
@@ -237,10 +241,10 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // ------------------------------------------------------------------------------------------------
 // #define     SST_OPTIN_TIME_DEBUG
 #ifdef SST_OPTIN_TIME_DEBUG
-// #define     SST_OPTIN_TIME_DEBUG_ADDRESS
-// #define     SST_OPTIN_TIME_DEBUG_RAWDATA
-// #define     SST_OPTIN_TIME_DEBUG_IFS
-// #define     SST_OPTIN_TIME_DEBUG_SST_SUM
+// #define     SST_OPTIN_DEBUG_TIME_ADDRESS
+// #define     SST_OPTIN_DEBUG_TIME_RAWDATA
+// #define     SST_OPTIN_DEBUG_TIME_IFS
+// #define     SST_OPTIN_DEBUG_TIME_SST_SUM
 #endif  // SST_OPTIN_TIME_DEBUG
 
 // ------------------------------------------------------------------------------------------------
@@ -337,7 +341,6 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 #else   // did not accept SS_ACCEPT_SIMPLEST_CONFIG
 
 // #define      SSUI_UIBUFFER_ALLOC  x          // uncomment and put a number in for the 'x'
-
 // ------------------------------------------------------------------------------------------------
 // [.\SimpleSal\ssDocs\ssUI\UI Considerations for ssUI.note]     select the method of initialization
 // ------------------------------------------------------------------------------------------------
@@ -353,6 +356,11 @@ unsigned long int ssT_rawCt_msNow (unsigned long int usCt)
 // #define  SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
 
 #endif  // did not accept SS_ACCEPT_SIMPLEST_CONFIG
+
+// ------------------------------------------------------------------------------------------------
+// SSUI_BUFFER_ALLOC must be defined before get here, if only because loop limiters depend on it.
+// ------------------------------------------------------------------------------------------------
+#define      SSUI_UIBUFFER_MAX_I    (SSUI_UIBUFFER_ALLOC-1)
 
 // ------------------------------------------------------------------------------------------------
 // enabling this definition enables a mess of debug facilities that may be enabled/disabled.

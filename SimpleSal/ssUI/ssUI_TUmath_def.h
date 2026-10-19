@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_TUmath_def.h    data and software definitions:  Time math operations at the ssUI level.
  *
@@ -206,7 +205,7 @@ void ssUI_mathOp_Show_OneMathTerm (pAsciiA_t pdesc, pAsciiA_t pName)
 // -------------------------------------------------------------------------------------------------
 void    ssUI_mathOp_Show_AllMathTerms (ssUI_pMathOp_t pMO, boolean IsPreOp)
 {
-#ifdef SST_OPTIN_TIME_DEBUG_ADDRESS
+#ifdef SST_OPTIN_DEBUG_TIME_ADDRESS
     ss_uiOp_emit_newline ();
     ss_uiOp_emit_qAsciiA (( (IsPreOp) ? "pre-op " : "post-op" ));
     ss_uiOp_emit_qAsciiA (":   pLvalue  <");
@@ -217,7 +216,7 @@ void    ssUI_mathOp_Show_AllMathTerms (ssUI_pMathOp_t pMO, boolean IsPreOp)
     ss_uiOp_emit_Hex_32bits   ((unsigned long) pMO->pOperand2);
     ss_uiOp_emit_1      (Ascii_Rarrow);
     ss_uiOp_emit_newline ();
-#endif  // SST_OPTIN_TIME_DEBUG_ADDRESS
+#endif  // SST_OPTIN_DEBUG_TIME_ADDRESS
     if (!IsPreOp)
     {
         ss_uiOp_emit_newline ();

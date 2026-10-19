@@ -1,4 +1,4 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
 This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 ---------------------------------------------------------------------------------------------------
@@ -15,6 +15,11 @@ This software is distributed in the hope that it will be useful, but WITHOUT ANY
 // Work-in-Process handlers can be started and developed here for an easier file experience.
 // "ssUI_menucore_*.h" was used for stable and probably working software that doesn't change.
 // The user will have included "ssUI_menu_dcl.h" and "ssUI_menucore_dcl.h" to get here.
+// -------------------------------------------------------------------------------------------------
+// for clarity while shortening references that occur many times, ssTEA ideas may be redefined.
+// -------------------------------------------------------------------------------------------------
+#define     pAAN            (pAsciiANull)
+
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // The commands and parameters of the UI are handled by an FSM called "CmdFSM"; this FSM uses tables.

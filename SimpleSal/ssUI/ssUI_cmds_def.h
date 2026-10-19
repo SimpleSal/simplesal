@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_cmds_def.h        data and software definitions:  command string management and publication
  *
@@ -10,12 +9,14 @@
 #define __SSUI_CMDS_DEF_H
 
 // =================================================================================================
-
 // -------------------------------------------------------------------------------------------------
 // [.\SimpleSal\ssDocs\ssUI\UI Considerations for ssUI.note]      stored input sequences: CMD arrays
 // -------------------------------------------------------------------------------------------------
 #ifdef SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
 
+pAsciiA_t   pc_CmdsOff = "cmds off";
+
+// =================================================================================================
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsMENUS[] =
 {
@@ -48,8 +49,8 @@ pCmd_t pcCmdsMENUS[] =
     "evapi evapi0 apifsm state",
     "evapi evapi0 apifsm stats",
     "evapi evapi0 access off",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_MENUS
+    pc_CmdsOff
 };  //
 
 // -------------------------------------------------------------------------------------------------
@@ -63,8 +64,8 @@ pCmd_t pcCmdsMATH[] =
     "timea=timeb-timec",
     "timea=timec+timeb",
     "timea=timec-timeb",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_MATH
+    pc_CmdsOff
 };
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsMATHGOOD[] =
@@ -161,8 +162,8 @@ pCmd_t pcCmdsMATHGOOD[] =
     "math timef=timef-timeb",
     "math timec=timef",
 
-#endif
-    "cmds off"
+#endif // SSUI_OPTIN_CMDS_MATHGOOD
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsEVENTS[] =
@@ -178,8 +179,8 @@ pCmd_t pcCmdsEVENTS[] =
     "evapi0 apifsm run",
     "evapi0 runfsm start",
     "up",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_EVENTS
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsTIMEOFDAY[] =
@@ -195,8 +196,8 @@ pCmd_t pcCmdsTIMEOFDAY[] =
     "loop while timecurr < timeb ",
     "loop on",
     "loop off",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_TIMEOFDAY
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsSSUICLOCK[] =
@@ -209,8 +210,8 @@ pCmd_t pcCmdsSSUICLOCK[] =
     "loop on",
     "math timecurr",
     "loop off",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_SSUICLOCK
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsTIMERLOOP[] =
@@ -245,8 +246,8 @@ pCmd_t pcCmdsTIMERLOOP[] =
     "math timed=timec",
     "math timec=timed-1.0.1mn",
     "loop off",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_TIMERLOOP
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 //  THIS IS NOT AN ARRAY OF POINTERS, IT IS A #define OF AN ARRAY OF POINTERS
@@ -272,7 +273,7 @@ pCmd_t pcCmdsTIMERLOOP[] =
     "timeb=timec",          \
     "timec=timeb+timea",    \
     "timeb=timec",
-#endif
+#endif  // SSUI_OPTIN_CMDS_CARRY
 // -------------------------------------------------------------------------------------------------
 //  THIS IS NOT AN ARRAY OF POINTERS, IT IS A #define OF AN ARRAY OF POINTERS
 #ifdef SSUI_OPTIN_CMDS_BORROW
@@ -297,7 +298,7 @@ pCmd_t pcCmdsTIMERLOOP[] =
     "timeb=timec",          \
     "timec=timeb-timea",    \
     "timeb=timec",
-#endif
+#endif  // SSUI_OPTIN_CMDS_BORROW
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsBORROW[] =
 {
@@ -306,8 +307,8 @@ pCmd_t pcCmdsBORROW[] =
     "up", "up", "up", "up",
     "math",
      Borrow10
-#endif
-    "cmds off"
+#endif  // pcCmdsBORROW
+    pc_CmdsOff
 };  //
 pCmd_t pcCmdsCARRY[] =
 {
@@ -316,8 +317,8 @@ pCmd_t pcCmdsCARRY[] =
     "up", "up", "up", "up",
     "math",
      Carry10
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_CARRY
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsCMDZONES[] =
@@ -326,8 +327,8 @@ pCmd_t pcCmdsCMDZONES[] =
 #ifdef SSUI_OPTIN_CMDS_CMDZONES
     "cmds", "up", "loop", "up", "math", "up", "evapi", "up",
     "cmds", "loop", "math", "evapi", "cmds", "up", "up", "up", "up", "up",
-#endif
-    "cmds off"
+#endif  // pcCmdsCMDZONES
+    pc_CmdsOff
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsERRORS[] =
@@ -335,7 +336,7 @@ pCmd_t pcCmdsERRORS[] =
     "echo pcCmdsERRORS",
 #ifdef SSUI_OPTIN_CMDS_ERRORS
     "9a", "61sc", "1577ms", "0dy", "25hr", "88mn", "1111ms", "2222us", "3333ns",
-#endif
+#endif  // SSUI_OPTIN_CMDS_ERRORS
     "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
@@ -359,8 +360,8 @@ pCmd_t pcCmdsPASSES[] =
     "timea=timeb",
     "timec=timed+timea",
     "up",
-#endif
-    "cmds off"
+#endif  // SSUI_OPTIN_CMDS_PASSES
+    pc_CmdsOff
 };  //
 
 // -------------------------------------------------------------------------------------------------
@@ -398,9 +399,11 @@ ssUI_Token_t  cmdsTkn_passes     = { S("passes"),    6, NoBananas };
 // -------------------------------------------------------------------------------------------------
 CmdArrayLink_t  CmdArrayLinks[] =
 {  // <test name to match>   <&(array of char const *)>  <(array of char const *) max index>
+
 #ifdef SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP
     SSUI_PLEASE_INCLUDE_THESE_APP_CMDS
 #endif  // SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_APP
+
 #ifdef SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
     {  &cmdsTkn_menus     ,  &pcCmdsMENUS[0]      ,      Compute_pCharNArray_MAX_I(pcCmdsMENUS    )  } ,
     {  &cmdsTkn_math      ,  &pcCmdsMATH[0]       ,      Compute_pCharNArray_MAX_I(pcCmdsMATH     )  } ,
@@ -415,6 +418,7 @@ CmdArrayLink_t  CmdArrayLinks[] =
     {  &cmdsTkn_errors    ,  &pcCmdsERRORS[0]     ,      Compute_pCharNArray_MAX_I(pcCmdsERRORS   )  } ,
     {  &cmdsTkn_passes    ,  &pcCmdsPASSES[0]     ,      Compute_pCharNArray_MAX_I(pcCmdsPASSES   )  }
 #endif      // SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
+
 };
 // -------------------------------------------------------------------------------------------------
 // These defined macros are referenced by initialization of the table field "how many pointers?".

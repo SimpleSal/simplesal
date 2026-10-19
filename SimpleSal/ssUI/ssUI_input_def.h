@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssUI_input_def.h     definition of services to manipulate prompts, menus, serial/ssHL input streams.
  *
@@ -389,9 +388,11 @@ boolean ssUI_inOp_Line_FromSerial (pAsciiA_t pUserBuff, int userMax_i)
         ssUI_gInputCollected_Ct = 0;                         //
 
 #ifdef DEBUG_BYTE_INPUT
-        mesa_uiOp_emit_qAsciiA ("[");
+        mesa_uiOp_emit_1 (Ascii_squareLBracket);
+        mesa_uiOp_emit_1 (Ascii_squareLBracket);            // look different than any prompt
         mesa_uiOp_emit_pAsciiA (pUserBuff_Orig);
-        mesa_uiOp_emit_qAsciiA ("]");
+        mesa_uiOp_emit_1 (Ascii_squareRBracket);
+        mesa_uiOp_emit_1 (Ascii_squareRBracket);            // look different than any prompt
         mesa_uiOp_emit_newline ();
 #endif // DEBUG_BYTE_INPUT
         return (true);              // found at least one "line" in the input stream
@@ -1127,11 +1128,11 @@ void    ssUI_tknOp_Show_AllTkns (pAsciiA_t   pDescription)
         ss_uiOp_emit_1 (Ascii_Colon);
         ss_uiOp_emit_Int_999 (gTokens[tkn_i].valueCt);
         ss_uiOp_emit_1 (Ascii_Rarrow);
-#endif
+#endif  //DO_DUMP_ADDR_LEN
 #ifdef DO_DUMP_TOKENS
         ss_uiOp_emit_1 (Ascii_Colon);
         ss_uiOp_emit_lbld_AsciiA (S("token[i]"), gTokens[tkn_i].pAsciiA);
-#endif
+#endif  // DO_DUMP_TOKENS
     }   // for
     ss_uiOp_emit_newline ();
 }   // ssUI_tknOp_Show_AllTkns

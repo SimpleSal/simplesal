@@ -1,22 +1,22 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssT_time_dcl.h       data type, prototype declarations: the Time subsystem of ssTEA.
  *
  ---------------------------------------------------------------------------------------------------- */
 #ifndef __SST_TIME_DCL_H
 #define __SST_TIME_DCL_H
+
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 // The focus of This software is : "Time" as a data type; operations implemented using Time values.
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As A Signal.note     start here to understand why math is necessary
+// [.\SimpleSal\ssDocs\ssTEA\Time As A Signal.note]   start here to understand why math is necessary
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As An Arrow.note    the simplest way to do simple math using a Time
+// [.\SimpleSal\ssDocs\ssTEA\Time As An Arrow.note]  the simplest way to do simple math using a Time
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As An FSM.note      the complex way to do complex math using a Time
+// [.\SimpleSal\ssDocs\ssTEA\Time As An FSM.note]    the complex way to do complex math using a Time
 // -------------------------------------------------------------------------------------------------
 // =================================================================================================
 
@@ -161,21 +161,15 @@ void  ssT_mathOp_P1getsP1operP2_as_an_FSM (ssT_pTime_t pLvalue, ssT_pTime_t pOpe
 
 // -------------------------------------------------------------------------------------------------
 
-void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2);
-#undef  COMPARE_P1andP2
-#define COMPARE_P1andP2     ssT_mathOp_P1compareP2_WithLogic
-
-// -------------------------------------------------------------------------------------------------
-
 void ssT_timeOp_Show_MathSmallRaw (TimeMathValueSmall_t MathValueSmall);
 void ssT_timeOp_Show_TimeUnitsRaw (pAsciiA_t pName, ssT_Time_t *pTime, TimeMathValueSmall_t EON);
 
 // -------------------------------------------------------------------------------------------------
 // compressed Time value is independent from whether the uncompressed comparison is math or logic.
 // -------------------------------------------------------------------------------------------------
-#ifdef  SST_OPTIN_TIME_COMPRESSED_TUS
-void ssT_mathOp_P1compareP2_Compressed (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2);
-#endif  // SST_OPTIN_TIME_COMPRESSED_TUS
+//  Future: #ifdef  SST_OPTIN_TIME_COMPRESSED_TUS
+//  Future: void ssT_mathOp_P1compareP2_Compressed (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2);
+//  Future: #endif  // SST_OPTIN_TIME_COMPRESSED_TUS
 
 // -------------------------------------------------------------------------------------------------
 // These "If" functions make use of the "compare" functions as selected IN by the configuration.

@@ -1,8 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    The contents of this file are the opinion of TSC LLC about a specific topic, no license applies to it.
   -------------------------------------------------------------- */
-
-   ---------------------------------------------------------------------------------------------------
 
 
 // S~S  SimpleSal signal starts  S~S
@@ -51,8 +49,7 @@
    ------------------------------------------------------------------------------------------------
    "Pin Mode" is a common concept based on electronics fundamentals; implementation may vary by Mesa
    with respect to the values used to configure each Mesa.  Creating an abstract symbol here, and
-   using it in the software that is common to all Mesas, allows the focus of variation to be here.
-   ----------------------------------------------------------------------------------------------------
+   using it in the software that is common to all Mesas, allows the focus of variation to be here.-
    typedef enum PinMode_e
 
 

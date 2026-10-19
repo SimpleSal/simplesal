@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssIO_DMAs_dcl.h      data type, prototype declarations: interact with true/virtual registers.
  *
@@ -22,13 +21,13 @@ typedef  unsigned long int *pPhysMemory_t;      // any memory or device which ca
 
 typedef struct DMA_Engine_Desc_s
 {
-    unsigned int    Count;              // number of 32-bit bus transfers to perform From->To
-    pPhysMemory_t   pFromLocation;      // said one way: physical memory address with bits 1:0 == 0
-    pPhysMemory_t   pToLocation;        // said another way: a 32-bit-aligned physical memory address
+    unsigned int    Count;          // 32-bit transfers to perform From->To using 32-bit addresses
+    pPhysMemory_t   pFromLocation;  // 32-bit transfers using 32-bit addresses with bits 1:0 == 0
+    pPhysMemory_t   pToLocation;    // the 32-bit memory adress points to a 32-bit memory space
 
     unsigned int    Control;            // as defined by specific DMA engine
     unsigned int    Status;
-    // Future:L  need example complement of attributes emulating DMA engine
+    // Future:  need example complement of attributes emulating DMA engine
 }   DMA_Engine_Desc_t;
 
 typedef DMA_Engine_Desc_t   ssIO_DMA_Engine_t;

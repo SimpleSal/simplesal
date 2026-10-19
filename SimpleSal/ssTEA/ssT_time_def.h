@@ -1,7 +1,6 @@
-/* -- SimpleSal: ssTEA, ssUI, and ssIO | (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
+/* -- SimpleSal: ssTEA, ssUI, and ssIO | Copyright (C) 2025, 2026 TruSoft Computing LLC |  All rights reserved. --
    This software is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
    This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-   ---------------------------------------------------------------------------------------------------
  *
  * ssT_time_def.h       data and software definitions: ssTEA subcomponent Time
  *
@@ -11,21 +10,21 @@
 
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As A Signal.note     start here to understand why math is necessary
+// [.\SimpleSal\ssDocs\ssTEA\Time As A Signal.note]   start here to understand why math is necessary
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As An Arrow.note    the simplest way to do simple math using a Time
+// [.\SimpleSal\ssDocs\ssTEA\Time As An Arrow.note]  the simplest way to do simple math using a Time
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As An FSM.note      the complex way to do complex math using a Time
-// -------------------------------------------------------------------------------------------------
-// =================================================================================================
-// -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As A Signal.note                                 The source of Time
-// -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As A Signal.note                 The source of knowledge about Time
+// [.\SimpleSal\ssDocs\ssTEA\Time As An FSM.note]    the complex way to do complex math using a Time
 // -------------------------------------------------------------------------------------------------
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
-// .\SimpleSal\ssDocs\ssTEA\Time As A Signal.note              Time knowledge from perceived signals
+// [.\SimpleSal\ssDocs\ssTEA\Time As A Signal.note]                               The source of Time
+// -------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\ssTEA\Time As A Signal.note]               The source of knowledge about Time
+// -------------------------------------------------------------------------------------------------
+// =================================================================================================
+// -------------------------------------------------------------------------------------------------
+// [.\SimpleSal\ssDocs\ssTEA\Time As A Signal.note]            Time knowledge from perceived signals
 // -------------------------------------------------------------------------------------------------
 typedef struct ssTEA_Time_ctsDesc_s
 {
@@ -514,12 +513,13 @@ boolean ssT_stampOp_TimeOfBuild_AsciiToTime  (pAsciiA_t pBuff)
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 #ifdef  SST_OPTIN_TIME_COMPRESSED_TUS
-void    ssT_mathOp_P1compareP2_Compressed (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
-{
-}   // ssT_mathOp_P1compareP2_Compressed
+//  Future: void    ssT_mathOp_P1compareP2_Compressed (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
+//  Future: {
+//  Future: }   // ssT_mathOp_P1compareP2_Compressed
 // -------------------------------------------------------------------------------------------------
 void ssT_mathOp_P1getsP1_Compressed (ssT_pTime_t pLvalue)
 {
+    //  Future: bit shifting and masking operation to convert Time value to series of bit fields
 }   // ssT_mathOp_P1getsP1_Compressed
 #endif  // SST_OPTIN_TIME_COMPRESSED_TUS
 // =================================================================================================
@@ -684,10 +684,8 @@ void  ssT_mathOp_P1getsP1operP2_is_an_arrow (ssT_pTime_t pLvalue, ssT_pTime_t pO
 }   // ssT_mathOp_P1getsP1operP2_is_an_arrow
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
-{
-//  Future:      COMPARE_P1andP2 (&mathOpResult, pOperand1, pOperand2);
-//  Future:
+//  Future: void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
+//  Future: {
 //  Future:      if (!mathOpResult.Valid)
 //  Future:      {   // if result is invalid, Time1 is after Time2 regardless of value of either
 //  Future:          DEBUG_IFS_Banner ("  math result not valid: Op1 not before Op2");
@@ -727,8 +725,7 @@ void    ssT_mathOp_P1compareP2_WithLogic (ssT_pTime_t pLvalue, ssT_pTime_t pOper
 //  Future:          // pos P1 compared pos P2 with negative result means P1 IS before P2
 //  Future:          return (false);                                     // P1 is not before (less neg than) P2
 //  Future:      }   // operand 1 is negative
-//  Future:
-}   // ssT_mathOp_P1compareP2_WithLogic
+//  Future: }   // ssT_mathOp_P1compareP2_WithLogic
 
 #endif  // SST_ONEOF_TIME_IS_AN_ARROW
 
@@ -1392,10 +1389,10 @@ void ss_uiOp_Show_Time (ssT_pTime_t pTime, boolean AddNewline)
         ss_uiOp_emit_qBanner (lfY, "flaw: null pointer to {ss_uiOp_Show_Time} function", AddNewline);
         return;
     }
-#ifdef SST_OPTIN_TIME_DEBUG_ADDRESS
+#ifdef SST_OPTIN_DEBUG_TIME_ADDRESS
     ss_uiOp_emit_qAsciiA ("Time data @");
     ss_uiOp_emit_Hex_32bits (pTime);
-#endif  // SST_OPTIN_TIME_DEBUG_ADDRESS
+#endif  // SST_OPTIN_DEBUG_TIME_ADDRESS
     ss_uiOp_emit_1 (Ascii_squareLBracket);
     ss_uiOp_emit_1 ((pTime->Valid) ? Ascii_V : Ascii_v);
 
@@ -1524,7 +1521,7 @@ ssT_math_CmpState_t  ssT_timeIf_P1compareP2 (ssT_pTime_t pOperand1, ssT_pTime_t 
 // -------------------------------------------------------------------------------------------------
 // [.\SimpleSal\ssDocs\swDev\Software Developer Tricks.note]    macros make function calls disappear
 // -------------------------------------------------------------------------------------------------
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
 #define DEBUG_IFS_Banner_lfY(pAA)  ss_uiOp_emit_qBanner (lfN, S(pAA), lfY)
 #define DEBUG_IFS_Banner_lfN(pAA)  ss_uiOp_emit_qBanner (lfN, S(pAA), lfN)
 ReadOnly pAsciiA_t pc_NoItIsNotMsg = S("no it is not");
@@ -1532,7 +1529,7 @@ ReadOnly pAsciiA_t pc_YesItIsMsg = S("yes it is");
 #else   // not debugging IFS
 #define DEBUG_IFS_Banner_lfY(pAA)
 #define DEBUG_IFS_Banner_lfN(pAA)
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 // -------------------------------------------------------------------------------------------------
 // a Time value of Zero is defined as "Valid, Positive, all Time Units have the value Zero".
 // asking the question about a Time causes the Zero flag to be updated based on the current value.
@@ -1573,7 +1570,7 @@ boolean ssT_timeIf_P1beforeP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
 {
     ssT_math_CmpState_t math_CmpState;
 
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
     if (OK_to_Blast_Ascii_Live ())
     {
         DEBUG_IFS_Banner_lfY ("is Op1 before Op2?");
@@ -1582,7 +1579,7 @@ boolean ssT_timeIf_P1beforeP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
         DEBUG_IFS_Banner_lfN ("    Op2 : ");
         ss_uiOp_Show_Time (pOperand2, lfY);
     }
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 
     math_CmpState = ssT_timeIf_P1compareP2 (pOperand1, pOperand2);
     switch (math_CmpState)
@@ -1603,13 +1600,13 @@ boolean ssT_timeIf_P1equalsORbeforeP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOpera
 {
     ssT_math_CmpState_t math_CmpState;
 
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
     DEBUG_IFS_Banner_lfY ("is Op1 EQ or before Op2?");
     DEBUG_IFS_Banner_lfN ("    Op1 : ");
     ss_uiOp_Show_Time (pOperand1, lfY);
     DEBUG_IFS_Banner_lfN ("    Op2 : ");
     ss_uiOp_Show_Time (pOperand2, lfY);
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 
     math_CmpState = ssT_timeIf_P1compareP2 (pOperand1, pOperand2);
     switch (math_CmpState)
@@ -1630,7 +1627,7 @@ boolean ssT_timeIf_P1afterP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
 {
     ssT_math_CmpState_t math_CmpState;
 
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
     if (OK_to_Blast_Ascii_Live ())
     {
         DEBUG_IFS_Banner_lfY ("is Op1 after Op2?");
@@ -1639,7 +1636,7 @@ boolean ssT_timeIf_P1afterP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperand2)
         DEBUG_IFS_Banner_lfN ("    Op2 : ");
         ss_uiOp_Show_Time (pOperand2, lfY);
     }
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 
     math_CmpState = ssT_timeIf_P1compareP2 (pOperand1, pOperand2);
     switch (math_CmpState)
@@ -1660,7 +1657,7 @@ boolean ssT_timeIf_P1equalsORafterP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperan
 {
     ssT_math_CmpState_t math_CmpState;
 
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
     if (OK_to_Blast_Ascii_Live ())
     {
         DEBUG_IFS_Banner_lfY ("is Op1 EQ or after Op2?");
@@ -1669,21 +1666,21 @@ boolean ssT_timeIf_P1equalsORafterP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperan
         DEBUG_IFS_Banner_lfN ("    Op2 : ");
         ss_uiOp_Show_Time (pOperand2, lfY);
     }
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 
     math_CmpState = ssT_timeIf_P1compareP2 (pOperand1, pOperand2);
     switch (math_CmpState)
     {
         case eCmpState_Before   :
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
             if (OK_to_Blast_Ascii_Live ())  DEBUG_IFS_Banner_lfY (pc_NoItIsNotMsg);
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
             return (false);
         case eCmpState_Equal    :
         case eCmpState_After    :
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
             if (OK_to_Blast_Ascii_Live ())  DEBUG_IFS_Banner_lfY (pc_YesItIsMsg);
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
             return (true);
     }   // switch compare result state
     return (false);     // the ssHL compiler cannot detect that every switch case is covered?
@@ -1694,13 +1691,13 @@ boolean ssT_timeIf_P1equalsORafterP2 (ssT_pTime_t pOperand1, ssT_pTime_t pOperan
 // -------------------------------------------------------------------------------------------------
 void  ssT_mathOp_P1getsP1plusP2 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1)
 {
-#ifdef SST_OPTIN_TIME_DEBUG_RAWDATA
+#ifdef SST_OPTIN_DEBUG_TIME_RAWDATA
     if (pOperand1 != &QuickTimeForMath)
     {
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw: Lvalue  "), pLvalue, 0);
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw: Operand "), pOperand1, 0);
     }
-#endif // SST_OPTIN_TIME_DEBUG_RAWDATA
+#endif // SST_OPTIN_DEBUG_TIME_RAWDATA
 
     // --------------------------------------------------------------------------------------------
     // Time Math doesn't care about the methods of TU Math; Time as a Line or FSM chooses P1operP2.
@@ -1711,16 +1708,16 @@ void  ssT_mathOp_P1getsP1plusP2 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1)
 #endif  // SST_OPTIN_TIME_COMPRESSED_TUS
     // --------------------------------------------------------------------------------------------
 
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
     if (pOperand1 != &QuickTimeForMath)
     {
         ss_uiOp_emit_qBanner (lfY, "Time: P1 gets P1 plus P2:", lfN);
         ss_uiOp_Show_Time (pLvalue, lfY);
-#ifdef SST_OPTIN_TIME_DEBUG_RAWDATA
+#ifdef SST_OPTIN_DEBUG_TIME_RAWDATA
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw: result  "), pLvalue, 0);
-#endif  // SST_OPTIN_TIME_DEBUG_RAWDATA
+#endif  // SST_OPTIN_DEBUG_TIME_RAWDATA
     }
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 }   // ssT_mathOp_P1getsP1plusP2
 // -------------------------------------------------------------------------------------------------
 // On error, leave the Lvalue zeroed but then set !Valid, easily changed later to be a valid zero.
@@ -1747,13 +1744,13 @@ void  ssT_mathOp_P1getsP2plusP3 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1, ssT
 // -------------------------------------------------------------------------------------------------
 void  ssT_mathOp_P1getsP1minusP2 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1)
 {
-#ifdef SST_OPTIN_TIME_DEBUG_RAWDATA
+#ifdef SST_OPTIN_DEBUG_TIME_RAWDATA
     if (pOperand1 != &QuickTimeForMath)
     {
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw: Lvalue  "), pLvalue, 0);
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw: Operand "), pOperand1, 0);
     }
-#endif  // SST_OPTIN_TIME_DEBUG_RAWDATA
+#endif  // SST_OPTIN_DEBUG_TIME_RAWDATA
 
     // --------------------------------------------------------------------------------------------
     // simple math cannot perform subtraction operations; there is no subtracting time in baseball
@@ -1764,16 +1761,16 @@ void  ssT_mathOp_P1getsP1minusP2 (ssT_pTime_t pLvalue, ssT_pTime_t pOperand1)
 #endif  // SST_OPTIN_TIME_COMPRESSED_TUS
     // --------------------------------------------------------------------------------------------
 
-#ifdef SST_OPTIN_TIME_DEBUG_IFS
+#ifdef SST_OPTIN_DEBUG_TIME_IFS
     if (pOperand1 != &QuickTimeForMath)
     {
         ss_uiOp_emit_qBanner (lfY, "Time: P1 gets P1 minus P2:", lfN);
         ss_uiOp_Show_Time (pLvalue, lfY);
-#ifdef SST_OPTIN_TIME_DEBUG_RAWDATA
+#ifdef SST_OPTIN_DEBUG_TIME_RAWDATA
         ssT_timeOp_Show_TimeUnitsRaw (S(" raw:  lvalue result"), pLvalue, 0);
-#endif  // SST_OPTIN_TIME_DEBUG_RAWDATA
+#endif  // SST_OPTIN_DEBUG_TIME_RAWDATA
     }
-#endif  // SST_OPTIN_TIME_DEBUG_IFS
+#endif  // SST_OPTIN_DEBUG_TIME_IFS
 }   // ssT_mathOp_P1getsP1minusP2
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
