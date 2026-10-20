@@ -14,8 +14,6 @@
 // -------------------------------------------------------------------------------------------------
 #ifdef SSUI_OPTIN_INCLUDE_CMDS_IN_SSUI_SSUI
 
-pAsciiA_t   pc_CmdsOff = "cmds off";
-
 // =================================================================================================
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsMENUS[] =
@@ -50,7 +48,7 @@ pCmd_t pcCmdsMENUS[] =
     "evapi evapi0 apifsm stats",
     "evapi evapi0 access off",
 #endif  // SSUI_OPTIN_CMDS_MENUS
-    pc_CmdsOff
+    "cmds off"
 };  //
 
 // -------------------------------------------------------------------------------------------------
@@ -65,7 +63,7 @@ pCmd_t pcCmdsMATH[] =
     "timea=timec+timeb",
     "timea=timec-timeb",
 #endif  // SSUI_OPTIN_CMDS_MATH
-    pc_CmdsOff
+    "cmds off"
 };
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsMATHGOOD[] =
@@ -163,7 +161,7 @@ pCmd_t pcCmdsMATHGOOD[] =
     "math timec=timef",
 
 #endif // SSUI_OPTIN_CMDS_MATHGOOD
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsEVENTS[] =
@@ -180,7 +178,7 @@ pCmd_t pcCmdsEVENTS[] =
     "evapi0 runfsm start",
     "up",
 #endif  // SSUI_OPTIN_CMDS_EVENTS
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsTIMEOFDAY[] =
@@ -197,7 +195,7 @@ pCmd_t pcCmdsTIMEOFDAY[] =
     "loop on",
     "loop off",
 #endif  // SSUI_OPTIN_CMDS_TIMEOFDAY
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsSSUICLOCK[] =
@@ -211,7 +209,7 @@ pCmd_t pcCmdsSSUICLOCK[] =
     "math timecurr",
     "loop off",
 #endif  // SSUI_OPTIN_CMDS_SSUICLOCK
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsTIMERLOOP[] =
@@ -247,7 +245,7 @@ pCmd_t pcCmdsTIMERLOOP[] =
     "math timec=timed-1.0.1mn",
     "loop off",
 #endif  // SSUI_OPTIN_CMDS_TIMERLOOP
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 //  THIS IS NOT AN ARRAY OF POINTERS, IT IS A #define OF AN ARRAY OF POINTERS
@@ -308,7 +306,7 @@ pCmd_t pcCmdsBORROW[] =
     "math",
      Borrow10
 #endif  // pcCmdsBORROW
-    pc_CmdsOff
+    "cmds off"
 };  //
 pCmd_t pcCmdsCARRY[] =
 {
@@ -318,7 +316,7 @@ pCmd_t pcCmdsCARRY[] =
     "math",
      Carry10
 #endif  // SSUI_OPTIN_CMDS_CARRY
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsCMDZONES[] =
@@ -328,7 +326,7 @@ pCmd_t pcCmdsCMDZONES[] =
     "cmds", "up", "loop", "up", "math", "up", "evapi", "up",
     "cmds", "loop", "math", "evapi", "cmds", "up", "up", "up", "up", "up",
 #endif  // pcCmdsCMDZONES
-    pc_CmdsOff
+    "cmds off"
 };  //
 // -------------------------------------------------------------------------------------------------
 pCmd_t pcCmdsERRORS[] =
@@ -361,7 +359,7 @@ pCmd_t pcCmdsPASSES[] =
     "timec=timed+timea",
     "up",
 #endif  // SSUI_OPTIN_CMDS_PASSES
-    pc_CmdsOff
+    "cmds off"
 };  //
 
 // -------------------------------------------------------------------------------------------------

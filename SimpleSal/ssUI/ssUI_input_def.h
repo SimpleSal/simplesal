@@ -36,15 +36,18 @@ TimeUnitsBig_t      ms_EOL_Timer;
 
 // -------------------------------------------------------------------------------------------------
 // The Ascii receive FSM can be tested and stressed by changing the baud rate to a slow/high rate.
+// Modern computers have USB devices that appear to be RS-232.  The FSM assumes a physical RS-232,
+// because in an asynchronous communication signal the clock is agreed upon in advance by both ends.
+// This may be a compile-time value or negotiated while connecting, but the clock rate is agreed to.
 // -------------------------------------------------------------------------------------------------
 // If life delivers bytes to the serial input device as fast as they can be emitted at this baud,
-// now many bytes is that per millisecond?  The FSM is bounded by Time periods, each period is
-// 1 millisecond long; at each boundary the fifo grants itself Agency to receive bytes into the fifo.
+// now many bytes is that per millisecond?  The FSM is bounded by Time periods, each period is one
+// millisecond long; at each boundary the fifo grants itself Agency to receive bytes into the fifo.
 // -------------------------------------------------------------------------------------------------
-// RS232 uses 10 bits per byte, 38400 bits in 1 second means 3840 10-bit bytes. During each of the
+// RS2-32 uses 10 bits per byte, 38400 bits in 1 second means 3840 10-bit bytes. During each of the
 // 1-millisecond periods in 1 second, the capacity of the medium was 3.8 bytes.  Round result up and
 // check for new bytes every millisecond, and at most the collection will get 3 or 4 bytes added.
-// If no bytes arrive during one millisecond, 3 or 4 BYTE TIME PERIODS have gone by; LINES done.
+// If no bytes arrive during one millisecond, 3 or 4 BYTE TIME PERIODS have gone by; LINES is done.
 // -------------------------------------------------------------------------------------------------
 #define Ascii_Computed_BytesPerMS    (((THIS_BUILDS_BAUD_RATE / 10) + 500) / 1000)
 
