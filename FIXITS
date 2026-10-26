@@ -1,15 +1,41 @@
 
    This file thinks it is:  FIXITS in the SimpleSal/simplesal repo root
 
-=======-=============
+=====================
 
 TruSoft Computing LLC
 
    S~S FIXITs metadata: Known, admitted, accepted, and never-solved problems with this version.
 
-=======-=============
+=====================
 
-  SimpleSal, as a collection of software, is initially released without any known problems of any kind.
+ S~S Changes to a repository have been published by SimpleSal
+
+------------------------------------------
+
+ GitHub username                SimpleSal
+
+   repository                   simplesal
+
+     branch                     main-simplesal
+
+       tag on branch            publish-261026
+
+ Date of Publishment            October 26, 2026
+
+ TSC LLC Version Identifier     261026
+
+ Human version Identifier       v1.0.0
+
+------------------------------------------
+
+ S~S  Release notes version 261026: formal publishment of SimpleSal v1.0
+
+------------------------------------------
+
+=====================
+
+  SimpleSal, as a collection of software, is first published without any known problems of any kind.
 
 ------------------------------------------
 
@@ -23,6 +49,6 @@ TruSoft Computing LLC
 
 ------------------------------------------
 
-=======-=============
+=====================
 
  Copyright (c) 2026  TruSoft Computing LLC.  All Rights Reserved.

@@ -25,17 +25,19 @@ TruSoft Computing LLC
 
      branch                     main-simplesal
 
-       label on branch          publish-261016
+       tag on branch            publish-261026
 
- Date of Publishment            October 16, 2026
+ Date of Publishment            October 26, 2026
 
- TSC LLC Version identifier     261016
+ TSC LLC Version identifier     261026
 
- Human version identifier       v1.0.0
+ Human version identifier       v1.0.2
 
 ------------------------------------------
 
     SimpleSal Soft Open publishment
+
+------------------------------------------
 
   This publishment implements the changes required to transition from the state of
       big 'D', "Developing software" to the state of big 'P', "Publishing software".
@@ -44,17 +46,24 @@ TruSoft Computing LLC
   the contents of the Blob in all forms (source files, algorithms, help documents)
   relate to this instance of the software being published, using the same concepts.
 
+  Within the management software for the repository database,
+     tags are used to identify a collection of files that is considered coherent by TSC LLC.
+
+  A SimpleSal App consists of the App at vx.y.z uses and is dependent upon simplesal at va.b.c.
+
 ------------------------------------------
 
-  Why is the human version is "v1.0.0"?  Modern conventions call for this form. Also, a reason is:
+  Why is the human version is "v1.0.2"?  What happened to v1.0.1?
 
-    While not the first commit to the repository, this publishment is the first to be made public.
+  The released v1.0.0 software was in fact not buildable; this is the first buildable version.
 
-  SimpleSal Apps published to their repo will declare the TSC LLC or Human version they require.
-     TSC LLC philosophy has a rule against publishing with not-yet-published "v0.x" software.
+  Also.
 
-  The completion of development to v1.0.0 included several SimpleSal Apps, and more important,
-     keeping them current with the SimpleSal software version.  All part of a major publishment.
+  When the commit to SimpleSal of v1.0.1 was performed, an error was made by the human operator.
+
+  When data begins to exist, it also begins to degrade, disintegrate, and experience entropy.
+
+  Nevertheless.
 
   The collection of software and documents within SimpleSal, and a collection of SimpleSal Apps
   that make use of the software, are considered to be coherent.  A collection worthy of support.
